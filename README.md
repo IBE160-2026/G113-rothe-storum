@@ -6,6 +6,5 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 
 ## Medlemmer
 
-- Aksel Dymbe
 - Thomas Rothe
 - Christian Storum
