@@ -9,7 +9,7 @@ updated: 2026-09-15
 
 ## Executive Summary
 
-WORLDBOUND: NOMAD is a web-based travel and decision simulator: the player starts with limited money and a limited amount of time, travels between international destinations, works to earn money at the cost of time, and continuously chooses how to spend both. Inspired by classic travel games like Backpacker 2, it is being built as an independent product with its own code, art, writing, and mechanics — not a recreation.
+WORLDBOUND: NOMAD is a responsive, browser-based travel and decision simulator, playable on PC, tablet, and mobile without installing a native app. The player starts with limited money and a limited amount of time, travels between international destinations, works to earn money at the cost of time, and continuously chooses how to spend both. Inspired by classic travel games like Backpacker 2, it is being built as an independent product with its own code, art, writing, and mechanics — not a recreation.
 
 The project has two genuine goals that run in parallel. The **product goal** — a working, engaging simulator built around one core tension: time, money, and opportunity are all scarce, and every choice trades one against another — is what this brief is primarily about: the game itself. The **research goal** — examining how well a team of AI agents, filling architect, coder, tester, reviewer, content, and documentation roles, can carry a non-trivial software project through a full development cycle with a human retaining final say — is a real, parallel investigation the team wants to carry out well, not a box to check.
 
@@ -76,7 +76,7 @@ A player must be able to: start with limited resources, choose a destination, tr
 - Enterprise-grade account functionality
 - Any feature that adds significant infrastructure or security complexity without directly serving the core game or the research goal
 
-The product stays a web application throughout.
+The product stays a single responsive, browser-based web application throughout — it must be playable on PC, tablet, and mobile without the player installing a native app.
 
 ### Possible post-MVP extensions
 
