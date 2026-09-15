@@ -1,4 +1,4 @@
-# G113 — Worldbound-Nomad
+# G113 — Worldbound
 
 Gruppeprosjekt i **IBE160 Programmering med KI** ved Høgskolen i Molde, høsten 2026 (15 studiepoeng).
 
