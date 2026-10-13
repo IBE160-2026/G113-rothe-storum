@@ -80,7 +80,7 @@ Starting values are set; all other numbers are examples to be balanced in the PR
 
 ## Scope
 
-The MVP is MVP core + MVP extension. The core is built and stabilized first; the extension is added on top.
+The MVP is MVP core + MVP extension. The core is built and stabilized first; the extension is added on top, one item at a time.
 
 ### MVP core — the first playable version
 
@@ -95,12 +95,17 @@ A player must be able to start in Bergen, travel, spend time and money, and reac
 
 ### MVP extension — added once the core is stable
 
-- Work: jobs played as a trivia quiz, paid per correct answer (earns money, costs days); 15 questions per destination
-- Night departures on selected routes
-- Two more destinations: Madrid and Cape Town (10 in total, 150 trivia questions)
-- Two accommodation tiers — budget (3-question job quiz) and comfort (5-question job quiz)
-- Nomad mode
-- A save system — a minimal, working version is sufficient
+Added in this order; each item is finished and tested before the next starts:
+
+1. Work: jobs played as a trivia quiz, paid per correct answer (earns money, costs days); 15 questions per destination
+2. A save system — a minimal, working version is sufficient
+3. Nomad mode
+
+If time allows, in this order:
+
+4. Two accommodation tiers — budget (3-question job quiz) and comfort (5-question job quiz)
+5. Night departures on selected routes
+6. Two more destinations: Madrid and Cape Town (10 in total, 150 trivia questions)
 
 ### Technology principle
 
@@ -108,7 +113,7 @@ The MVP uses the simplest stack that delivers the MVP core: it runs locally in t
 
 ### Content, assets, and external services
 
-Game content — destinations, routes, prices, cost factors, sights, and trivia questions — lives as data files in the repository, separate from the game code, so it can be reviewed, fact-checked, and balanced without touching logic. Graphics and sight photos live in their own assets folder; photos are made by the team, AI-generated, or freely licensed, and each photo's source is recorded. The MVP needs no external services; if one is added later, its configuration goes through `.env.example` and no keys are committed. The exact folder structure is set in Architecture.
+Game content — destinations, routes, prices, cost factors, sights, and trivia questions — lives as data files in the repository, separate from the game code, so it can be reviewed, fact-checked, and balanced without touching logic. Graphics and sight photos live in their own assets folder; photos are made by the team, AI-generated, or freely licensed, and each photo's source is recorded. Test data (fixed game states and small test routes) lives with the automated tests, not in the game content files. The MVP needs no external services; if one is added later, its configuration goes through `.env.example` and no keys are committed. The exact folder structure is set in Architecture.
 
 ### Explicitly out of scope (for now)
 
@@ -130,7 +135,7 @@ Random/unforeseen events, skills and progression (3–5 skills with simple thres
 
 **Product:**
 - A new game starts in Bergen on Day 1 / 30 with €1,500.
-- Every journey deducts the chosen route's price and days; every city day deducts the base accommodation price × the destination's cost factor plus the tickets for any sights visited.
+- Every journey deducts the chosen route's price and days; in the MVP core, every city day deducts the base accommodation price × the destination's cost factor plus the tickets for any sights visited.
 - Each visited sight enters the photo album once; sights are never required to reach the goal.
 - Money never goes below €0, and running out of money never ends the game by itself; when the player cannot afford any transport, call home is available, costs 7 days, and removes one stamp.
 - Each destination gives at most one stamp; Bergen gives none.
@@ -152,8 +157,8 @@ Random/unforeseen events, skills and progression (3–5 skills with simple thres
 - **Balancing:** the goal must be reachable without work but still demand real trade-offs. Numbers are tuned in the PRD and verified by tests and playtests.
 - **AI-generated content:** trivia questions and destination facts must be fact-checked and reviewed for stereotypes before they ship.
 - **Team split** by feature area is deliberately undecided — intended to firm up once the PRD and epics make the major features concrete.
-- **[OPEN]** Whether to reserve any architectural room now for the in-game AI travel assistant, or treat it as fully deferred — currently the latter, by default.
+- **[OPEN]** Whether to reserve any architectural room now for the in-game AI travel assistant, or treat it as fully deferred — currently the latter, by default. If it is added, the game must still run without an API key: the assistant is optional, the key goes in `.env` (documented in `.env.example`), and tests use a mock instead of a live model.
 
 ## What's Next
 
-This brief is the input to the PRD (`bmad-prd`), and — once the concept is locked — to UX (`bmad-ux`) and Architecture (`bmad-architecture`). Exact numbers and balancing are PRD work. Technology is chosen in Architecture under the principle above; see `addendum.md` for the candidate stack and process material carried forward for that later work.
+This brief is the input to the PRD (`bmad-prd`), and — once the concept is locked — to UX (`bmad-ux`) and Architecture (`bmad-architecture`). UX starts with sketches of the two key mobile screens: the map (choose destination and route) and the city day (accommodation, sights, travel on). Exact numbers and balancing are PRD work. Technology is chosen in Architecture under the principle above; see `addendum.md` for the candidate stack and process material carried forward for that later work.
