@@ -4,6 +4,8 @@ Supporting depth pulled from `.docs/worldbound-grunnlag.md` and the IBE160 requi
 
 ## Candidate technology direction (input to Architecture — not decided)
 
+**Superseded for the MVP (2026-10-12):** the brief's Technology principle applies — the MVP runs locally in the browser with no required backend; Supabase, Python, and Docker are deferred until a concrete need appears. The list below is kept as background for Architecture.
+
 The source document lists a provisional direction, explicitly pending detailed system requirements:
 
 - Claude / Claude Code — AI-assisted programming and dev support
