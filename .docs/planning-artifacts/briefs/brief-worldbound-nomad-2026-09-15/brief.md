@@ -64,7 +64,7 @@ Starting values are set; all other numbers are examples to be balanced in the PR
 
 - **Start (Explorer mode):** Bergen, Day 1 / 30, €1,500.
 - **Goal:** collect at least 5 stamps and be back in Bergen before day 30 ends. A stamp is earned on the first city day at a destination; revisits and Bergen give no stamp.
-- **Travel:** each route offers one or more transport modes with a price/time trade-off — plane (fast, expensive), train (medium), bus (cheap, slow). Not every pair of destinations is connected, not every route has every mode, and intercontinental routes are plane-only. *Examples: Bergen → Tokyo by plane, €700, 1 day. Paris → Rome: plane €150, 1 day · train €90, 1 day · bus €50, 2 days.*
+- **Travel:** each route offers one or more transport modes with a price/time trade-off — plane (fast, expensive), train (medium), bus (cheap, slow). Not every pair of destinations is connected, not every route has every mode, and intercontinental routes are plane-only. *Examples: Bergen → Tokyo by plane, €600, 1 day. Paris → Rome: plane €150, 1 day · train €90, 1 day · bus €50, 2 days.*
 - **City day:** staying at a destination takes 1 day and includes accommodation, priced at a base accommodation price × the destination's cost factor. *Example: Tokyo and London are expensive; Istanbul is cheap.* During the day the player may visit 0–2 sights.
 - **Sights:** every destination has 2 sights with a ticket price of €8–20 each. Sights are optional; each visited sight adds a photo and a short fact to the player's photo album.
 - **Money:** money can never go below €0. A player who cannot pay for a city day must travel on or call home.
