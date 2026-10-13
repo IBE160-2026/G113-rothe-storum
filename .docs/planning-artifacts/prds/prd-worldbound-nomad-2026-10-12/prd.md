@@ -59,7 +59,7 @@ Terms are used exactly as defined. Quoted UI labels are the exact English string
 
 - **Journey** — one complete game from start to end. A journey has one mode, one day counter, one money balance, and one set of stamps.
 - **Mode** — the difficulty setting of a journey: **Explorer** (MVP core, the default) or **Nomad** (MVP extension, harder). A mode defines start money and number of days.
-- **Home** — Bergen. Every journey starts and ends there. Home is not a destination and gives no stamp.
+- **Home** — Bergen. Every journey starts and ends there. Home is not a destination, gives no stamp, and cannot be used as a stopover: travelling home always ends the journey (§9.5, Decision A).
 - **Destination** — a city the player can visit. MVP core has 8; MVP extension adds 2. Each destination has a cost factor, a fact card, and (in MVP extension) a question sequence.
 - **Route** — a connection between two places (home or destinations). A route offers one or more transport modes. Not every pair of places has a route.
 - **Transport mode** — plane, train, or bus. On a given route, each transport mode has a price and a number of days.
@@ -263,7 +263,8 @@ The player sees a journey summary when the journey ends.
 The player can work a shift at the current destination.
 
 **Consequences (testable):**
-- A shift presents the next 3 questions (budget tier) or 5 questions (comfort tier) from the destination's question sequence. Until accommodation tiers exist (§9.2), every shift presents 5 questions. [ASSUMPTION: the tier of the player's most recent city day at this destination applies; if they have not spent a city day here, work is unavailable]
+- A shift presents the next 3 questions (budget tier) or 5 questions (comfort tier) from the destination's question sequence. Until accommodation tiers exist (§9.2), every shift presents 5 questions. The tier of the player's most recent city day at this destination applies.
+- Work is unavailable at a destination where the player has not spent a city day in this journey (§9.5, Decision C).
 - Each question is multiple choice with 4 options and exactly one correct answer; the correct answer is shown after each question.
 - A shift adds 1 day to days used and pays €24 per correct answer (example value — see addendum).
 - A shift is unavailable when days remaining is 0, or when fewer questions remain in the sequence than the shift needs. [ASSUMPTION: a partial shift is not offered]
@@ -335,7 +336,7 @@ The player can choose Explorer or Nomad when starting a journey.
 - **NFR-5 Accessibility basics:** readable text on mobile, touch targets of at least 44 × 44 px, and information never conveyed by color alone. No formal WCAG certification.
 - **NFR-6 Language:** all player-facing text, including fact cards, sights, and trivia, is in English, as are planning documents and code.
 - **NFR-7 Content as data:** destinations, routes, prices, cost factors, fact cards, sights, and trivia are stored as data files separate from game code and can be changed without code changes. Graphics and sight photos live in their own assets folder. Test data (fixed game states and small test routes) lives with the automated tests, not in the game content files.
-- **NFR-8 Content quality:** every fact card and trivia question is fact-checked by a team member and reviewed for stereotypes before it is merged; the reviewer is recorded in the Git history. Every sight photo is made by the team, AI-generated, or freely licensed, and its source and license are recorded with the content.
+- **NFR-8 Content quality:** every fact card and trivia question is fact-checked by a team member and reviewed for stereotypes before it is merged; the reviewer is recorded in the Git history. Every sight photo is made by the team, AI-generated, or freely licensed, and its source and license are recorded with the content. Placeholder photos (typically AI-generated) are allowed in the MVP core and follow the same source and license rule; they can be replaced later without code changes (NFR-7, §9.5 Decision B).
 - **NFR-9 No personal data:** the game collects and sends no personal data. Browser storage holds only game state and the intro flag.
 
 ## 6. Development Process Constraints
@@ -398,6 +399,12 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 - Items from the source document: inventory comes with trade and items (post-MVP); the travel journal is covered by stamps and the photo album; a player profile is not needed without accounts (§8); progression comes with skills (post-MVP).
 - `[NOTE FOR PM]` Skills are the most requested post-MVP item in the team notes; revisit first if the MVP finishes early.
 
+### 9.5 Decisions Before Development (2026-10-13)
+
+- **A. Bergen is start and end point only.** Home has a direct plane route to every destination (addendum §4); allowing stopovers would make it a hub that bypasses Europe's plane/train/bus choices and would need a separate "end journey" rule. Travelling home always ends the journey (FR-7).
+- **B. All 16 sights stay in the MVP core, with placeholder photos.** UJ-1, FR-21/22, SM-3, and the sight questions in FR-16 depend on them. The cost lies in photos and licensing, not facts, so the first version uses placeholder photos under NFR-8, swapped later via the assets folder.
+- **C. Work has a fixed time cost; accommodation affects pay, not time.** A shift always costs 1 day. The accommodation tier sets shift length and thus pay (FR-15, FR-17). Work requires a city day at the destination in the current journey (confirmed rule, formerly an assumption).
+
 ## 10. Success Metrics
 
 **Primary**
@@ -426,7 +433,6 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 - §2.4 — UJ-1, UJ-2, UJ-3 are illustrative journeys written from the brief.
 - FR-2 — "first visit" is detected via browser storage; without storage, the intro shows every time.
 - FR-12 — call home removes the most recently earned stamp.
-- FR-15 — the tier of the most recent city day at the destination sets shift length; no city day there means no work.
 - FR-22 — an already visited sight is not offered again in the same journey.
 - §9.2 — until accommodation tiers exist, every shift has 5 questions.
 - FR-15 — partial shifts are not offered when too few questions remain.
