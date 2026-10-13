@@ -2,7 +2,7 @@
 title: "WORLDBOUND: NOMAD — Product Brief"
 status: ready
 created: 2026-09-15
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Product Brief: WORLDBOUND: NOMAD
@@ -21,7 +21,7 @@ The project has two parallel goals: a working, engaging game, which is this brie
 
 ## The Concept
 
-The player is a traveler with a finite budget and a fixed number of days. Money determines which choices are available; time determines how far the player can get. Unlike money, time never comes back. Decisions in one city carry forward and shape what's possible in the next. The game surfaces this tension through recurring choices: where to go next, how to get there, where to sleep, whether to work before moving on, and when to head home.
+The player is a traveler with a finite budget and a fixed number of days. Money determines which choices are available; time determines how far the player can get. Unlike money, time never comes back. Decisions in one city carry forward and shape what's possible in the next. The game surfaces this tension through recurring choices: where to go next, how to get there, which sights are worth the money, whether to work before moving on, and when to head home.
 
 **Core loop:** Plan → Travel → Experience → Decide → Work → Earn → Plan again — continuously balancing time, money, risk, and experience. This is the target design for the full loop; the first playable version is intentionally narrower — see MVP core under Scope.
 
@@ -43,7 +43,7 @@ This dual mandate is why scope discipline matters as much as feature count: a sm
 
 ## Who This Serves
 
-**Primary player for v1:** a young, budget-conscious traveler playing in a mobile browser. Screens, controls, and session length are designed for this player first; PC and tablet must work, but mobile is the reference device.
+**Primary player for v1:** a young, budget-conscious traveler playing in a mobile browser. Screens, controls, and session length are designed for this player first; PC and tablet must work, but mobile is the reference device. The game is in English.
 
 The game is not closed to anyone else — players interested in travel, exploration, strategy, or decision-based games are welcome — but design trade-offs in v1 are settled in favor of the primary player.
 
@@ -63,16 +63,19 @@ Starting values are set; all other numbers are examples to be balanced in the PR
 ### MVP core rules
 
 - **Start (Explorer mode):** Bergen, Day 1 / 30, €1,500.
-- **Goal:** collect at least 5 stamps and be back in Bergen before day 30 ends. A stamp is earned the first time the player visits a destination; revisits and Bergen give no stamp.
+- **Goal:** collect at least 5 stamps and be back in Bergen before day 30 ends. A stamp is earned on the first city day at a destination; revisits and Bergen give no stamp.
 - **Travel:** each route offers one or more transport modes with a price/time trade-off — plane (fast, expensive), train (medium), bus (cheap, slow). Not every pair of destinations is connected, not every route has every mode, and intercontinental routes are plane-only. *Examples: Bergen → Tokyo by plane, €700, 1 day. Paris → Rome: plane €150, 1 day · train €90, 1 day · bus €50, 2 days.*
-- **Destinations:** each destination has a cost factor. Each night costs a base accommodation price × the destination's cost factor. Money can never go below €0: a player who cannot pay for a night must travel on or call home. *Example: Tokyo and London are expensive; Istanbul is cheap.*
+- **City day:** staying at a destination takes 1 day and includes accommodation, priced at a base accommodation price × the destination's cost factor. *Example: Tokyo and London are expensive; Istanbul is cheap.* During the day the player may visit 0–2 sights.
+- **Sights:** every destination has 2 sights with a ticket price of €8–20 each. Sights are optional; each visited sight adds a photo and a short fact to the player's photo album.
+- **Money:** money can never go below €0. A player who cannot pay for a city day must travel on or call home.
 - **Call home:** available when the player cannot afford any transport out of the current destination — running out of money is a crisis, not game over. The player gets a ticket back to Bergen; it costs 7 days of waiting (the waiting days cost no money) and always removes one stamp. The summary marks the journey "Called home". A player with 6 or more stamps can still reach the goal this way, but calling home is always worse than paying for the ticket.
-- **End:** the game ends when the player is back in Bergen or day 30 ends, and shows a summary: stamps collected, days used, money left, and whether the goal was reached. Not being home by the end of day 30 — including when call home's 7 days run past it — means the journey failed.
+- **End:** the game ends when the player is back in Bergen or day 30 ends, and shows a summary: stamps collected, photo album, days used, money left, and whether the goal was reached. Not being home by the end of day 30 — including when call home's 7 days run past it — means the journey failed.
 
 ### MVP extension rules
 
 - **Accommodation:** two tiers in every destination — budget and comfort. Comfort costs more but gives a 5-question job quiz; budget gives a 3-question quiz. Budget is also a way to stretch money before calling home.
-- **Work:** a job is a trivia quiz. Pay depends on how many questions the player answers correctly; a work shift costs days. Each destination has 15 questions in a fixed, predefined sequence, so the same play gives the same questions; each shift takes the next questions, and when a destination's questions are used up, it offers no more work. *Example: one shift in Sydney costs 1 day and pays €24 per correct answer — up to €120 (comfort) or €72 (budget).*
+- **Work:** a job is a trivia quiz. Pay depends on how many questions the player answers correctly; a work shift costs days. Each destination has 15 questions in a fixed, predefined sequence, so the same play gives the same questions; each shift takes the next questions, and when a destination's questions are used up, it offers no more work. 2 of each destination's 15 questions are about its sights — a player who visited them has already seen the answer. *Example: one shift in Sydney costs 1 day and pays €24 per correct answer — up to €120 (comfort) or €72 (budget).*
+- **Night departures:** selected routes have a night departure. Leaving on one ends the city day without paying accommodation.
 - **Nomad mode:** the same goal under tighter conditions than Explorer (e.g. €1,000 or 25 days — set in the PRD).
 
 ## Scope
@@ -83,15 +86,17 @@ The MVP is MVP core + MVP extension. The core is built and stabilized first; the
 
 The non-negotiable slice, in priority order:
 
-1. **Map & destinations** — Bergen plus 8 destinations: Copenhagen, Paris, London, Rome, Istanbul, New York, Tokyo, Sydney. The route network is set in the PRD; not every pair is connected.
+1. **Map & destinations** — Bergen plus 8 destinations: Copenhagen, Paris, London, Rome, Istanbul, New York, Tokyo, Sydney. Europe is the hub, with plane, train, and bus; New York, Tokyo, and Sydney are far goals reached by plane. The route network is set in the PRD; not every pair is connected.
 2. **Travel** — three transport modes (plane, train, bus), price, time cost, position updates
 3. **Economy & time** — starting budget, day counter, destination cost factors, one accommodation price per destination, call home, end state and journey summary — in a single mode, Explorer
+4. **Sights & photo album** — 2 optional sights per destination, each adding a photo and a fact to the photo album
 
 A player must be able to start in Bergen, travel, spend time and money, and reach an end state — win or lose — using the MVP core alone. This loop must work end-to-end before anything else is added.
 
 ### MVP extension — added once the core is stable
 
 - Work: jobs played as a trivia quiz, paid per correct answer (earns money, costs days); 15 questions per destination
+- Night departures on selected routes
 - Two more destinations: Madrid and Cape Town (10 in total, 150 trivia questions)
 - Two accommodation tiers — budget (3-question job quiz) and comfort (5-question job quiz)
 - Nomad mode
@@ -103,7 +108,7 @@ The MVP uses the simplest stack that delivers the MVP core: it runs locally in t
 
 ### Content, assets, and external services
 
-Game content — destinations, routes, prices, cost factors, and trivia questions — lives as data files in the repository, separate from the game code, so it can be reviewed, fact-checked, and balanced without touching logic. Graphics live in their own assets folder. The MVP needs no external services; if one is added later, its configuration goes through `.env.example` and no keys are committed. The exact folder structure is set in Architecture.
+Game content — destinations, routes, prices, cost factors, sights, and trivia questions — lives as data files in the repository, separate from the game code, so it can be reviewed, fact-checked, and balanced without touching logic. Graphics and sight photos live in their own assets folder; photos are made by the team, AI-generated, or freely licensed, and each photo's source is recorded. The MVP needs no external services; if one is added later, its configuration goes through `.env.example` and no keys are committed. The exact folder structure is set in Architecture.
 
 ### Explicitly out of scope (for now)
 
@@ -125,7 +130,8 @@ Random/unforeseen events, skills and progression (3–5 skills with simple thres
 
 **Product:**
 - A new game starts in Bergen on Day 1 / 30 with €1,500.
-- Every journey deducts the chosen route's price and days; every night deducts the base accommodation price × the destination's cost factor.
+- Every journey deducts the chosen route's price and days; every city day deducts the base accommodation price × the destination's cost factor plus the tickets for any sights visited.
+- Each visited sight enters the photo album once; sights are never required to reach the goal.
 - Money never goes below €0, and running out of money never ends the game by itself; when the player cannot afford any transport, call home is available, costs 7 days, and removes one stamp.
 - Each destination gives at most one stamp; Bergen gives none.
 - The game always ends in exactly one way — back in Bergen or day 30 ended — and shows the journey summary.
