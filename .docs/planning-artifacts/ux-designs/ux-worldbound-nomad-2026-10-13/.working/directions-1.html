@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nomad Design Directions</title>
+<style>
+/* =====================================================================
+   INDEX — WORLDBOUND: NOMAD design directions, round 1
+   Neutral presentation chrome (so it doesn't favour any direction)
+   --------------------------------------------------------------------
+   background ........ #ECEAE6 neutral grey-paper
+   surface ........... #FFFFFF column card
+   text .............. #1C1F23
+   muted text ........ #5B6168
+   primary / accent .. #1C1F23 (links, tags) — each direction's own palette lives in its file
+   rule .............. #D6D2CB
+   ===================================================================== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#ECEAE6;color:#1C1F23;font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;padding:28px 0 48px}
+header{padding:0 28px 22px;max-width:1100px}
+header .k{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#5B6168;font-weight:700}
+header h1{font-size:28px;font-weight:800;margin-top:4px}
+header p{font-size:15px;line-height:1.55;color:#3A3F45;margin-top:8px;max-width:820px}
+header ul{margin:10px 0 0 18px;font-size:13.5px;color:#3A3F45;line-height:1.6}
+.row{display:flex;gap:24px;overflow-x:auto;padding:0 28px 16px;scroll-snap-type:x mandatory}
+.col{flex:none;width:440px;background:#fff;border:1px solid #D6D2CB;border-radius:22px;padding:18px 14px 14px;scroll-snap-align:start}
+.col .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;padding:4px 8px;border-radius:6px;color:#fff}
+.col h2{font-size:22px;font-weight:800;margin-top:8px}
+.col .why{font-size:14px;line-height:1.5;color:#3A3F45;margin-top:6px;min-height:126px}
+.col dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12.5px;margin:10px 0 12px;padding-top:10px;border-top:1px solid #D6D2CB}
+.col dt{color:#5B6168;font-weight:700}
+.col a{color:#1C1F23;font-weight:700}
+iframe{display:block;width:412px;height:2790px;border:0;border-radius:14px;background:#F4F2EE}
+</style>
+</head>
+<body>
+<header>
+  <div class="k">WORLDBOUND: NOMAD · UX design directions · round 1</div>
+  <h1>Four visual directions for the map and city day</h1>
+  <p>Each column is a full visual personality, not just a palette swap. Each one shows the <b>map screen</b> (Paris, Day 5, London tapped), a strip of the <b>other colour mode</b>, the <b>city day</b> in Paris, and Jonas's <b>out-of-money state</b> in Rome with Call home. Scroll sideways to compare and down to see every screen. Each file also opens on its own.</p>
+  <ul>
+    <li>The map style is part of the choice: geographic + loupe (A), low-poly (B), schematic metro (C), illustrated rounded (D).</li>
+    <li>In all four, stamped cities show a check or stamp shape, and locked routes show a lock and a written reason, so nothing relies on colour alone.</li>
+  </ul>
+</header>
+
+<div class="row">
+  <section class="col">
+    <span class="tag" style="background:#B9761A">A · light primary</span>
+    <h2>Sunrise Expedition</h2>
+    <p class="why">The poster, made playable: warm paper, navy ink and ochre, with a real-looking world map where a magnifying loupe opens Europe so the dense hub stays tappable. It's spacious and a little editorial, with serif numbers and ink stamps, like a travel journal.</p>
+    <dl><dt>Map</dt><dd>Geographic outlines + Europe loupe, dashed routes</dd><dt>Density</dt><dd>Low · spacious</dd><dt>Other mode</dt><dd>Dark strip under the map phone</dd><dt>File</dt><dd><a href="direction-sunrise-expedition.html">direction-sunrise-expedition.html</a></dd></dl>
+    <iframe src="direction-sunrise-expedition.html" title="Direction A: Sunrise Expedition"></iframe>
+  </section>
+
+  <section class="col">
+    <span class="tag" style="background:#0A1826">B · dark primary</span>
+    <h2>Night Route</h2>
+    <p class="why">The pitch deck, brought to life: navy, flat teal low-poly continents, coral city dots and a compass. It feels like a crisp game HUD, with uppercase labels and counter chips. The map is stretched so Europe gets room. Medium density, high contrast.</p>
+    <dl><dt>Map</dt><dd>Stylized low-poly, distorted for a roomy Europe</dd><dt>Density</dt><dd>Medium · HUD</dd><dt>Other mode</dt><dd>Light strip under the map phone</dd><dt>File</dt><dd><a href="direction-night-route.html">direction-night-route.html</a></dd></dl>
+    <iframe src="direction-night-route.html" title="Direction B: Night Route"></iframe>
+  </section>
+
+  <section class="col">
+    <span class="tag" style="background:#1E8C82">C · light primary</span>
+    <h2>Transit Line</h2>
+    <p class="why">The journey as a metro map. Cities are stations, and each transport mode is its own line style: dotted plane, double-rail train, dashed bus. Deck colours on cream with table-like sheets make it the densest and most information-first option, and comparing prices is effortless.</p>
+    <dl><dt>Map</dt><dd>Schematic stations + lines per mode (pattern + colour)</dd><dt>Density</dt><dd>High · tables</dd><dt>Other mode</dt><dd>Dark strip under the map phone</dd><dt>File</dt><dd><a href="direction-transit-line.html">direction-transit-line.html</a></dd></dl>
+    <iframe src="direction-transit-line.html" title="Direction C: Transit Line"></iframe>
+  </section>
+
+  <section class="col">
+    <span class="tag" style="background:#C8861E">D · light primary</span>
+    <h2>Passport Atlas</h2>
+    <p class="why">A friendly, tactile atlas with soft rounded continents, teardrop pins and pill controls. The passport is always on screen as a stamp strip, so progress is visible and touchable. Ochre stamps and polaroid-style album pictures make it the most playful of the four, but it stays clean.</p>
+    <dl><dt>Map</dt><dd>Illustrated soft-blob continents, dotted trail</dd><dt>Density</dt><dd>Medium-low · rounded</dd><dt>Other mode</dt><dd>Dark strip under the map phone</dd><dt>File</dt><dd><a href="direction-passport-atlas.html">direction-passport-atlas.html</a></dd></dl>
+    <iframe src="direction-passport-atlas.html" title="Direction D: Passport Atlas"></iframe>
+  </section>
+</div>
+</body>
+</html>

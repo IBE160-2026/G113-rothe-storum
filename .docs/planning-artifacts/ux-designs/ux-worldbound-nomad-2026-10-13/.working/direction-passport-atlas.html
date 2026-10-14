@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passport Atlas</title>
+<style>
+/* =====================================================================
+   DIRECTION D — PASSPORT ATLAS  (primary mode: LIGHT)
+   Palette, grouped by semantic role (deck teal/coral + poster ochre)
+   --------------------------------------------------------------------
+   background ........ #FFF8EE warm white
+   surface ........... #FFFFFF card | #FDF3E1 passport page | #F3EADB soft inset
+   map ............... #DDF0EE sea | #C5E5E0 sea marks | #F6E7C9 land | #E6CFA3 land edge
+   text .............. #12303F deep teal-navy
+   muted text ........ #56707A
+   primary / route ... #17776E teal (buttons, white text 5.1:1) | #2AB4A7 travelled route dots
+   proposed route .... #EF7053 coral solid curve + arrow
+   accent / pin ...... #EF7053 coral teardrop pins | #17776E "you" marker
+   passport cover .... #1F3B4D with #EBC256 gold foil
+   stamp ............. #C8861E ochre ink (round stamp + check), #C8861E22 wash
+   warning ........... #C2492B
+   unavailable ....... #F1ECE3 fill | #6B7479 text | lock badge + written reason
+   --------------------------------------------------------------------
+   OTHER-MODE STRIP (dark):
+   background #142430 | surface #1D3341 | text #F7F1E6 | muted #A7B6BD
+   teal #3CC4B6 | coral #F2876C | ochre #E4A84A | passport #0E1C26
+   ===================================================================== */
+:root{
+  --bg:#FFF8EE; --card:#FFFFFF; --page:#FDF3E1; --inset:#F3EADB; --sea:#DDF0EE; --seamark:#C5E5E0; --land:#F6E7C9; --edge:#E6CFA3;
+  --ink:#12303F; --muted:#56707A; --teal:#17776E; --teal2:#2AB4A7; --coral:#EF7053; --cover:#1F3B4D; --gold:#EBC256; --ochre:#C8861E;
+  --warn:#C2492B; --na:#F1ECE3; --na-t:#6B7479;
+  --round:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F4EADB;font-family:var(--sans);color:var(--ink);padding:32px 24px 64px}
+.page-head{max-width:1240px;margin:0 auto 28px}
+.page-head .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:6px}
+.page-head h1{font-family:var(--round);font-size:30px;font-weight:700}
+.page-head p{max-width:760px;font-size:16px;line-height:1.55;color:#33505B;margin-top:8px}
+.screens{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;max-width:1300px;margin:0 auto}
+figure{width:391px}
+figcaption{font-family:var(--round);font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px 6px}
+.phone{width:391px;height:796px;border:8px solid #2A2522;border-radius:50px;overflow:hidden;position:relative;background:var(--bg);box-shadow:0 26px 50px -24px rgba(80,50,20,.5)}
+@media (max-width:520px){ .page-head{display:none!important} body{padding:12px 8px} }
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- header + passport ---------- */
+.top{position:absolute;inset:0 0 auto 0;padding:12px 16px 0;z-index:5;background:var(--bg)}
+.brand{display:flex;align-items:center;justify-content:space-between;height:28px}
+.wm{font-family:var(--round);font-weight:800;font-size:17px;letter-spacing:.8px;display:flex;align-items:center;line-height:1;color:var(--ink)}
+.wm svg{width:15px;height:15px;margin:0 1px}
+.wm .nm{font-family:var(--round);font-size:12px;letter-spacing:2px;color:#fff;background:var(--ochre);border-radius:20px;padding:4px 8px 3px;margin-left:7px}
+.homep{display:flex;align-items:center;gap:5px;font-family:var(--round);font-size:12px;font-weight:700;color:var(--teal);background:#E2F2EF;border-radius:20px;padding:0 10px;height:30px}
+.homep svg{width:14px;height:14px}
+.pills{display:flex;gap:8px;margin-top:10px}
+.pill{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 6px;border-radius:20px;background:var(--card);box-shadow:0 2px 0 var(--edge);font-family:var(--round)}
+.pill .ic{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#E2F2EF;color:var(--teal)}
+.pill .ic svg{width:17px;height:17px}
+.pill b{font-size:15px;font-weight:800;line-height:1}
+.pill span{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;line-height:1}
+.pill.grow{flex:1}
+.passport{margin:10px -4px 0;display:flex;align-items:center;gap:10px;height:62px;padding:0 10px 0 0;background:var(--page);border-radius:16px;box-shadow:0 2px 0 var(--edge),inset 0 0 0 1px #EEDDBB;overflow:hidden;position:relative}
+.passport .cv{align-self:stretch;width:64px;background:var(--cover);color:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:var(--round);font-size:8.5px;font-weight:800;letter-spacing:1.4px}
+.passport .cv svg{width:22px;height:22px}
+.passport .cv b{font-size:15px;letter-spacing:0;color:#fff}
+.slots{display:flex;gap:8px;flex:1;justify-content:space-between}
+.slot{width:46px;height:46px;border-radius:50%;border:2px dashed #DCC9A3;display:grid;place-items:center;font-family:var(--round);font-size:9px;font-weight:800;color:#B8A27A;letter-spacing:.5px}
+.slot.on{border:0}
+.slot.on svg{width:50px;height:50px;transform:rotate(-12deg)}
+
+/* ---------- map ---------- */
+.map{position:absolute;top:150px;left:0;width:375px;height:290px}
+.lbl{font-family:var(--round);font-size:11.5px;font-weight:800;fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
+.lbl.s{font-size:9.5px;fill:var(--muted);font-weight:700}
+.bubble{position:absolute;left:12px;top:148px;width:150px;background:var(--card);border-radius:18px;padding:10px 12px 10px;box-shadow:0 6px 16px -8px rgba(80,50,20,.45),0 0 0 2px #F3D9A6}
+.bubble::after{content:"";position:absolute;right:-8px;top:-6px;width:18px;height:18px;background:var(--card);transform:rotate(45deg);border-radius:3px;box-shadow:2px -2px 0 0 #F3D9A6}
+.bubble b{display:block;font-family:var(--round);font-size:14px;line-height:1.25;position:relative;z-index:1}
+.bubble span{display:flex;gap:5px;align-items:center;font-size:11.5px;white-space:nowrap;font-weight:600;color:#8A5A10;margin-top:4px}
+.bubble span svg{width:14px;height:14px;flex:none}
+.bubble .mini{margin-top:8px;height:44px;border-radius:22px;background:#FBEBCB;color:#6E4709;display:flex;align-items:center;justify-content:center;font-family:var(--round);font-weight:800;font-size:14px}
+
+/* ---------- sheet ---------- */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:30px 30px 0 0;padding:10px 16px 18px;box-shadow:0 -8px 24px -10px rgba(80,50,20,.3);z-index:6}
+.grab{width:44px;height:5px;border-radius:3px;background:#E8DCC6;margin:0 auto 10px}
+.sh{display:flex;align-items:center;justify-content:space-between}
+.sh h2{font-family:var(--round);font-size:21px;font-weight:800;display:flex;align-items:center;gap:8px}
+.sh h2 svg{width:20px;height:20px;color:var(--coral)}
+.x{width:44px;height:44px;border-radius:50%;background:var(--inset);display:grid;place-items:center;color:var(--muted)}
+.x svg{width:18px;height:18px}
+.rows{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.row{display:flex;align-items:center;gap:12px;height:52px;padding:0 14px 0 8px;border-radius:29px;background:var(--inset)}
+.row .ic{width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--ink);flex:none}
+.row .ic svg{width:22px;height:22px}
+.row .t{flex:1;font-family:var(--round)}
+.row .t b{font-size:16px;font-weight:800}
+.row .t span{display:block;font-family:var(--sans);font-size:12.5px;color:var(--muted)}
+.row .p{font-family:var(--round);font-size:19px;font-weight:800}
+.tick{width:26px;height:26px;border-radius:50%;border:2.5px solid #D3C4A8;flex:none;display:grid;place-items:center}
+.row.sel{background:#E2F2EF;box-shadow:inset 0 0 0 2.5px var(--teal)}
+.row.sel .tick{background:var(--teal);border-color:var(--teal);color:#fff}
+.row.sel .tick svg{width:16px;height:16px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:25px;background:var(--teal);color:#fff;font:800 16.5px var(--round);margin-top:12px;box-shadow:0 3px 0 #0F5A53}
+.conseq{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px}
+.conseq b{color:var(--ink)}
+
+/* ---------- other-mode strip ---------- */
+.alt{margin-top:18px;border-radius:26px;background:#142430;color:#F7F1E6;padding:14px 14px 16px;width:391px}
+.alt .cap{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#A7B6BD;margin-bottom:8px;font-weight:700}
+.alt .wm{color:#F7F1E6}
+.alt .wm .nm{background:#E4A84A;color:#142430}
+.alt .homep{background:#1D3341;color:#3CC4B6}
+.alt .pill{background:#1D3341;box-shadow:none}
+.alt .pill .ic{background:#142430;color:#3CC4B6}
+.alt .pill span{color:#A7B6BD}
+.alt .passport{background:#1D3341;box-shadow:inset 0 0 0 1px #2B4757}
+.alt .passport .cv{background:#0E1C26}
+.alt .slot{border-color:#3B5868;color:#7F949D}
+.alt .row{margin-top:12px;background:#1D3341}
+.alt .row .ic{background:#142430;color:#F7F1E6}
+.alt .row .t span{color:#A7B6BD}
+.alt .row.sel{background:#173F42;box-shadow:inset 0 0 0 2.5px #3CC4B6}
+.alt .row.sel .tick{background:#3CC4B6;border-color:#3CC4B6;color:#142430}
+
+/* ---------- city day ---------- */
+.body{position:absolute;top:98px;left:0;right:0;bottom:0;padding:6px 16px}
+.cdh{display:flex;justify-content:space-between;align-items:center}
+.cdh h2{font-family:var(--round);font-size:25px;font-weight:800}
+.daychip{font-family:var(--round);font-weight:800;font-size:13px;background:#E2F2EF;color:var(--teal);border-radius:16px;padding:6px 10px}
+.ppage{margin-top:10px;border-radius:20px;background:var(--page);box-shadow:0 2px 0 var(--edge),inset 0 0 0 1px #EEDDBB;padding:12px 14px;position:relative;overflow:hidden}
+.ppage .guil{position:absolute;inset:0;opacity:.5}
+.ppage .row2{position:relative;display:flex;align-items:center;gap:12px}
+.ppage h3{font-family:var(--round);font-size:18px;font-weight:800}
+.ppage p{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.35}
+.ppage .k{font-family:var(--round);font-size:9.5px;font-weight:800;letter-spacing:1.6px;color:#9B7B3F}
+.stay{display:flex;align-items:center;gap:12px;margin-top:12px;padding:8px 14px 8px 8px;border-radius:28px;background:var(--inset);font-family:var(--round)}
+.stay .ic{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.stay .ic svg{width:20px;height:20px}
+.stay .t{flex:1;font-weight:800;font-size:15px}
+.stay .t span{display:block;font-family:var(--sans);font-weight:600;font-size:12px;color:var(--muted)}
+.stay b{font-size:17px}
+.sect{font-family:var(--round);font-size:13px;font-weight:800;margin:14px 2px 8px;display:flex;justify-content:space-between}
+.sect span{font-family:var(--sans);font-weight:600;font-size:12px;color:var(--muted)}
+.polas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pola{background:#fff;border-radius:10px;padding:8px 8px 10px;box-shadow:0 6px 14px -8px rgba(80,50,20,.45),0 0 0 1px #F0E5D2}
+.pola:first-child{transform:rotate(-2deg)}
+.pola:last-child{transform:rotate(1.5deg)}
+.pola .ph{height:92px;border-radius:6px;overflow:hidden}
+.pola .ph svg{width:100%;height:100%;display:block}
+.pola h4{font-family:var(--round);font-size:14.5px;font-weight:800;margin-top:7px}
+.pola .pr{font-size:12.5px;color:var(--muted)}
+.add{display:flex;align-items:center;justify-content:center;gap:6px;height:44px;border-radius:22px;margin-top:7px;font:800 13px var(--round);background:var(--inset);color:var(--ink)}
+.add svg{width:17px;height:17px}
+.add.on{background:var(--teal);color:#fff}
+.foot{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:28px 28px 0 0;padding:14px 18px 18px;box-shadow:0 -8px 24px -12px rgba(80,50,20,.3)}
+.foot .ln{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.foot .ln b{font-family:var(--round);font-size:18px;color:var(--ink)}
+.foot .btn{margin-top:10px}
+
+/* ---------- state ---------- */
+.row.na{height:auto;min-height:62px;padding:8px 12px 8px 8px;background:var(--na);border-radius:22px;align-items:center}
+.row.na .ic{background:#fff;color:var(--na-t);position:relative}
+.row.na .ic .lk{position:absolute;right:-3px;bottom:-3px;width:20px;height:20px;border-radius:50%;background:var(--warn);color:#fff;display:grid;place-items:center;border:2px solid var(--na)}
+.row.na .ic .lk svg{width:11px;height:11px}
+.row.na .t b{font-size:14.5px;color:var(--na-t)}
+.row.na .why{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--warn);margin-top:1px}
+.row.na .p{font-size:16px;color:var(--na-t);text-decoration:line-through}
+.post{margin-top:12px;border-radius:24px;background:#FFF3DC;padding:14px 14px 14px;box-shadow:inset 0 0 0 2px #F0CF8E}
+.post h3{display:flex;align-items:center;gap:10px;font-family:var(--round);font-size:19px;font-weight:800}
+.post h3 .ic{width:38px;height:38px;border-radius:50%;background:var(--ochre);color:#fff;display:grid;place-items:center}
+.post h3 .ic svg{width:19px;height:19px}
+.post p{font-size:14.5px;margin-top:8px;line-height:1.4}
+.facts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.facts span{font-family:var(--round);font-size:12.5px;font-weight:800;background:#fff;border-radius:14px;padding:6px 10px}
+.pair{display:grid;grid-template-columns:1fr 1.3fr;gap:10px;margin-top:12px}
+.pair .btn{margin:0;height:50px}
+.ghost{display:flex;align-items:center;justify-content:center;height:50px;border-radius:25px;background:#fff;box-shadow:inset 0 0 0 2px #E2D3B6;font:800 15px var(--round)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></symbol>
+    <symbol id="i-train" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c-4 0-8 .5-8 4v9.5A3.5 3.5 0 0 0 7.5 19L6 20.5v.5h2l2-2h4l2 2h2v-.5L16.5 19a3.5 3.5 0 0 0 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zM11 10H6V6h5zm2 0V6h5v4zm3.5 7a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><path fill="currentColor" d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6zm3.5 1A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zm9 0a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5zM18 11H6V6h12z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path fill="currentColor" d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9zm3 11a2 2 0 1 1 2-2 2 2 0 0 1-2 2z"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path fill="currentColor" d="M7 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9a4 4 0 0 0-4-4z"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a4 4 0 0 0-2 7.46V13H5a2 2 0 0 0-2 2v3h18v-3a2 2 0 0 0-2-2h-5V9.46A4 4 0 0 0 12 2zM4 20h16v2H4z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14zM7 12h5v5H7z"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path fill="currentColor" d="M21 7.3V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2.3A2 2 0 0 0 22 15V9a2 2 0 0 0-1-1.7zM20 9v6h-7V9zM5 19V5h14v2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6v2zm11-5.5a1.5 1.5 0 1 0-1.5-1.5 1.5 1.5 0 0 0 1.5 1.5z"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm6.9 6h-2.9a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8zM12 4a14 14 0 0 1 1.9 4h-3.8A14 14 0 0 1 12 4zM4.3 14a8 8 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4zm.8 2H8a15.7 15.7 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16zM8 8H5.1a8 8 0 0 1 4.3-3.6A15.7 15.7 0 0 0 8 8zm4 12a14 14 0 0 1-1.9-4h3.8A14 14 0 0 1 12 20zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6A15.7 15.7 0 0 0 16 16h2.9a8 8 0 0 1-4.3 3.6zM16.3 14a16.5 16.5 0 0 0 0-4h3.4a8 8 0 0 1 0 4z"/></symbol>
+    <symbol id="compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 3.2 14 12h-4z" fill="#C8861E"/><path d="M12 20.8 10 12h4z" fill="currentColor"/></symbol>
+    <!-- ochre round stamp w/ check -->
+    <symbol id="st-cph" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#C8861E" fill-opacity=".12" stroke="#C8861E" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#C8861E" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" style="font:800 7.5px ui-rounded,'Arial Rounded MT Bold',sans-serif;fill:#8A5A10;letter-spacing:.5px">CPH</text><path d="M18 27l5 5 9-9" fill="none" stroke="#8A5A10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-nyc" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#C8861E" fill-opacity=".12" stroke="#C8861E" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#C8861E" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" style="font:800 7.5px ui-rounded,'Arial Rounded MT Bold',sans-serif;fill:#8A5A10;letter-spacing:.5px">NYC</text><path d="M18 27l5 5 9-9" fill="none" stroke="#8A5A10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="st-lon" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#C8861E" fill-opacity=".12" stroke="#C8861E" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#C8861E" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" style="font:800 7.5px ui-rounded,'Arial Rounded MT Bold',sans-serif;fill:#8A5A10;letter-spacing:.5px">LON</text><path d="M18 27l5 5 9-9" fill="none" stroke="#8A5A10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="st-rom" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#C8861E" fill-opacity=".12" stroke="#C8861E" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#C8861E" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" style="font:800 7.5px ui-rounded,'Arial Rounded MT Bold',sans-serif;fill:#8A5A10;letter-spacing:.5px">ROM</text><path d="M18 27l5 5 9-9" fill="none" stroke="#8A5A10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-par" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#C8861E" fill-opacity=".12" stroke="#C8861E" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#C8861E" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" style="font:800 7.5px ui-rounded,'Arial Rounded MT Bold',sans-serif;fill:#8A5A10;letter-spacing:.5px">PAR</text><path d="M18 27l5 5 9-9" fill="none" stroke="#8A5A10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="pin" viewBox="0 0 24 30"><path d="M12 29s10-9.6 10-17A10 10 0 0 0 2 12c0 7.4 10 17 10 17z" fill="#EF7053" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="#fff"/></symbol>
+  </defs>
+</svg>
+
+<header class="page-head">
+  <div class="tag">Direction D · light primary</div>
+  <h1>Passport Atlas</h1>
+  <p>A friendly, tactile atlas with soft rounded continents, teardrop pins and pill-shaped controls. The passport is always on screen as a stamp strip under the counters, so progress is something you can see and touch. Deck teal and coral do the work, poster ochre is the stamp ink, and the album pictures look like polaroids. The most playful of the four, but still clean.</p>
+</header>
+
+<main class="screens">
+<!-- =========================== 1 · MAP =========================== -->
+<figure id="hero">
+<figcaption>1 · Map — in Paris, London tapped</figcaption>
+<div class="phone">
+  <div class="top">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="homep"><svg><use href="#i-home"/></svg>Bergen</span>
+    </div>
+    <div class="pills">
+      <div class="pill grow"><div class="ic"><svg><use href="#i-cal"/></svg></div><div><b class="num">Day 5 of 30</b><span>25 days left</span></div></div>
+      <div class="pill"><div class="ic"><svg><use href="#i-wallet"/></svg></div><div><b class="num">€1,270</b><span>to spend</span></div></div>
+    </div>
+    <div class="passport" aria-label="Passport: 1 of 5 stamps">
+      <div class="cv"><svg><use href="#i-globe"/></svg>STAMPS<b>1/5</b></div>
+      <div class="slots">
+        <div class="slot on"><svg><use href="#st-cph"/></svg></div>
+        <div class="slot">2</div><div class="slot">3</div><div class="slot">4</div><div class="slot">5</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="map">
+    <svg width="375" height="290" viewBox="0 0 375 290" role="img" aria-label="Illustrated world map">
+      <rect width="375" height="290" fill="#DDF0EE"/>
+      <g fill="none" stroke="#C5E5E0" stroke-width="2" stroke-linecap="round">
+        <path d="M118 150q5-4 10 0t10 0M20 214q5-4 10 0t10 0M250 210q5-4 10 0t10 0M140 250q5-4 10 0t10 0M330 180q5-4 10 0t10 0M238 18q5-4 10 0t10 0"/>
+      </g>
+      <g fill="#F6E7C9" stroke="#E6CFA3" stroke-width="2">
+        <path d="M14 60C30 30 90 20 112 44C126 60 104 86 96 104C86 128 70 150 50 160C30 168 12 140 16 112C18 90 4 80 14 60Z"/>
+        <path d="M66 186C90 176 112 190 108 214C104 240 90 268 76 282C64 268 60 236 58 214C56 198 58 190 66 186Z"/>
+        <path d="M150 70C160 40 196 30 226 44C252 56 262 84 262 104C280 118 304 128 302 150C300 170 270 170 252 160C244 176 232 190 220 184C206 176 196 162 180 158C160 154 150 140 156 122C150 108 142 90 150 70Z"/>
+        <path d="M128 92C134 80 152 82 154 96C156 110 144 118 134 114C126 110 124 100 128 92Z"/>
+        <path d="M156 196C190 184 236 192 256 210C272 228 252 262 234 280C218 296 196 298 186 278C176 256 150 234 156 196Z"/>
+        <path d="M268 46C296 26 330 28 332 56C334 84 320 112 304 124C290 130 276 116 272 100C268 84 260 62 268 46Z"/>
+        <path d="M344 78C356 82 362 98 354 112C346 122 334 116 334 104C334 92 336 80 344 78Z"/>
+        <path d="M292 226C304 210 342 208 360 224C372 238 360 266 340 270C318 274 296 266 290 250C288 240 288 232 292 226Z"/>
+      </g>
+      <!-- tiny trees for texture -->
+      <g fill="#BFE0CF"><circle cx="60" cy="70" r="4"/><circle cx="68" cy="74" r="3"/><circle cx="300" cy="60" r="4"/><circle cx="214" cy="236" r="4"/><circle cx="84" cy="220" r="3.5"/></g>
+      <!-- compass -->
+      <g transform="translate(36 252)"><circle r="17" fill="#fff" stroke="#E6CFA3" stroke-width="2"/><path d="M0-12 3.4 0h-6.8z" fill="#EF7053"/><path d="M0 12-3.4 0h6.8z" fill="#12303F"/><text y="-21" text-anchor="middle" style="font:800 8px var(--round);fill:#56707A">N</text></g>
+      <!-- travelled route (dots) -->
+      <path d="M176 56Q206 52 222 80Q206 112 172 131" fill="none" stroke="#2AB4A7" stroke-width="4.5" stroke-linecap="round" stroke-dasharray=".1 8"/>
+      <!-- proposed route -->
+      <path d="M168 126Q150 124 150 110" fill="none" stroke="#EF7053" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M144 114 150 104 155 115" fill="none" stroke="#EF7053" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- pins: NY, Rome, Istanbul, Tokyo, Sydney -->
+      <use href="#pin" x="34" y="98" width="20" height="25"/>
+      <use href="#pin" x="210" y="142" width="20" height="25"/>
+      <use href="#pin" x="272" y="128" width="20" height="25"/>
+      <use href="#pin" x="328" y="74" width="20" height="25"/>
+      <use href="#pin" x="316" y="220" width="20" height="25"/>
+      <!-- London selected: bigger pin + halo -->
+      <circle cx="146" cy="100" r="16" fill="#EF7053" opacity=".18"/>
+      <use href="#pin" x="132" y="70" width="28" height="35"/>
+      <!-- Copenhagen stamped -->
+      <use href="#st-cph" x="206" y="64" width="34" height="34" transform="rotate(-10 223 81)"/>
+      <!-- Bergen home -->
+      <g transform="translate(176 52)"><rect x="-12" y="-12" width="24" height="24" rx="8" fill="#17776E" stroke="#fff" stroke-width="2"/><use href="#i-home" x="-8" y="-8.5" width="16" height="16" color="#fff"/></g>
+      <!-- Paris: you -->
+      <circle cx="172" cy="131" r="15" fill="#17776E" opacity=".18"/>
+      <circle cx="172" cy="131" r="10" fill="#17776E" stroke="#fff" stroke-width="3"/>
+      <path d="M172 125 174.6 131h-5.2z" fill="#fff"/>
+      <!-- labels -->
+      <text class="lbl" x="44" y="138" text-anchor="middle">New York</text>
+      <text class="lbl" x="192" y="38">Bergen</text><text class="lbl s" x="192" y="50">home</text>
+      <text class="lbl" x="243" y="80">Copenhagen</text><text class="lbl s" x="243" y="92">stamped</text>
+      <text class="lbl" x="130" y="66" text-anchor="middle" style="font-size:13px">London</text>
+      <text class="lbl" x="190" y="134">Paris</text><text class="lbl s" x="190" y="145">you're here</text>
+      <text class="lbl" x="220" y="180" text-anchor="middle">Rome</text>
+      <text class="lbl" x="282" y="166" text-anchor="middle">Istanbul</text>
+      <text class="lbl" x="338" y="70" text-anchor="middle">Tokyo</text>
+      <text class="lbl" x="326" y="258" text-anchor="middle">Sydney</text>
+    </svg>
+    <div class="bubble">
+      <b>Spend a city day in Paris — €80</b>
+      <span>Earns your Paris stamp</span>
+      <div class="mini">Stay the day</div>
+    </div>
+  </div>
+
+  <section class="sheet">
+    <div class="grab"></div>
+    <div class="sh">
+      <h2>Paris → London</h2>
+      <div class="x" aria-label="Close"><svg><use href="#i-x"/></svg></div>
+    </div>
+    <div class="rows">
+      <div class="row"><div class="ic"><svg><use href="#i-plane"/></svg></div><div class="t"><b>Plane</b><span>1 day · you arrive Day 6</span></div><div class="p num">€110</div><div class="tick"></div></div>
+      <div class="row sel"><div class="ic"><svg><use href="#i-train"/></svg></div><div class="t"><b>Train</b><span>1 day · you arrive Day 6</span></div><div class="p num">€90</div><div class="tick"><svg><use href="#i-check"/></svg></div></div>
+      <div class="row"><div class="ic"><svg><use href="#i-bus"/></svg></div><div class="t"><b>Bus</b><span>2 days · you arrive Day 7</span></div><div class="p num">€50</div><div class="tick"></div></div>
+    </div>
+    <div class="btn">Let's take the train · €90</div>
+    <p class="conseq">London on <b>Day 6</b>, with <b>€1,180</b> left in your wallet.</p>
+  </section>
+</div>
+
+<div class="alt" aria-label="Dark mode sample">
+  <div class="cap">Same screen · dark mode</div>
+  <div class="brand">
+    <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+    <span class="homep"><svg><use href="#i-home"/></svg>Bergen</span>
+  </div>
+  <div class="pills">
+    <div class="pill grow"><div class="ic"><svg><use href="#i-cal"/></svg></div><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+    <div class="pill"><div class="ic"><svg><use href="#i-wallet"/></svg></div><div><b>€1,270</b><span>to spend</span></div></div>
+  </div>
+  <div class="passport">
+    <div class="cv"><svg><use href="#i-globe"/></svg>STAMPS<b>1/5</b></div>
+    <div class="slots"><div class="slot on"><svg><use href="#st-cph"/></svg></div><div class="slot">2</div><div class="slot">3</div><div class="slot">4</div><div class="slot">5</div></div>
+  </div>
+  <div class="row sel"><div class="ic"><svg><use href="#i-train"/></svg></div><div class="t"><b>Train</b><span>1 day · you arrive Day 6</span></div><div class="p">€90</div><div class="tick"><svg><use href="#i-check"/></svg></div></div>
+</div>
+</figure>
+
+<!-- =========================== 2 · CITY DAY =========================== -->
+<figure>
+<figcaption>2 · City day — Paris</figcaption>
+<div class="phone">
+  <div class="top">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="homep"><svg><use href="#i-home"/></svg>Bergen</span>
+    </div>
+    <div class="pills">
+      <div class="pill grow"><div class="ic"><svg><use href="#i-cal"/></svg></div><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+      <div class="pill"><div class="ic"><svg><use href="#i-wallet"/></svg></div><div><b>€1,270</b><span>to spend</span></div></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="cdh"><h2>A day in Paris</h2><span class="daychip">Day 5 → 6</span></div>
+    <div class="ppage">
+      <svg class="guil" viewBox="0 0 340 110" preserveAspectRatio="none"><g fill="none" stroke="#EEDDBB" stroke-width="1"><path d="M0 20Q85 0 170 20T340 20M0 40Q85 20 170 40T340 40M0 60Q85 40 170 60T340 60M0 80Q85 60 170 80T340 80M0 100Q85 80 170 100T340 100"/></g></svg>
+      <div class="k" style="position:relative">PASSPORT · PAGE 2</div>
+      <div class="row2" style="margin-top:6px">
+        <svg width="54" height="54" style="transform:rotate(8deg);opacity:.85"><use href="#st-cph"/></svg>
+        <svg width="78" height="78" style="transform:rotate(-12deg)"><use href="#st-par"/></svg>
+        <div><h3>Paris, stamped!</h3><p>2 of 5 · three more and you've made it.</p></div>
+      </div>
+    </div>
+    <div class="stay"><div class="ic"><svg><use href="#i-bed"/></svg></div><div class="t">Your guesthouse<span>One night · included in the city day</span></div><b>€80</b></div>
+    <div class="sect">Sights for your album<span>optional</span></div>
+    <div class="polas">
+      <div class="pola">
+        <div class="ph"><svg viewBox="0 0 150 92" preserveAspectRatio="xMidYMid slice"><rect width="150" height="92" fill="#CFEAF0"/><circle cx="118" cy="24" r="10" fill="#FFD58A"/><path d="M0 92V72Q40 60 75 70T150 66V92Z" fill="#BFE0CF"/><g fill="none" stroke="#12303F" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M75 8V14M72 14H78L77 30H73ZM70 30H80L85 52H65ZM62 52H88L96 76H84Q75 64 66 76H54Z"/></g></svg></div>
+        <h4>Eiffel Tower</h4><div class="pr">€20 ticket</div>
+        <div class="add on"><svg><use href="#i-check"/></svg>In my album</div>
+      </div>
+      <div class="pola">
+        <div class="ph"><svg viewBox="0 0 150 92" preserveAspectRatio="xMidYMid slice"><rect width="150" height="92" fill="#F8E6C8"/><rect y="70" width="150" height="22" fill="#EAD3A8"/><g fill="none" stroke="#12303F" stroke-width="2" stroke-linejoin="round"><path d="M48 70 75 30 102 70Z"/><path d="M61 50H89M55 60H95M75 30V70" stroke-width="1.1"/><path d="M8 70V48H36V70M114 70V48H142V70" stroke-width="1.6"/></g></svg></div>
+        <h4>Louvre</h4><div class="pr">€17 ticket</div>
+        <div class="add"><svg><use href="#i-plus"/></svg>Add to album</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="ln"><span>Today: stay €80 + Eiffel Tower €20</span><b>€100</b></div>
+    <div class="ln" style="margin-top:2px"><span>Left after today</span><span style="color:var(--ink);font-weight:700">€1,170 · Day 6 of 30</span></div>
+    <div class="btn">Travel on</div>
+  </div>
+</div>
+</figure>
+
+<!-- =========================== 3 · STATE =========================== -->
+<figure>
+<figcaption>3 · State — Jonas, out of money in Rome</figcaption>
+<div class="phone">
+  <div class="top">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="homep"><svg><use href="#i-home"/></svg>Bergen</span>
+    </div>
+    <div class="pills">
+      <div class="pill grow"><div class="ic"><svg><use href="#i-cal"/></svg></div><div><b>Day 12 of 30</b><span>18 days left</span></div></div>
+      <div class="pill" style="box-shadow:0 0 0 2px #C2492B"><div class="ic" style="background:#FBE3DC;color:#C2492B"><svg><use href="#i-wallet"/></svg></div><div><b>€20</b><span>running low</span></div></div>
+    </div>
+    <div class="passport">
+      <div class="cv"><svg><use href="#i-globe"/></svg>STAMPS<b>4/5</b></div>
+      <div class="slots">
+        <div class="slot on"><svg><use href="#st-nyc"/></svg></div><div class="slot on"><svg><use href="#st-par"/></svg></div><div class="slot on"><svg><use href="#st-lon"/></svg></div><div class="slot on"><svg><use href="#st-rom"/></svg></div><div class="slot">5</div>
+      </div>
+    </div>
+  </div>
+  <section class="sheet" style="top:168px">
+    <div class="grab"></div>
+    <div class="sh"><h2>Where next from Rome?</h2></div>
+    <p style="font-size:13px;color:var(--muted);margin-top:2px">Hmm — nothing fits your wallet right now.</p>
+    <div class="rows">
+      <div class="row na"><div class="ic"><svg><use href="#i-bus"/></svg><span class="lk"><svg><use href="#i-lock"/></svg></span></div><div class="t"><b>Bus to Istanbul · 3 days</b><div class="why">Not enough money (you have €20)</div></div><div class="p">€80</div></div>
+      <div class="row na"><div class="ic"><svg><use href="#i-bus"/></svg><span class="lk"><svg><use href="#i-lock"/></svg></span></div><div class="t"><b>Bus to Paris · 2 days</b><div class="why">Not enough money (you have €20)</div></div><div class="p">€50</div></div>
+      <div class="row na"><div class="ic"><svg><use href="#i-plane"/></svg><span class="lk"><svg><use href="#i-lock"/></svg></span></div><div class="t"><b>Plane to Bergen · 1 day</b><div class="why">Not enough money (you have €20)</div></div><div class="p">€200</div></div>
+    </div>
+    <p class="conseq">+ 4 more routes, from €90 — also out of reach</p>
+    <div class="post">
+      <h3><span class="ic"><svg><use href="#i-phone"/></svg></span>Call home</h3>
+      <p>This costs <b>7 days and one stamp</b>. No money needed.</p>
+      <div class="facts"><span>Day 12 → 19</span><span>Stamps 4 → 3</span><span>Fly to Bergen</span></div>
+      <div class="pair"><div class="ghost">Not now</div><div class="btn">Call home</div></div>
+    </div>
+  </section>
+</div>
+</figure>
+</main>
+</body>
+</html>
