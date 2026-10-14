@@ -47,7 +47,7 @@ Type: **screen** (full screen), **sheet** (modal sheet, IA depth 1), **view** (r
 | Passport (Stamps / Album tabs) | [CORE] | screen | logo row + "‹ Map" + status line | Strip or cover (Stamps); Menu → "Album", "View album" (Album) | Stamps with city and day; polaroids with facts (FR-10, FR-22) | core P1, P2 |
 | Polaroid sheet | [CORE] | sheet | (as opener) | Tap any polaroid or Album line; "You saw this in your album" [EXT] | One photo plus its fact | — (spine only) |
 | Journey summary | [CORE] | screen (terminal) | logo + menu | Landing home; Call home; "See your journey" | Name, stamps, album, days, money, goal, "Called home", "New journey" (FR-13, FR-14) | core J1, J2; final CH3 |
-| Menu sheet | [CORE] | sheet | (as opener) | Menu button | "How to play", "Album", "New journey" (with confirm) | core MENU |
+| Menu sheet | [CORE] | sheet | (as opener) | Menu button | "How to play", "Album", "New journey" (with confirm); [EXT] "Sound" toggle (FR-24) | core MENU |
 | Work a shift (city-day card) | [EXT] | part of Map | — | Map, after a city day here | Shift offer: days, questions, max pay (FR-15) | ext-2 X3a-R; ext-1 X3a |
 | Shift (question) | [EXT] | screen | full | "Start a shift" | One question at a time with feedback (FR-15, FR-16) | ext-1 X3b, X3c |
 | Shift result | [EXT] | screen | full, cover | After the last answer | Pay, day, what it unlocks, work left (FR-15, FR-16) | ext-2 X3d |
@@ -116,6 +116,7 @@ Variables are in `{braces}`. Values come from the rules layer or content data; t
 | start.ext | "Choose your trip" · "The classic trip" · "Tighter budget, same goal" · "Welcome back" · "Starting over replaces this journey. We'll ask first." | [EXT] |
 | start.unreadable | "We couldn't read your saved journey, so it's been cleared. Fresh start!" | [EXT] |
 | start.storageOff | "This browser can't save your journey." | [EXT] [ASSUMPTION] |
+| menu.sound | "Sound" · "On" / "Off" · sub-line "Short effects, no music" | [EXT] FR-24 |
 | intro | "Collect 5 passport stamps and get home to Bergen within {N} days." · "Let's go" (first visit) · "Back to my journey" (reopened in a journey) · "Got it" (reopened from Start) · "You can open this again from the menu." | |
 | **Map** | | |
 | map.panel | "You're in {place}" · "Tap a city to see routes" · "From {place} you can reach · cheapest fare" | `{place}` includes Bergen at the start. |
@@ -240,7 +241,7 @@ Behavioural. Visual specs are in DESIGN.md → Components, under the same names,
 | Can't-continue sheet | [CORE] | Shown when the rules layer ends the journey away from home (FR-13): reason **stranded** (Call home can't fit) or **out of days**. No ×, no scrim close; Esc and back do nothing. Its one button, "See your journey", opens the Journey summary. |
 | Arrival fact card | [CORE] | Opens automatically after every travel to a destination (FR-5), showing the new balance. Arrival mode: "Plan the day" plus "Just passing through" (both close it; × too; the city-day card stays on the map, FR-10). Repeat visit: the repeat copy; the "No stamp unless you spend a day here" line is omitted. City day unavailable: Button unavailable with the reason. Read mode (from "About <City>"): no arrival pill and no buttons; × closes it. |
 | Fact card | [CORE] | Read-only text block. |
-| Menu sheet | [CORE] | Three rows. "New journey" swaps the list for the Confirm block. After the journey ends, "Album" is removed (FR-13). |
+| Menu sheet | [CORE] | Three rows. "New journey" swaps the list for the Confirm block. After the journey ends, "Album" is removed (FR-13). [EXT] A fourth row, "Sound", is a switch (`role="switch"`, state as text "On"/"Off"); it is off by default and applies immediately (Interaction Primitives → Sound). |
 | Confirm block | [CORE] | Replaces the content in place; focus moves to its title. The safe action is primary. Used for New journey (Menu and Start [EXT]). "Start over" goes to the Start screen with the name prefilled. |
 
 ### City day and journey end
@@ -341,6 +342,25 @@ Behavioural. Visual specs are in DESIGN.md → Components, under the same names,
 
 All non-essential animation is off under `prefers-reduced-motion`. State changes still show, instantly.
 
+### Sound [EXT]
+
+Sound effects are optional (FR-24). Sound is off by default, and the player turns it on or off from the Menu sheet. There is no sound in the core and no music.
+
+| Moment | Effect |
+|---|---|
+| Stamp lands (Day complete) | Short ink-stamp thud |
+| Departure (any travel, including Call home and night departures) | Short departure cue for the transport mode |
+| Answer feedback (shift) | One cue for a correct answer and one for a wrong answer; neither sounds like a buzzer or alarm |
+| City day complete | Short closing chime, played only when no stamp lands (otherwise the stamp sound plays) |
+
+Rules:
+
+- No sound plays before the player's first tap (browser autoplay rules). The setting is device state (State Model).
+- Every sound duplicates something already on screen. Turning sound off removes no information, and no effect carries meaning on its own.
+- Effects are short (under about 1 s), never loop, and do not stack: a new effect replaces one still playing.
+- Sound follows the device's mute and volume; the game has no volume control of its own.
+- Sound files follow the same source and license rule as images (NFR-8). See Content Assets.
+
 ## Accessibility Floor
 
 Behavioural. Visual contrast lives in DESIGN.md → Colors → Contrast targets. Yardstick: NFR-5, checked against WCAG 2.2 AA where a criterion is cheap to meet.
@@ -436,7 +456,7 @@ What the rules layer owns versus what the UI owns (NFR-2). Only game state is ev
 | Layer | Holds | Lifetime |
 |---|---|---|
 | Game state (rules layer) | mode; traveller name; position; money; days used; stamps (ordered: destination, day); album (ordered: sight, day); per destination: city-day count, last tier, last city day ended with a night departure; [EXT] question index per destination and the current shift (destination, question ids, answers so far); called-home flag; outcome (none / goal reached / goal not reached / failed) and fail reason (out of days / stranded) | Whole journey. [EXT] Saved after every committed action. |
-| Device state | Intro flag; last traveller name; [EXT] the saved journey | Across journeys (NFR-9). |
+| Device state | Intro flag; last traveller name; [EXT] the saved journey; [EXT] the sound setting (FR-24) | Across journeys (NFR-9). |
 | Draft UI state | Selected route option; selected sights; end-of-day choice; name-field text and mode choice before start | Discarded on leaving the surface, closing the sheet, or reload. Sent to the rules layer only at commit. |
 | Presentational state | Current screen and back history; open sheet and its content step; Passport tab; zoomed region on/off; arrival card shown for this arrival; Call home auto-open done for this stay; banner dismissed; focus return target; motion in progress | Never saved. |
 
@@ -508,6 +528,7 @@ All assets are content data, separate from code (NFR-7). Placeholders are allowe
 | Logo | 1 | SVG (stand-in until the vector redraw) | Top bar, Start | `assets/brand/logo.svg` | `currentColor` + `logo-ochre`; named "Worldbound". | [CORE] |
 | Icons | ~25 | SVG, 24 × 24 grid, single colour | 14–40 px | `assets/icons/{name}.svg` | `currentColor`; `aria-hidden` (the control carries the name). Set: plane, train, bus, moon, calendar, coin, stamp, photo, info, compass, mountain, home, pin, phone, menu, zoom, check, open circle, cross, block, alert, back, chevron, restart, bed, person. | [CORE] |
 | Start art | 1 | SVG (compass with dashed routes) | Start | `assets/brand/start.svg` | Decorative. | [CORE] |
+| Sound effect | ~6 | Short audio clip (under about 1 s), compressed web format; final format set by architecture | — (no visual) | `assets/sounds/{event}.{ext}` | Source and licence recorded (NFR-8). Events: stamp, depart-plane, depart-train, depart-bus, answer-correct, answer-wrong, day-complete. | [EXT] |
 | Facts, sights, trivia, routes | data | JSON | — | `content/*.json` | Fact-checked and stereotype-reviewed (NFR-8). | [CORE] / trivia [EXT] |
 
 Schema sketch (field names are a proposal for architecture):
@@ -547,6 +568,7 @@ NFR-4 requires tablet and PC to work. Layout constraints are in DESIGN.md → La
 | Day complete | Stamp lands, polaroid, repeat variant | "Board the …" variant, over-goal copy |
 | Work | — | Shift card, question, feedback, result, work-unavailable states |
 | End | Travel home, Call home, Can't-continue sheet, Journey summary | Mode shown on the summary (FR-18) |
+| Sound | No sound | Optional sound effects, off by default, Menu toggle (FR-24) |
 | Deferred | — | City-map insets (post-MVP) |
 
 ## Visual References

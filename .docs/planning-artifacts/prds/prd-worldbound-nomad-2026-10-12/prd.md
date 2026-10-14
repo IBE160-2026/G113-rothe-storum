@@ -328,6 +328,21 @@ The player can choose Explorer or Nomad when starting a journey.
 - Reopening the game offers "Continue journey" or "New journey" when a saved journey exists.
 - A saved journey that cannot be read is discarded with a message; the game does not crash.
 
+### 4.15 Sound Effects [EXT]
+
+**Description:** A small set of short sound effects can make the rewards more tangible. Sound is optional, off by default, and never the only signal, because the player often plays muted on a bus.
+
+#### FR-24: Optional sound effects
+
+The player can turn sound effects on or off from the menu.
+
+**Consequences (testable):**
+- Sound is off by default; the setting is stored in the browser (NFR-9).
+- When sound is on, a short effect plays for: a stamp landing, departure on travel, a correct and a wrong trivia answer, and a completed city day. There is no music.
+- No sound plays before the player's first tap (browser autoplay rules).
+- Every event with a sound is also shown on screen; turning sound off removes no information.
+- Every sound file is made by the team, AI-generated, or freely licensed, with source and license recorded (NFR-8).
+
 ## 5. Cross-Cutting NFRs
 
 - **NFR-1 Determinism:** given the same content data and the same sequence of player actions, the game reaches exactly the same state. No randomness in the MVP.
@@ -338,7 +353,7 @@ The player can choose Explorer or Nomad when starting a journey.
 - **NFR-6 Language:** all player-facing text, including fact cards, sights, and trivia, is in English, as are planning documents and code.
 - **NFR-7 Content as data:** destinations, routes, prices, cost factors, fact cards, sights, and trivia are stored as data files separate from game code and can be changed without code changes. Graphics and sight photos live in their own assets folder. Test data (fixed game states and small test routes) lives with the automated tests, not in the game content files.
 - **NFR-8 Content quality:** every fact card and trivia question is fact-checked by a team member and reviewed for stereotypes before it is merged; the reviewer is recorded in the Git history. Every sight photo is made by the team, AI-generated, or freely licensed, and its source and license are recorded with the content. Placeholder photos (typically AI-generated) are allowed in the MVP core and follow the same source and license rule; they can be replaced later without code changes (NFR-7, §9.5 Decision B).
-- **NFR-9 No personal data:** the game collects and sends no personal data. Browser storage holds only game state, the intro flag, and the optional traveller name (FR-1), which never leaves the device.
+- **NFR-9 No personal data:** the game collects and sends no personal data. Browser storage holds only game state, the intro flag, the optional traveller name (FR-1), and the sound setting (FR-24); none of it leaves the device.
 
 ## 6. Development Process Constraints
 
@@ -366,6 +381,7 @@ These serve the research goal and apply to how the product is built.
 - No native mobile app.
 - No randomness in the MVP (random events are post-MVP).
 - No languages other than English in v1.
+- No sound in the MVP core and no music; optional sound effects come last in the MVP extension (FR-24).
 
 ## 9. MVP Scope
 
@@ -389,6 +405,7 @@ Built only after the core passes its tests and a playtest, one item at a time; e
 4. Accommodation tiers — FR-17 (until then, every shift has 5 questions) [ASSUMPTION]
 5. Night departures — FR-23
 6. Madrid and Cape Town — FR-19
+7. Sound effects — FR-24
 
 ### 9.3 Decision: Time in the Core
 

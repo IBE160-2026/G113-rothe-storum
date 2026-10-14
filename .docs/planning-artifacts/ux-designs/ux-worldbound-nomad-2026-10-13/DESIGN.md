@@ -875,7 +875,7 @@ Variants:
 | Can't-continue sheet | See the Can't-continue sheet subsection. |
 | Arrival fact card | See the Arrival fact card subsection. |
 | Fact card | `surface-row`, a 4 px `ochre` left edge, a caps caption with an icon ("ABOUT PARIS"), and text in `{typography.fact}`. |
-| Menu sheet | A modal sheet with rows of at least `{spacing.menu-row}`: a 40 px paper icon disc, a `{typography.button}` label and a muted sub-line. The destructive row's sub-line uses `ink` with an `ochre` warning glyph. |
+| Menu sheet | A modal sheet with rows of at least `{spacing.menu-row}`: a 40 px paper icon disc, a `{typography.button}` label and a muted sub-line. The destructive row's sub-line uses `ink` with an `ochre` warning glyph. [EXT] The "Sound" row ends in a switch at least 44 px tall whose state is written as text ("On"/"Off") beside it, never shown by colour alone. |
 | Confirm block | Replaces the sheet or button content. Title in `{typography.serif-md}`, a body line that states the loss, the **safe action as `button-primary`** ("Keep my journey"), and the destructive one as `button-secondary` ("Start over"). |
 
 #### Option row
