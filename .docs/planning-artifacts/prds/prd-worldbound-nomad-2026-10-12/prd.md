@@ -70,7 +70,7 @@ Terms are used exactly as defined. Quoted UI labels are the exact English string
 - **City day** — one day spent at a destination. A city day advances the day counter by 1 and costs the accommodation price, unless it ends with a night departure. During a city day the player may visit 0–2 sights.
 - **Base accommodation price** — the game-wide price of accommodation for one city day before the cost factor.
 - **Cost factor** — a per-destination multiplier for accommodation price.
-- **Accommodation price** — base accommodation price × cost factor (× tier multiplier in MVP extension), rounded to whole euros.
+- **Accommodation price** — base accommodation price × cost factor (× tier multiplier in MVP extension), rounded to whole euros; halves round up (€59.50 → €60).
 - **Stamp** — awarded on the player's first city day at a destination. One stamp per destination per journey.
 - **Goal** — at least 5 stamps and being home before days remaining run out.
 - **Call home** — the emergency option when the player cannot afford any travel out of the current destination: a ticket home that costs 7 days and one stamp, but no money.
@@ -81,7 +81,7 @@ Terms are used exactly as defined. Quoted UI labels are the exact English string
 - **Accommodation tier** **[EXT]** — budget or comfort. Changes the accommodation price and the number of questions in a shift.
 - **Shift** **[EXT]** — one work session at a destination: a number of trivia questions (3 or 5) that costs 1 day and pays per correct answer. A shift is not a city day: it gives no stamp and costs no accommodation.
 - **Question sequence** **[EXT]** — the fixed, ordered list of 15 trivia questions belonging to a destination. Each shift takes the next questions in the sequence.
-- **Night departure** **[EXT]** — a transport mode on selected routes that leaves at the end of a city day; that city day costs no accommodation.
+- **Night departure** **[EXT]** — a transport mode on selected routes that leaves at the end of a city day; that city day costs no accommodation, and the first night is spent travelling.
 - **Saved journey** **[EXT]** — a journey in progress stored in the browser.
 
 ## 4. Features
@@ -97,6 +97,7 @@ The player can start a new journey in Explorer mode. Realizes UJ-1.
 **Consequences (testable):**
 - A new Explorer journey starts at home with €1,500, 0 days used, 30 days total, and 0 stamps.
 - Starting a new journey discards any journey in progress after the player confirms. [EXT: applies once saved journeys exist]
+- The player may enter an optional traveller name (max 14 characters) on the start screen. It is shown on the passport and in the journey summary; without a name, "Traveller" is shown. The name never affects the rules (§9.5, Decision D).
 
 #### FR-2: First-time intro
 
@@ -167,7 +168,7 @@ The player can travel home, which ends the journey after confirmation.
 The player can spend a city day at the current destination.
 
 **Consequences (testable):**
-- A city day deducts the accommodation price (base accommodation price × cost factor, rounded to whole euros) and adds 1 day to days used.
+- A city day deducts the accommodation price (base accommodation price × cost factor, rounded to whole euros, halves up) and adds 1 day to days used.
 - A city day is unavailable when money is below the accommodation price or days remaining is 0.
 - A city day is not possible at home (arriving home ends the journey).
 
@@ -251,7 +252,7 @@ The player can call home when they cannot afford any travel out of the current d
 The player sees a journey summary when the journey ends.
 
 **Consequences (testable):**
-- The summary shows stamps (with destination names), the photo album, days used, money left, "Goal reached" or "Goal not reached", and "Called home" when relevant.
+- The summary shows the traveller name, stamps (with destination names), the photo album, days used, money left, "Goal reached" or "Goal not reached", and "Called home" when relevant.
 - The summary offers "New journey".
 
 ### 4.9 Work [EXT]
@@ -263,7 +264,7 @@ The player sees a journey summary when the journey ends.
 The player can work a shift at the current destination.
 
 **Consequences (testable):**
-- A shift presents the next 3 questions (budget tier) or 5 questions (comfort tier) from the destination's question sequence. Until accommodation tiers exist (§9.2), every shift presents 5 questions. The tier of the player's most recent city day at this destination applies.
+- A shift presents the next 3 questions (budget tier) or 5 questions (comfort tier) from the destination's question sequence. Until accommodation tiers exist (§9.2), every shift presents 5 questions. The tier of the player's most recent city day at this destination applies. If that city day ended with a night departure (no tier chosen), the shift counts as budget tier (§9.5, Decision E).
 - Work is unavailable at a destination where the player has not spent a city day in this journey (§9.5, Decision C).
 - Each question is multiple choice with 4 options and exactly one correct answer; the correct answer is shown after each question.
 - A shift adds 1 day to days used and pays €24 per correct answer (example value — see addendum).
@@ -299,7 +300,7 @@ The player can end a city day by leaving on a night departure from the current d
 **Consequences (testable):**
 - Only transport modes marked as night departures in the route data offer this option.
 - The city day still costs 1 day and still gives the stamp and any sights visited; only its accommodation price is not charged.
-- The night departure then deducts its price and adds its days, like any travel (FR-6).
+- The night departure then deducts its price and adds its days minus 1, because the first night is spent travelling: a city day in Paris (days used 4 → 5) followed by the 1-day night train arrives in Rome with 5 days used; the 2-day Rome–Istanbul night bus adds 1 more day (§9.5, Decision E).
 
 ### 4.12 Nomad Mode [EXT]
 
@@ -327,6 +328,21 @@ The player can choose Explorer or Nomad when starting a journey.
 - Reopening the game offers "Continue journey" or "New journey" when a saved journey exists.
 - A saved journey that cannot be read is discarded with a message; the game does not crash.
 
+### 4.15 Sound Effects [EXT]
+
+**Description:** A small set of short sound effects can make the rewards more tangible. Sound is optional, off by default, and never the only signal, because the player often plays muted on a bus.
+
+#### FR-24: Optional sound effects
+
+The player can turn sound effects on or off from the menu.
+
+**Consequences (testable):**
+- Sound is off by default; the setting is stored in the browser (NFR-9).
+- When sound is on, a short effect plays for: a stamp landing, departure on travel, a correct and a wrong trivia answer, and a completed city day. There is no music.
+- No sound plays before the player's first tap (browser autoplay rules).
+- Every event with a sound is also shown on screen; turning sound off removes no information.
+- Every sound file is made by the team, AI-generated, or freely licensed, with source and license recorded (NFR-8).
+
 ## 5. Cross-Cutting NFRs
 
 - **NFR-1 Determinism:** given the same content data and the same sequence of player actions, the game reaches exactly the same state. No randomness in the MVP.
@@ -337,7 +353,7 @@ The player can choose Explorer or Nomad when starting a journey.
 - **NFR-6 Language:** all player-facing text, including fact cards, sights, and trivia, is in English, as are planning documents and code.
 - **NFR-7 Content as data:** destinations, routes, prices, cost factors, fact cards, sights, and trivia are stored as data files separate from game code and can be changed without code changes. Graphics and sight photos live in their own assets folder. Test data (fixed game states and small test routes) lives with the automated tests, not in the game content files.
 - **NFR-8 Content quality:** every fact card and trivia question is fact-checked by a team member and reviewed for stereotypes before it is merged; the reviewer is recorded in the Git history. Every sight photo is made by the team, AI-generated, or freely licensed, and its source and license are recorded with the content. Placeholder photos (typically AI-generated) are allowed in the MVP core and follow the same source and license rule; they can be replaced later without code changes (NFR-7, §9.5 Decision B).
-- **NFR-9 No personal data:** the game collects and sends no personal data. Browser storage holds only game state and the intro flag.
+- **NFR-9 No personal data:** the game collects and sends no personal data. Browser storage holds only game state, the intro flag, the optional traveller name (FR-1), and the sound setting (FR-24); none of it leaves the device.
 
 ## 6. Development Process Constraints
 
@@ -365,6 +381,7 @@ These serve the research goal and apply to how the product is built.
 - No native mobile app.
 - No randomness in the MVP (random events are post-MVP).
 - No languages other than English in v1.
+- No sound in the MVP core and no music; optional sound effects come last in the MVP extension (FR-24).
 
 ## 9. MVP Scope
 
@@ -388,6 +405,7 @@ Built only after the core passes its tests and a playtest, one item at a time; e
 4. Accommodation tiers — FR-17 (until then, every shift has 5 questions) [ASSUMPTION]
 5. Night departures — FR-23
 6. Madrid and Cape Town — FR-19
+7. Sound effects — FR-24
 
 ### 9.3 Decision: Time in the Core
 
@@ -396,7 +414,7 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 ### 9.4 Out of Scope for MVP
 
 - Random events, skills and progression, trade and souvenirs, dynamic pricing, more transport consequences, more destinations, in-game AI travel assistant — post-MVP; pick one at a time. If the AI travel assistant is added, it is optional and follows NFR-3: the game runs without an API key, and tests use a mock.
-- Items from the source document: inventory comes with trade and items (post-MVP); the travel journal is covered by stamps and the photo album; a player profile is not needed without accounts (§8); progression comes with skills (post-MVP).
+- Items from the source document: inventory comes with trade and items (post-MVP); the travel journal is covered by stamps and the photo album; a player profile is not needed without accounts (§8) — the optional traveller name (FR-1) is a display label, not a profile; progression comes with skills (post-MVP).
 - `[NOTE FOR PM]` Skills are the most requested post-MVP item in the team notes; revisit first if the MVP finishes early.
 
 ### 9.5 Decisions Before Development (2026-10-13)
@@ -404,6 +422,8 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 - **A. Bergen is start and end point only.** Home has a direct plane route to every destination (addendum §4); allowing stopovers would make it a hub that bypasses Europe's plane/train/bus choices and would need a separate "end journey" rule. Travelling home always ends the journey (FR-7).
 - **B. All 16 sights stay in the MVP core, with placeholder photos.** UJ-1, FR-21/22, SM-3, and the sight questions in FR-16 depend on them. The cost lies in photos and licensing, not facts, so the first version uses placeholder photos under NFR-8, swapped later via the assets folder.
 - **C. Work has a fixed time cost; accommodation affects pay, not time.** A shift always costs 1 day. The accommodation tier sets shift length and thus pay (FR-15, FR-17). Work requires a city day at the destination in the current journey (confirmed rule, formerly an assumption).
+- **D. Optional traveller name (added during UX, 2026-10-13).** The start screen offers an optional name field. The name is shown on the passport cover and in the journey summary, is stored only in the browser, and is never sent anywhere (NFR-9). It is a display label, not an account or profile (§8). Max 14 characters so it always fits the passport cover.
+- **E. Rule clarifications from UX (2026-10-13).** Accommodation prices round halves up. A night departure's first night replaces the stay, so it adds its days minus 1 after the city day (FR-23). A shift after a city day that ended with a night departure counts as budget tier (FR-15).
 
 ## 10. Success Metrics
 
@@ -424,9 +444,10 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 ## 11. Open Questions
 
 1. **Tokyo and Sydney in the core.** With the proposed prices, no winning core journey includes Tokyo or Sydney; they become reachable once work exists. Keep this as a deliberate "far destinations need work" design, or lower long-haul prices?
-2. **Nomad values and night departures.** Proposed Nomad: €1,000 and 30 days. Night departures make the game easier (6 stamps become reachable without work); prices for both are checked with the balance test once work exists.
+2. **Nomad values and night departures.** Proposed Nomad: €1,000 and 30 days. Night departures make the game easier (6 stamps become reachable without work); prices for both are checked with the balance test once work exists. Since Decision E, a night departure saves both the stay and a day, which makes it stronger still.
 3. **Content ownership and team split.** Who writes and fact-checks the fact cards (8, then 10), the sights with photos (16, then 20), and the 150 trivia questions? How is the remaining work split by feature area — to be settled with the epics.
 4. **AI travel assistant.** Reserve architectural room for it now, or treat it as fully deferred? Currently fully deferred.
+5. **UJ-3 balance.** As written, Amira reaches Sydney with €36, below any city day price there, so she cannot earn the Sydney stamp and must call home. Adjust UJ-3 or the Sydney/shift values in the balance test.
 
 ## 12. Assumptions Index
 

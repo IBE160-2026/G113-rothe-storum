@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night Route</title>
+<style>
+/* =====================================================================
+   DIRECTION B — NIGHT ROUTE  (primary mode: DARK)
+   Palette, grouped by semantic role (deck palette as-is + derived tints)
+   --------------------------------------------------------------------
+   background ........ #0A1826 deep navy | #081420 map ocean | #16303F grid & orbit lines
+   surface ........... #122636 panel     | #18324A raised tile | #23415A hairline
+   land (low-poly) ... #1B3A47 base | #214A59 lit facet | #173340 shade facet
+   text .............. #F4EFE1 cream
+   muted text ........ #91A4B2 slate
+   primary / route ... #2AB4A7 teal (travelled route, primary button, selection)
+   proposed route .... #EBC256 gold (route being considered)
+   accent / pin ...... #EF7053 coral city dots with #F4EFE1 ring
+   stamp ............. #EBC256 gold badge + #0A1826 check (shape: rosette)
+   info .............. #5D9EDC blue (plane line, info tags)
+   warning ........... #EF7053 coral text + lock icon
+   unavailable ....... #0E1F2E fill | #91A4B2 text | lock icon + written reason
+   --------------------------------------------------------------------
+   OTHER-MODE STRIP (light):
+   background #EEF3F5 | surface #FFFFFF | text #0A1826 | muted #4E6170
+   teal #1E8C82 | gold-on-light #9A6E00 | hairline #D3DEE4
+   ===================================================================== */
+:root{
+  --bg:#0A1826; --ocean:#081420; --grid:#16303F; --panel:#122636; --tile:#18324A; --line:#23415A;
+  --land:#1B3A47; --facet:#214A59; --shade:#173340;
+  --text:#F4EFE1; --muted:#91A4B2; --teal:#2AB4A7; --gold:#EBC256; --coral:#EF7053; --blue:#5D9EDC; --na:#0E1F2E;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050D15;font-family:var(--sans);color:var(--text);padding:32px 24px 64px}
+.page-head{max-width:1240px;margin:0 auto 28px}
+.page-head .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;font-weight:700}
+.page-head h1{font-size:30px;font-weight:800;letter-spacing:.5px}
+.page-head p{max-width:760px;font-size:16px;line-height:1.55;color:#C9D3DA;margin-top:8px}
+.screens{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;max-width:1300px;margin:0 auto}
+figure{width:391px}
+figcaption{font-size:12px;font-weight:700;letter-spacing:1.4px;color:var(--muted);margin:0 0 10px 6px;text-transform:uppercase}
+.phone{width:391px;height:796px;border:8px solid #000;border-radius:48px;overflow:hidden;position:relative;background:var(--bg);
+  box-shadow:0 0 0 1px #23415A,0 30px 60px -20px #000}
+@media (max-width:520px){ .page-head{display:none!important} body{padding:12px 8px} }
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- HUD ---------- */
+.hud{position:absolute;inset:0 0 auto 0;height:92px;padding:12px 14px 0;z-index:5;background:linear-gradient(180deg,#0A1826 70%,rgba(10,24,38,0))}
+.brand{display:flex;align-items:center;justify-content:space-between;height:26px}
+.wm{font-weight:900;font-size:16px;letter-spacing:1.6px;display:flex;align-items:center;line-height:1}
+.wm svg{width:14px;height:14px;margin:0 1px}
+.wm .nm{font-weight:700;font-style:italic;font-size:11px;letter-spacing:3px;color:var(--gold);margin-left:8px;padding:3px 6px;border:1px solid var(--gold);border-radius:4px}
+.home{display:flex;align-items:center;gap:5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.home svg{width:14px;height:14px}
+.chips{display:flex;gap:6px;margin-top:10px}
+.chip{flex:1;display:flex;align-items:center;gap:7px;height:42px;padding:0 9px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.chip svg{width:17px;height:17px;flex:none}
+.chip b{font-size:14.5px;font-weight:800;line-height:1;white-space:nowrap}
+.chip span{display:block;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;line-height:1}
+.chip.wide{flex:1.7}
+
+/* ---------- map ---------- */
+.map{position:absolute;top:92px;left:0;width:375px;height:306px}
+.lbl{font:700 9.5px var(--sans);letter-spacing:1.2px;fill:#F4EFE1;text-transform:uppercase;paint-order:stroke;stroke:#081420;stroke-width:3px;stroke-linejoin:round}
+.lbl.dim{fill:#91A4B2}
+
+/* ---------- sheet ---------- */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:8px 14px 16px;z-index:6}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px}
+.sh{display:flex;align-items:center;justify-content:space-between}
+.sh h2{font-size:19px;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+.sh h2 i{font-style:normal;color:var(--teal)}
+.sh p{font-size:12px;color:var(--muted);margin-top:2px}
+.x{width:44px;height:44px;display:grid;place-items:center;color:var(--muted);margin-right:-8px}
+.rows{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+.row{display:flex;align-items:center;gap:11px;height:48px;padding:0 12px 0 6px;background:var(--tile);border:1px solid var(--line);border-radius:12px}
+.row .ic{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;background:var(--bg);flex:none}
+.row .ic svg{width:21px;height:21px}
+.row .t{flex:1}
+.row .t b{font-size:14px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.row .t span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.row .p{font-size:18px;font-weight:800}
+.sel-badge{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.row.sel{border:2px solid var(--teal);background:#163A45;padding:0 11px 0 5px}
+.row.sel .sel-badge{background:var(--teal);border-color:var(--teal);color:var(--bg)}
+.row.sel .sel-badge svg{width:15px;height:15px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border-radius:12px;background:var(--teal);color:#0A1826;font:800 15px var(--sans);letter-spacing:.6px;text-transform:uppercase;margin-top:10px}
+.conseq{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+.conseq b{color:var(--text)}
+.cday{display:flex;align-items:center;gap:11px;margin-top:8px;min-height:50px;padding:6px 10px 6px 6px;border:1.5px dashed var(--gold);border-radius:12px}
+.cday .ic{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;background:rgba(235,194,86,.12);color:var(--gold);flex:none}
+.cday .ic svg{width:20px;height:20px}
+.cday .t{flex:1;font-size:13.5px;font-weight:700}
+.cday .t span{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--gold);margin-top:2px}
+.cday .go{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text);display:flex;align-items:center;gap:2px;min-height:44px}
+
+/* ---------- other-mode strip ---------- */
+.alt{margin-top:18px;border-radius:20px;background:#EEF3F5;color:#0A1826;padding:12px 14px 14px;width:391px}
+.alt .cap{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#4E6170;margin-bottom:8px;font-weight:700}
+.alt .wm .nm{color:#9A6E00;border-color:#9A6E00}
+.alt .home{color:#4E6170}
+.alt .chip{background:#fff;border-color:#D3DEE4}
+.alt .chip span{color:#4E6170}
+.alt .row{background:#fff;border-color:#D3DEE4;margin-top:10px}
+.alt .row .ic{background:#EEF3F5}
+.alt .row .t span{color:#4E6170}
+.alt .row.sel{border-color:#1E8C82;background:#E3F3F1}
+.alt .row.sel .sel-badge{background:#1E8C82;border-color:#1E8C82;color:#fff}
+
+/* ---------- city day ---------- */
+.body{position:absolute;top:92px;left:0;right:0;bottom:0;padding:8px 14px 0}
+.kicker{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);font-weight:800}
+.title{display:flex;justify-content:space-between;align-items:flex-end;margin-top:2px}
+.title h2{font-size:24px;font-weight:900;letter-spacing:.5px}
+.dstep{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800}
+.dstep em{font-style:normal;padding:4px 8px;border-radius:6px;background:var(--tile);border:1px solid var(--line)}
+.dstep em.to{border-color:var(--teal);color:var(--teal)}
+.reward{display:flex;align-items:center;gap:14px;margin-top:12px;padding:12px;background:linear-gradient(135deg,#132C3E,#122636);border:1px solid var(--line);border-radius:14px}
+.reward svg.big{width:84px;height:84px;flex:none}
+.reward h3{font-size:16px;font-weight:900;letter-spacing:.4px}
+.reward p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.35}
+.slots{display:flex;gap:5px;margin-top:8px}
+.slots i{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--line);display:grid;place-items:center}
+.slots i.on{border:0;background:var(--gold);color:#0A1826}
+.slots i.on svg{width:13px;height:13px}
+.sect{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:800;margin:14px 0 6px}
+.fixed{display:flex;align-items:center;gap:11px;height:48px;padding:0 12px 0 6px;background:var(--tile);border:1px solid var(--line);border-radius:12px;font-size:13.5px;font-weight:700}
+.fixed .ic{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--bg);color:var(--teal)}
+.fixed .ic svg{width:19px;height:19px}
+.fixed .t{flex:1}.fixed .t span{display:block;font-size:11px;color:var(--muted);font-weight:600}
+.sight{display:flex;gap:10px;align-items:center;padding:6px;background:var(--tile);border:1px solid var(--line);border-radius:12px;margin-bottom:6px}
+.sight.on{border-color:var(--teal)}
+.sight .ph{width:92px;height:72px;border-radius:8px;overflow:hidden;flex:none}
+.sight .ph svg{width:100%;height:100%;display:block}
+.sight .t{flex:1}
+.sight .t b{font-size:14px;font-weight:800}
+.sight .t span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.sw{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:56px;min-height:44px;font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.sw i{width:40px;height:24px;border-radius:12px;background:var(--bg);border:1px solid var(--line);position:relative;display:block}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--muted)}
+.sw.on{color:var(--teal)}
+.sw.on i{background:var(--teal);border-color:var(--teal)}
+.sw.on i::after{left:19px;background:#0A1826}
+.foot{position:absolute;left:0;right:0;bottom:0;padding:10px 14px 16px;background:var(--panel);border-top:1px solid var(--line)}
+.ledger{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12.5px;color:var(--muted)}
+.ledger b{color:var(--text);text-align:right}
+.ledger .tot{color:var(--text);font-weight:800;font-size:14px}
+
+/* ---------- state ---------- */
+.row.na{height:auto;min-height:56px;padding:8px 10px 8px 6px;background:var(--na);border-style:dashed;align-items:center}
+.row.na .ic{background:#0A1826;color:var(--muted)}
+.row.na .t b{color:var(--muted)}
+.row.na .why{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--coral);margin-top:2px}
+.row.na .why svg{width:12px;height:12px;flex:none}
+.row.na .p{font-size:15px;color:var(--muted);text-decoration:line-through}
+.call{margin-top:10px;border:2px solid var(--coral);border-radius:14px;padding:12px;background:#1A2A38}
+.call h3{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:900;letter-spacing:.4px;text-transform:uppercase}
+.call h3 svg{width:20px;height:20px;color:var(--coral)}
+.call p{font-size:14px;margin-top:4px;line-height:1.35}
+.costs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.costs div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.costs div b{display:block;font-size:14px;color:var(--text);letter-spacing:0;text-transform:none;margin-top:2px}
+.pair{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:10px}
+.pair .btn{margin:0}
+.ghost{display:flex;align-items:center;justify-content:center;height:48px;border-radius:12px;border:1.5px solid var(--line);font:800 14px var(--sans);letter-spacing:.6px;text-transform:uppercase;color:var(--text)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></symbol>
+    <symbol id="i-train" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c-4 0-8 .5-8 4v9.5A3.5 3.5 0 0 0 7.5 19L6 20.5v.5h2l2-2h4l2 2h2v-.5L16.5 19a3.5 3.5 0 0 0 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zM11 10H6V6h5zm2 0V6h5v4zm3.5 7a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><path fill="currentColor" d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6zm3.5 1A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zm9 0a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5zM18 11H6V6h12z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path fill="currentColor" d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9zm3 11a2 2 0 1 1 2-2 2 2 0 0 1-2 2z"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path fill="currentColor" d="M7 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9a4 4 0 0 0-4-4z"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a4 4 0 0 0-2 7.46V13H5a2 2 0 0 0-2 2v3h18v-3a2 2 0 0 0-2-2h-5V9.46A4 4 0 0 0 12 2zM4 20h16v2H4z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14zM7 12h5v5H7z"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M14.8 15.6a4 4 0 0 1-6.3-2.1H7v-1.3h1.3v-.4H7v-1.3h1.5a4 4 0 0 1 6.3-2.1l-.8 1.3a2.5 2.5 0 0 0-3.8.8h3v1.3H10v.4h3.2v1.3h-3a2.5 2.5 0 0 0 3.8.8z"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path fill="currentColor" d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></symbol>
+    <symbol id="compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 3.2 14 12h-4z" fill="#EF7053"/><path d="M12 20.8 10 12h4z" fill="currentColor"/></symbol>
+    <!-- rosette stamp mark -->
+    <symbol id="rosette" viewBox="0 0 24 24"><path fill="#EBC256" d="M12 1l2.6 2.3 3.4-.6 1 3.3 3.2 1.3-.9 3.4 1.8 3-2.7 2.1-.1 3.5-3.4.4-1.8 3-3.1-1.6-3.1 1.6-1.8-3-3.4-.4-.1-3.5L.9 15.2l1.8-3-.9-3.4L5 7.5l1-3.3 3.4.6z"/><path fill="#0A1826" d="M10.3 15.6 7 12.3l1.3-1.3 2 2 5.4-5.4L17 8.9z"/></symbol>
+  </defs>
+</svg>
+
+<header class="page-head">
+  <div class="tag">Direction B · dark primary</div>
+  <h1>Night Route</h1>
+  <p>The pitch deck, brought to life: deep navy, flat teal low-poly continents, coral city dots and a compass. It reads like a crisp game HUD, with chunky uppercase labels, chips for the counters, and a map stretched so Europe gets room. Medium density, high contrast, and calm for evening play.</p>
+</header>
+
+<main class="screens">
+<!-- =========================== 1 · MAP =========================== -->
+<figure id="hero">
+<figcaption>1 · Map — in Paris, London tapped</figcaption>
+<div class="phone">
+  <div class="hud">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="home"><svg><use href="#i-home"/></svg>Home: Bergen</span>
+    </div>
+    <div class="chips">
+      <div class="chip wide"><svg style="color:#2AB4A7"><use href="#i-cal"/></svg><div><b class="num">Day 5 of 30</b><span>25 days left</span></div></div>
+      <div class="chip"><svg style="color:#EBC256"><use href="#i-coin"/></svg><div><b class="num">€1,270</b><span>Money</span></div></div>
+      <div class="chip"><svg><use href="#rosette"/></svg><div><b class="num">1/5</b><span>Stamps</span></div></div>
+    </div>
+  </div>
+
+  <div class="map">
+    <svg width="375" height="306" viewBox="0 0 375 306" role="img" aria-label="Stylized world map">
+      <rect width="375" height="306" fill="#081420"/>
+      <g fill="none" stroke="#16303F" stroke-width="1">
+        <path d="M0 40H375M0 100H375M0 160H375M0 220H375M0 280H375M47 0V306M127 0V306M207 0V306M287 0V306M367 0V306"/>
+        <ellipse cx="190" cy="160" rx="200" ry="150"/><ellipse cx="190" cy="160" rx="186" ry="138"/><ellipse cx="190" cy="160" rx="172" ry="126"/>
+      </g>
+      <!-- low-poly continents -->
+      <g stroke="#0A1826" stroke-width="1" stroke-linejoin="bevel">
+        <polygon points="8,42 70,22 112,48 98,98 72,150 40,176 14,120" fill="#1B3A47"/>
+        <polygon points="70,22 112,48 60,80" fill="#214A59"/><polygon points="14,120 60,80 40,176" fill="#173340"/>
+        <polygon points="62,198 102,190 110,240 82,298 64,252" fill="#1B3A47"/><polygon points="62,198 102,190 86,232" fill="#214A59"/>
+        <polygon points="162,62 176,34 206,30 250,60 262,120 300,140 306,180 250,170 236,202 214,180 186,168 152,150 166,120" fill="#1B3A47"/>
+        <polygon points="176,34 206,30 200,92" fill="#214A59"/><polygon points="250,60 262,120 210,112" fill="#173340"/><polygon points="262,120 300,140 306,180 250,170" fill="#214A59"/>
+        <polygon points="126,92 150,84 162,112 138,122" fill="#214A59"/>
+        <polygon points="148,198 240,208 270,236 232,302 196,302 160,250" fill="#1B3A47"/><polygon points="148,198 240,208 196,240" fill="#214A59"/>
+        <polygon points="266,40 330,24 326,70 318,128 296,134 272,112 264,86" fill="#1B3A47"/><polygon points="266,40 330,24 300,70" fill="#214A59"/>
+        <polygon points="346,78 362,96 346,124 330,110" fill="#214A59"/>
+        <polygon points="290,250 340,236 366,262 352,296 300,294" fill="#1B3A47"/><polygon points="290,250 340,236 322,270" fill="#214A59"/>
+      </g>
+      <!-- compass -->
+      <g transform="translate(352 196)"><circle r="15" fill="none" stroke="#F4EFE1" stroke-width="1.5"/><path d="M0-11 3 0H-3z" fill="#EF7053"/><path d="M0 11-3 0H3z" fill="#91A4B2"/><text y="-19" text-anchor="middle" style="font:700 8px var(--sans);fill:#91A4B2">N</text></g>
+      <!-- travelled route -->
+      <polyline points="176,52 222,80 172,136" fill="none" stroke="#2AB4A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- proposed route -->
+      <path d="M172 136 146 104" stroke="#EBC256" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M172 136 146 104" stroke="#081420" stroke-width="1.2" stroke-dasharray="1 5" stroke-linecap="round"/>
+      <!-- destinations -->
+      <g fill="#EF7053" stroke="#F4EFE1" stroke-width="2">
+        <circle cx="44" cy="128" r="6"/><circle cx="220" cy="174" r="6"/><circle cx="282" cy="160" r="6"/><circle cx="338" cy="100" r="6"/><circle cx="326" cy="262" r="6"/>
+        <circle cx="146" cy="104" r="6"/>
+      </g>
+      <!-- London reticle -->
+      <g stroke="#EBC256" stroke-width="2" fill="none"><path d="M132 94v-5h5M155 89h5v5M160 114v5h-5M137 119h-5v-5"/></g>
+      <!-- Copenhagen stamped -->
+      <use href="#rosette" x="210" y="68" width="24" height="24"/>
+      <!-- Bergen home -->
+      <g transform="translate(176 52)"><rect x="-10" y="-10" width="20" height="20" rx="4" fill="#F4EFE1"/><use href="#i-home" x="-7" y="-7.5" width="14" height="14" color="#0A1826"/></g>
+      <!-- Paris current -->
+      <circle cx="172" cy="136" r="16" fill="none" stroke="#EF7053" stroke-width="1" opacity=".5"/>
+      <circle cx="172" cy="136" r="11" fill="none" stroke="#EF7053" stroke-width="1.5" opacity=".8"/>
+      <circle cx="172" cy="136" r="7" fill="#EF7053" stroke="#F4EFE1" stroke-width="2.5"/>
+      <!-- labels -->
+      <text class="lbl" x="44" y="148" text-anchor="middle">New York</text>
+      <text class="lbl" x="190" y="44">Bergen · home</text>
+      <text class="lbl" x="238" y="78">Copenhagen</text>
+      <text class="lbl dim" x="238" y="90" style="font-size:8.5px">✓ stamped</text>
+      <text class="lbl" x="128" y="84" text-anchor="middle" style="fill:#EBC256">London</text>
+      <rect x="96" y="126" width="56" height="24" rx="5" fill="#EF7053"/>
+      <text x="124" y="136" text-anchor="middle" style="font:800 8px var(--sans);letter-spacing:1px;fill:#0A1826">YOU · PARIS</text>
+      <text x="124" y="146" text-anchor="middle" style="font:700 7.5px var(--sans);letter-spacing:.6px;fill:#0A1826">NOT STAMPED</text>
+      <text class="lbl" x="220" y="193" text-anchor="middle">Rome</text>
+      <text class="lbl" x="282" y="150" text-anchor="middle">Istanbul</text>
+      <text class="lbl" x="338" y="86" text-anchor="middle">Tokyo</text>
+      <text class="lbl" x="326" y="282" text-anchor="middle">Sydney</text>
+    </svg>
+  </div>
+
+  <section class="sheet">
+    <div class="grab"></div>
+    <div class="sh">
+      <div><h2>Paris <i>→</i> London</h2></div><span style="flex:1"></span><span style="font-size:10.5px;font-weight:800;letter-spacing:1px;color:#91A4B2;border:1px solid #23415A;border-radius:6px;padding:4px 6px;margin-right:4px">NOT STAMPED</span>
+      <div class="x" aria-label="Close"><svg width="20" height="20"><use href="#i-x"/></svg></div>
+    </div>
+    <div class="rows">
+      <div class="row"><div class="ic" style="color:#5D9EDC"><svg><use href="#i-plane"/></svg></div><div class="t"><b>Plane</b><span>1 day · arrive Day 6</span></div><div class="p num">€110</div><div class="sel-badge"></div></div>
+      <div class="row sel"><div class="ic" style="color:#2AB4A7"><svg><use href="#i-train"/></svg></div><div class="t"><b>Train</b><span>1 day · arrive Day 6</span></div><div class="p num">€90</div><div class="sel-badge"><svg><use href="#i-check"/></svg></div></div>
+      <div class="row"><div class="ic" style="color:#EF7053"><svg><use href="#i-bus"/></svg></div><div class="t"><b>Bus</b><span>2 days · arrive Day 7</span></div><div class="p num">€50</div><div class="sel-badge"></div></div>
+    </div>
+    <div class="btn">Go by train · €90</div>
+    <p class="conseq">Arrive London <b>Day 6</b> · <b>€1,180</b> left</p>
+    <div class="cday">
+      <div class="ic"><svg><use href="#i-stamp"/></svg></div>
+      <div class="t">Spend a city day in Paris — €80<span>Earns your Paris stamp</span></div>
+      <div class="go">Stay<svg width="18" height="18"><use href="#i-chev"/></svg></div>
+    </div>
+  </section>
+</div>
+
+<div class="alt" aria-label="Light mode sample">
+  <div class="cap">Same screen · light mode</div>
+  <div class="brand">
+    <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+    <span class="home"><svg><use href="#i-home"/></svg>Home: Bergen</span>
+  </div>
+  <div class="chips">
+    <div class="chip wide"><svg style="color:#1E8C82"><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+    <div class="chip"><svg style="color:#9A6E00"><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+    <div class="chip"><svg><use href="#rosette"/></svg><div><b>1/5</b><span>Stamps</span></div></div>
+  </div>
+  <div class="row sel"><div class="ic" style="color:#1E8C82"><svg><use href="#i-train"/></svg></div><div class="t"><b>Train</b><span>1 day · arrive Day 6</span></div><div class="p">€90</div><div class="sel-badge"><svg width="15" height="15"><use href="#i-check"/></svg></div></div>
+</div>
+</figure>
+
+<!-- =========================== 2 · CITY DAY =========================== -->
+<figure>
+<figcaption>2 · City day — Paris</figcaption>
+<div class="phone">
+  <div class="hud">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="home"><svg><use href="#i-home"/></svg>Home: Bergen</span>
+    </div>
+    <div class="chips">
+      <div class="chip wide"><svg style="color:#2AB4A7"><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+      <div class="chip"><svg style="color:#EBC256"><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+      <div class="chip"><svg><use href="#rosette"/></svg><div><b>2/5</b><span>Stamps</span></div></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="kicker">City day</div>
+    <div class="title"><h2>PARIS</h2><div class="dstep"><em>Day 5</em><svg width="16" height="16"><use href="#i-chev"/></svg><em class="to">Day 6</em></div></div>
+
+    <div class="reward">
+      <svg class="big" viewBox="0 0 84 84" aria-label="Paris stamp">
+        <circle cx="42" cy="42" r="40" fill="none" stroke="#EBC256" stroke-width="1" opacity=".35"/>
+        <polygon points="42,6 67,17 78,42 67,67 42,78 17,67 6,42 17,17" fill="#EBC256"/>
+        <polygon points="42,12 63,21 72,42 63,63 42,72 21,63 12,42 21,21" fill="none" stroke="#0A1826" stroke-width="1.2" stroke-dasharray="2 2"/>
+        <path d="M24 46Q33 40 42 46T60 46" fill="none" stroke="#0A1826" stroke-width="2"/>
+        <path d="M28 46V38M56 46V38M28 38Q42 28 56 38" fill="none" stroke="#0A1826" stroke-width="2"/>
+        <text x="42" y="60" text-anchor="middle" style="font:900 9px var(--sans);letter-spacing:1.5px;fill:#0A1826">PARIS</text>
+        <text x="42" y="26" text-anchor="middle" style="font:800 6px var(--sans);letter-spacing:1px;fill:#0A1826">DAY 5</text>
+      </svg>
+      <div>
+        <h3>Paris stamp earned</h3>
+        <p>Nicely done. Three more and you've hit your goal.</p>
+        <div class="slots" aria-label="2 of 5 stamps">
+          <i class="on"><svg><use href="#i-check"/></svg></i><i class="on"><svg><use href="#i-check"/></svg></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect">Tonight</div>
+    <div class="fixed"><div class="ic"><svg><use href="#i-bed"/></svg></div><div class="t">Guesthouse<span>One night · included in the city day</span></div><b class="num">€80</b></div>
+
+    <div class="sect">Sights · optional</div>
+    <div class="sight on">
+      <div class="ph"><svg viewBox="0 0 92 72"><rect width="92" height="72" fill="#16303F"/><polygon points="0,72 0,52 30,44 60,54 92,46 92,72" fill="#1B3A47"/><circle cx="72" cy="18" r="7" fill="#EBC256"/>
+        <g fill="none" stroke="#2AB4A7" stroke-width="1.6" stroke-linejoin="bevel"><path d="M46 8V14M43 14H49L48 28H44ZM41 28H51L56 46H36ZM34 46H58L64 62H54Q46 52 38 62H28Z"/></g></svg></div>
+      <div class="t"><b>Eiffel Tower</b><span>€20 · 1 photo</span></div>
+      <div class="sw on"><i></i>In album</div>
+    </div>
+    <div class="sight">
+      <div class="ph"><svg viewBox="0 0 92 72"><rect width="92" height="72" fill="#16303F"/><rect y="54" width="92" height="18" fill="#1B3A47"/>
+        <g fill="none" stroke="#5D9EDC" stroke-width="1.6" stroke-linejoin="bevel"><path d="M28 54 46 24 64 54Z"/><path d="M37 39H55M32 47H60M46 24V54" stroke-width=".9"/><path d="M4 54V38H22V54M70 54V38H88V54" stroke-width="1.2"/></g></svg></div>
+      <div class="t"><b>Louvre</b><span>€17 · 1 photo</span></div>
+      <div class="sw"><i></i>Add</div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="ledger">
+      <span>Guesthouse</span><b class="num">€80</b>
+      <span>Eiffel Tower</span><b class="num">€20</b>
+      <span class="tot">Today · €1,170 left after</span><b class="tot num">€100</b>
+    </div>
+    <div class="btn">Travel on</div>
+  </div>
+</div>
+</figure>
+
+<!-- =========================== 3 · STATE =========================== -->
+<figure>
+<figcaption>3 · State — Jonas, out of money in Rome</figcaption>
+<div class="phone">
+  <div class="hud">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="home"><svg><use href="#i-home"/></svg>Home: Bergen</span>
+    </div>
+    <div class="chips">
+      <div class="chip wide"><svg style="color:#2AB4A7"><use href="#i-cal"/></svg><div><b>Day 12 of 30</b><span>18 days left</span></div></div>
+      <div class="chip" style="border-color:#EF7053"><svg style="color:#EF7053"><use href="#i-coin"/></svg><div><b>€20</b><span>Low</span></div></div>
+      <div class="chip"><svg><use href="#rosette"/></svg><div><b>4/5</b><span>Stamps</span></div></div>
+    </div>
+  </div>
+  <div style="position:absolute;top:92px;left:0;right:0;height:120px;opacity:.6">
+    <svg width="375" height="120" viewBox="0 0 375 120"><rect width="375" height="120" fill="#081420"/>
+      <g transform="translate(-40 -110) scale(1.3)" stroke="#0A1826"><polygon points="162,62 176,34 206,30 250,60 262,120 300,140 306,180 250,170 236,202 214,180 186,168 152,150 166,120" fill="#1B3A47"/><polygon points="148,198 240,208 270,236 232,302 196,302 160,250" fill="#1B3A47"/></g>
+      <circle cx="246" cy="116" r="7" fill="#EF7053" stroke="#F4EFE1" stroke-width="2"/></svg>
+  </div>
+  <section class="sheet" style="top:196px">
+    <div class="grab"></div>
+    <div class="sh"><div><h2>Routes from Rome</h2><p>None of them fit your €20 right now.</p></div></div>
+    <div class="rows">
+      <div class="row na"><div class="ic"><svg><use href="#i-bus"/></svg></div><div class="t"><b>Bus to Paris · 2 days</b><div class="why"><svg><use href="#i-lock"/></svg>Not enough money (you have €20)</div></div><div class="p">€50</div></div>
+      <div class="row na"><div class="ic"><svg><use href="#i-bus"/></svg></div><div class="t"><b>Bus to Istanbul · 3 days</b><div class="why"><svg><use href="#i-lock"/></svg>Not enough money (you have €20)</div></div><div class="p">€80</div></div>
+      <div class="row na"><div class="ic"><svg><use href="#i-train"/></svg></div><div class="t"><b>Train to Paris · 1 day</b><div class="why"><svg><use href="#i-lock"/></svg>Not enough money (you have €20)</div></div><div class="p">€90</div></div>
+    </div>
+    <p class="conseq" style="margin-top:6px">4 plane routes also locked · from €140</p>
+    <div class="call">
+      <h3><svg><use href="#i-phone"/></svg>Call home</h3>
+      <p>This costs 7 days and one stamp. No money needed.</p>
+      <div class="costs">
+        <div>Days<b>12 → 19</b></div>
+        <div>Stamps<b>4 → 3</b></div>
+        <div>You land<b>Bergen</b></div>
+      </div>
+      <div class="pair"><div class="ghost">Cancel</div><div class="btn">Call home</div></div>
+    </div>
+  </section>
+</div>
+</figure>
+</main>
+</body>
+</html>

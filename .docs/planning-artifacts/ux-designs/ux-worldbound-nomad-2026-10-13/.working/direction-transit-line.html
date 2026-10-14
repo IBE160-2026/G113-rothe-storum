@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transit Line</title>
+<style>
+/* =====================================================================
+   DIRECTION C — TRANSIT LINE  (primary mode: LIGHT)
+   Palette, grouped by semantic role (deck colors on cream, darkened for text contrast)
+   --------------------------------------------------------------------
+   background ........ #F4EFE1 cream
+   surface ........... #FFFFFF card | #EAE3D2 table header / inset | #D8D0BE rule
+   text .............. #0A1826 navy
+   muted text ........ #4F5F6B slate-dark (>= 5.5:1 on cream)
+   primary / route ... modes — each has its own colour AND line pattern:
+                       plane #2F6FB0 blue, dotted line
+                       train #1E8C82 teal, double rail (solid + cream core)
+                       bus   #C4502F coral-dark, long dashes
+   accent / pin ...... #0A1826 navy filled station = you are here | #EF7053 coral selection ring + "Selected" tag
+   logo .............. #0A1826 wordmark | #C8861E ochre NOMAD
+   stamp ............. #EBC256 gold fill + #0A1826 check & outline (shape: check-in-circle)
+   warning ........... #B3401F rust text
+   unavailable ....... #ECE6D8 fill | #5D6770 text | lock glyph + "€N short" reason
+   --------------------------------------------------------------------
+   OTHER-MODE STRIP (dark):
+   background #0A1826 | surface #122636 | text #F4EFE1 | muted #91A4B2 | rule #23415A
+   plane #5D9EDC | train #2AB4A7 | bus #EF7053 | stamp #EBC256
+   ===================================================================== */
+:root{
+  --cream:#F4EFE1; --card:#FFFFFF; --inset:#EAE3D2; --rule:#D8D0BE; --ink:#0A1826; --muted:#4F5F6B;
+  --plane:#2F6FB0; --train:#1E8C82; --bus:#C4502F; --sel:#EF7053; --gold:#EBC256; --ochre:#C8861E; --warn:#B3401F;
+  --na:#ECE6D8; --na-t:#5D6770;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+  --cond:"Avenir Next Condensed","DIN Alternate","Arial Narrow","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#E6DFCE;font-family:var(--sans);color:var(--ink);padding:32px 24px 64px}
+.page-head{max-width:1240px;margin:0 auto 28px}
+.page-head .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--train);font-weight:700;margin-bottom:6px}
+.page-head h1{font-size:30px;font-weight:800}
+.page-head p{max-width:760px;font-size:16px;line-height:1.55;color:#33404A;margin-top:8px}
+.screens{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;max-width:1300px;margin:0 auto}
+figure{width:391px}
+figcaption{font-size:12px;font-weight:700;letter-spacing:1.2px;color:var(--muted);margin:0 0 10px 6px;text-transform:uppercase}
+.phone{width:391px;height:796px;border:8px solid #1A1D20;border-radius:48px;overflow:hidden;position:relative;background:var(--cream);box-shadow:0 24px 50px -24px rgba(0,0,0,.45)}
+@media (max-width:520px){ .page-head{display:none!important} body{padding:12px 8px} }
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- status ---------- */
+.top{position:absolute;inset:0 0 auto 0;height:84px;padding:10px 14px 0;background:var(--card);border-bottom:2px solid var(--ink);z-index:5}
+.brand{display:flex;align-items:center;justify-content:space-between;height:24px}
+.wm{font-weight:900;font-size:15px;letter-spacing:1.2px;display:flex;align-items:center;line-height:1}
+.wm svg{width:13px;height:13px;margin:0 .5px}
+.wm .nm{font-size:10px;letter-spacing:3.2px;font-weight:800;color:var(--ochre);margin-left:7px;border-left:1.5px solid var(--rule);padding-left:7px}
+.homechip{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--muted)}
+.homechip svg{width:13px;height:13px}
+.bar{display:grid;grid-template-columns:1.25fr .9fr 1fr;margin-top:8px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
+.bar div{padding:4px 8px;border-left:1.5px solid var(--ink);line-height:1.15}
+.bar div:first-child{border-left:0}
+.bar small{display:block;font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.bar b{font-family:var(--cond);font-size:16px;font-weight:700}
+.bar b em{font-style:normal;font-weight:600;font-size:12px;color:var(--muted)}
+.pips{display:inline-flex;gap:2px;margin-left:4px;vertical-align:1px}
+.pips i{width:8px;height:8px;border:1.5px solid var(--ink);border-radius:2px;display:block}
+.pips i.on{background:var(--gold)}
+
+/* ---------- map ---------- */
+.map{position:absolute;top:84px;left:0;width:375px;height:350px}
+.st{font:800 12px var(--sans);fill:var(--ink);paint-order:stroke;stroke:#F4EFE1;stroke-width:3.5px;stroke-linejoin:round}
+.st.sm{font:700 9px var(--sans);letter-spacing:.8px;fill:var(--muted)}
+.legend{position:absolute;left:12px;right:12px;bottom:6px;display:flex;gap:12px;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);background:rgba(244,239,225,.9);padding:4px 0}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend svg{width:30px;height:10px}
+
+/* ---------- sheet ---------- */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--ink);padding:8px 14px 14px;z-index:6}
+.grab{width:34px;height:4px;border-radius:2px;background:var(--rule);margin:0 auto 8px}
+.here{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 8px;background:var(--inset);border-radius:8px}
+.here .badge{width:34px;height:34px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;flex:none}
+.here .badge svg{width:18px;height:18px}
+.here .t{flex:1;font-size:13px;font-weight:700;line-height:1.25}
+.here .t span{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.here .t span i{width:12px;height:12px;border-radius:50%;border:1.5px dashed var(--ink);display:inline-block}
+.mini{min-height:44px;padding:0 12px;border:1.5px solid var(--ink);border-radius:8px;display:flex;align-items:center;font-size:13px;font-weight:800;background:#fff}
+.sh{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px}
+.sh h2{font-size:18px;font-weight:900;display:flex;align-items:center;gap:6px}
+.sh h2 svg{width:22px;height:12px}
+.sh .x{width:44px;height:44px;display:grid;place-items:center;margin:-10px -10px -10px 0;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:800;text-align:left;padding:0 6px 4px;border-bottom:1.5px solid var(--ink)}
+th.r,td.r{text-align:right}
+td{padding:0 6px;height:44px;border-bottom:1px solid var(--rule);font-weight:600}
+td.mode{display:flex;align-items:center;gap:7px;height:44px;font-weight:800}
+td.mode svg.ic{width:18px;height:18px}
+td.mode svg.ln{width:26px;height:8px}
+tr.sel td{background:#FFF4EC}
+tr.sel td:first-child{box-shadow:inset 4px 0 0 var(--sel)}
+.rad{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);display:inline-grid;place-items:center;vertical-align:middle}
+tr.sel .rad{border-color:var(--ink)}
+tr.sel .rad::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.price{font-family:var(--cond);font-size:17px;font-weight:700}
+.btn{display:flex;align-items:center;justify-content:space-between;min-height:50px;padding:0 16px;border-radius:10px;background:var(--ink);color:#fff;font:800 15px var(--sans);margin-top:10px}
+.btn small{font-size:11.5px;font-weight:600;opacity:.8}
+
+/* ---------- other-mode strip ---------- */
+.alt{margin-top:18px;border-radius:18px;background:#0A1826;color:#F4EFE1;padding:12px 14px 12px;width:391px}
+.alt .cap{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#91A4B2;margin-bottom:8px;font-weight:700}
+.alt .homechip,.alt .bar small,.alt .bar b em{color:#91A4B2}
+.alt .bar,.alt .bar div{border-color:#F4EFE1}
+.alt .pips i{border-color:#F4EFE1}
+.alt table{margin-top:8px}
+.alt td{border-color:#23415A}
+.alt tr.sel td{background:#122636}
+.alt tr.sel .rad{border-color:#F4EFE1}.alt tr.sel .rad::after{background:#F4EFE1}
+
+/* ---------- city day ---------- */
+.body{position:absolute;top:84px;left:0;right:0;bottom:0;padding:12px 14px}
+.hdr{display:flex;align-items:baseline;justify-content:space-between}
+.hdr h2{font-size:22px;font-weight:900}
+.hdr span{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase}
+.tl{margin-top:8px}
+.ticket{display:flex;margin-top:12px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+.ticket .stub{width:104px;flex:none;display:grid;place-items:center;border-right:1.5px dashed var(--ink);background:#FFF9E8;position:relative}
+.ticket .info{padding:10px 12px;flex:1}
+.ticket h3{font-size:15px;font-weight:900}
+.ticket p{font-size:12px;color:var(--muted);margin-top:2px}
+.prog{margin-top:8px}
+.sect{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:800;color:var(--muted);margin:14px 0 4px;display:flex;justify-content:space-between}
+.item{display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 0;border-bottom:1px solid var(--rule)}
+.item .th{width:64px;height:50px;border-radius:6px;overflow:hidden;flex:none;border:1px solid var(--rule)}
+.item .th svg{width:100%;height:100%;display:block}
+.item .t{flex:1;font-size:14px;font-weight:800;line-height:1.25}
+.item .t span{display:block;font-size:11.5px;font-weight:600;color:var(--muted)}
+.item .p{font-family:var(--cond);font-size:17px;font-weight:700;width:48px;text-align:right}
+.cb{display:flex;align-items:center;gap:6px;min-height:44px;min-width:44px;justify-content:center;font-size:11px;font-weight:800;color:var(--muted)}
+.cb i{width:24px;height:24px;border:2px solid var(--ink);border-radius:5px;display:grid;place-items:center;background:#fff}
+.cb.on i{background:var(--ink);color:#fff}
+.cb.on i svg{width:16px;height:16px}
+.cb.lockd i{border-style:dashed;border-color:var(--muted);background:var(--inset)}
+.sum{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--ink);padding:10px 14px 14px}
+.sum table td{height:22px;border:0;font-size:12.5px;padding:0;color:var(--muted)}
+.sum table td.r{color:var(--ink);font-family:var(--cond);font-size:15px}
+.sum table tr.t td{border-top:1.5px solid var(--ink);height:28px;font-weight:900;color:var(--ink);font-size:13.5px}
+
+/* ---------- state ---------- */
+.warnbar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#FBE8DF;border:1.5px solid var(--warn);border-radius:8px;font-size:12.5px;font-weight:700;color:var(--warn);margin-top:6px}
+.warnbar svg{width:18px;height:18px;flex:none}
+tr.na td{background:var(--na);color:var(--na-t);height:40px}
+tr.na td.mode{color:var(--na-t);height:40px}
+tr.na .why{font-size:11.5px;font-weight:700;color:var(--warn);line-height:1.2}
+tr.na .why span{display:block;font-weight:600;color:var(--na-t);font-size:11px}
+tr.na td.mode span{font-size:11px;font-weight:600;margin-left:-2px}
+tr.na .price{text-decoration:line-through;font-size:15px}
+.call{margin-top:10px;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.call .hd{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:8px 12px;font-weight:900;font-size:15px}
+.call .hd svg{width:18px;height:18px}
+.call .bd{padding:10px 12px;background:#fff}
+.call p{font-size:13.5px;font-weight:600}
+.diff{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;font-size:12.5px;margin-top:6px;color:var(--muted)}
+.diff b{color:var(--ink);font-family:var(--cond);font-size:14px;text-align:right}
+.pair{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:10px}
+.pair .btn{margin:0;justify-content:center}
+.ghost{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:10px;border:1.5px solid var(--ink);font:800 15px var(--sans)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></symbol>
+    <symbol id="i-train" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c-4 0-8 .5-8 4v9.5A3.5 3.5 0 0 0 7.5 19L6 20.5v.5h2l2-2h4l2 2h2v-.5L16.5 19a3.5 3.5 0 0 0 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zM11 10H6V6h5zm2 0V6h5v4zm3.5 7a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><path fill="currentColor" d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6zm3.5 1A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zm9 0a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5zM18 11H6V6h12z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path fill="currentColor" d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9zm3 11a2 2 0 1 1 2-2 2 2 0 0 1-2 2z"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path fill="currentColor" d="M7 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9a4 4 0 0 0-4-4z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path fill="currentColor" d="M1 21h22L12 2zm12-3h-2v-2h2zm0-4h-2v-4h2z"/></symbol>
+    <symbol id="compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 3.2 14 12h-4z" fill="#C8861E"/><path d="M12 20.8 10 12h4z" fill="currentColor"/></symbol>
+    <!-- line-pattern swatches -->
+    <symbol id="ln-plane" viewBox="0 0 30 10"><path d="M2 5H28" stroke="#2F6FB0" stroke-width="3" stroke-linecap="round" stroke-dasharray=".1 5.5"/></symbol>
+    <symbol id="ln-train" viewBox="0 0 30 10"><path d="M1 5H29" stroke="#1E8C82" stroke-width="6"/><path d="M1 5H29" stroke="#F4EFE1" stroke-width="1.6"/></symbol>
+    <symbol id="ln-bus" viewBox="0 0 30 10"><path d="M1 5H29" stroke="#C4502F" stroke-width="3.5" stroke-dasharray="7 4"/></symbol>
+    <symbol id="ln-plane-d" viewBox="0 0 30 10"><path d="M2 5H28" stroke="#5D9EDC" stroke-width="3" stroke-linecap="round" stroke-dasharray=".1 5.5"/></symbol>
+    <symbol id="ln-train-d" viewBox="0 0 30 10"><path d="M1 5H29" stroke="#2AB4A7" stroke-width="6"/><path d="M1 5H29" stroke="#0A1826" stroke-width="1.6"/></symbol>
+    <symbol id="stamped" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#EBC256" stroke="#0A1826" stroke-width="2"/><path fill="#0A1826" d="M10.2 16.4 6.6 12.8l1.4-1.4 2.2 2.2 5.8-5.8 1.4 1.4z"/></symbol>
+  </defs>
+</svg>
+
+<header class="page-head">
+  <div class="tag">Direction C · light primary</div>
+  <h1>Transit Line</h1>
+  <p>The journey as a metro map. Cities are stations, and every travel option is its own line: plane is dotted, train is a double rail, bus is dashed. You can read the network without relying on colour. Deck colours on cream, a navy logo, tight type and table-like sheets make this the densest and most information-first option, and comparing prices is effortless.</p>
+</header>
+
+<main class="screens">
+<!-- =========================== 1 · MAP =========================== -->
+<figure id="hero">
+<figcaption>1 · Map — in Paris, London tapped</figcaption>
+<div class="phone">
+  <div class="top">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="homechip"><svg><use href="#i-home"/></svg>Home · Bergen</span>
+    </div>
+    <div class="bar">
+      <div><small>Day</small><b class="num">5 of 30 <em>· 25 left</em></b></div>
+      <div><small>Money</small><b class="num">€1,270</b></div>
+      <div><small>Stamps</small><b class="num">1/5</b><span class="pips"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+
+  <div class="map">
+    <svg width="375" height="324" viewBox="0 0 375 324" role="img" aria-label="Route network drawn as a metro map">
+      <!-- faint grid -->
+      <g stroke="#E2DACA" stroke-width="1"><path d="M0 40H375M0 150H375M0 240H375M70 0V324M190 0V324M280 0V324"/></g>
+      <!-- PLANE lines (dotted) -->
+      <g fill="none" stroke="#2F6FB0" stroke-width="3.2" stroke-linecap="round" stroke-dasharray=".1 7">
+        <path d="M62 40V150"/>
+        <path d="M70 142H190"/>
+        <path d="M184.3 155.7 264.3 235.7"/>
+        <path d="M270 222H340"/>
+        <path d="M70 158V222L44 248"/>
+        <path d="M348 230V70"/>
+        <path d="M348 230V282"/>
+      </g>
+      <!-- TRAIN lines (double rail) -->
+      <g fill="none" stroke-linejoin="round">
+        <g stroke="#1E8C82" stroke-width="7"><path d="M190 40V150"/><path d="M190 150 270 230"/></g>
+        <g stroke="#F4EFE1" stroke-width="2"><path d="M190 40V150"/><path d="M190 150 270 230"/></g>
+      </g>
+      <!-- BUS lines (dashed) -->
+      <g fill="none" stroke="#C4502F" stroke-width="4" stroke-dasharray="9 5">
+        <path d="M70 40H190"/>
+        <path d="M195.7 144.3 275.7 224.3"/>
+        <path d="M270 238H340"/>
+      </g>
+      <!-- Paris–London corridor, train selected = thicker -->
+      <path d="M70 150H190" stroke="#EF7053" stroke-width="14" opacity=".22"/>
+      <path d="M70 150H190" stroke="#1E8C82" stroke-width="8"/><path d="M70 150H190" stroke="#F4EFE1" stroke-width="2.2"/>
+      <path d="M70 158H190" stroke="#C4502F" stroke-width="4" stroke-dasharray="9 5"/>
+
+      <!-- stations -->
+      <!-- Bergen home -->
+      <g transform="translate(66 40)"><rect x="-13" y="-13" width="26" height="26" rx="5" fill="#0A1826"/><use href="#i-home" x="-9" y="-9.5" width="18" height="18" color="#fff"/></g>
+      <text class="st" x="56" y="22" text-anchor="start">Bergen</text><text class="st sm" x="56" y="70">HOME</text>
+      <!-- Copenhagen stamped -->
+      <use href="#stamped" x="177" y="27" width="26" height="26"/>
+      <text class="st" x="210" y="38">Copenhagen</text><text class="st sm" x="210" y="50">✓ STAMPED</text>
+      <!-- London selected -->
+      <rect x="47" y="131" width="30" height="34" rx="9" fill="#fff" stroke="#EF7053" stroke-width="5"/>
+      <rect x="47" y="131" width="30" height="34" rx="9" fill="none" stroke="#0A1826" stroke-width="2"/>
+      <text class="st" x="44" y="124">London</text>
+      <rect x="2" y="168" width="54" height="15" rx="3" fill="#EF7053"/><text x="29" y="179" text-anchor="middle" style="font:800 8.5px var(--sans);letter-spacing:.8px;fill:#0A1826">SELECTED</text>
+      <!-- Paris current -->
+      <rect x="176" y="131" width="30" height="34" rx="9" fill="#0A1826"/>
+      <circle cx="191" cy="148" r="5" fill="#fff"/>
+      <text class="st" x="202" y="112">Paris</text>
+      <rect x="202" y="118" width="74" height="15" rx="3" fill="#0A1826"/><text x="239" y="129" text-anchor="middle" style="font:800 8.5px var(--sans);letter-spacing:.8px;fill:#fff">YOU ARE HERE</text>
+      <!-- Rome -->
+      <rect x="262" y="218" width="22" height="26" rx="7" fill="#fff" stroke="#0A1826" stroke-width="2.5"/>
+      <text class="st" x="262" y="262">Rome</text>
+      <!-- Istanbul -->
+      <rect x="334" y="216" width="22" height="28" rx="7" fill="#fff" stroke="#0A1826" stroke-width="2.5"/>
+      <text class="st" x="330" y="208" text-anchor="end">Istanbul</text>
+      <!-- far goals: airport roundels -->
+      <g transform="translate(36 256)"><circle r="13" fill="#fff" stroke="#2F6FB0" stroke-width="3"/><use href="#i-plane" x="-8" y="-8" width="16" height="16" color="#2F6FB0"/></g>
+      <text class="st" x="54" y="270">New York</text>
+      <g transform="translate(348 62)"><circle r="13" fill="#fff" stroke="#2F6FB0" stroke-width="3"/><use href="#i-plane" x="-8" y="-8" width="16" height="16" color="#2F6FB0"/></g>
+      <text class="st" x="330" y="66" text-anchor="end">Tokyo</text>
+      <g transform="translate(348 290)"><circle r="13" fill="#fff" stroke="#2F6FB0" stroke-width="3"/><use href="#i-plane" x="-8" y="-8" width="16" height="16" color="#2F6FB0"/></g>
+      <text class="st" x="330" y="294" text-anchor="end">Sydney</text>
+      <!-- compass -->
+      <g transform="translate(296 112)"><circle r="12" fill="#fff" stroke="#0A1826" stroke-width="1.5"/><path d="M0-9 2.5 0h-5z" fill="#C8861E"/><path d="M0 9-2.5 0h5z" fill="#0A1826"/></g>
+    </svg>
+    <div class="legend">
+      <span><svg><use href="#ln-plane"/></svg>Plane</span>
+      <span><svg><use href="#ln-train"/></svg>Train</span>
+      <span><svg><use href="#ln-bus"/></svg>Bus</span>
+    </div>
+  </div>
+
+  <section class="sheet">
+    <div class="grab"></div>
+    <div class="here">
+      <div class="badge"><svg><use href="#i-pin"/></svg></div>
+      <div class="t">Spend a city day in Paris — €80<span><i></i>Earns your Paris stamp</span></div>
+      <div class="mini">Stay</div>
+    </div>
+    <div class="sh">
+      <h2>Paris → London</h2>
+      <div class="x" aria-label="Close"><svg width="18" height="18"><use href="#i-x"/></svg></div>
+    </div>
+    <table>
+      <tr><th>Mode</th><th>Time</th><th>Arrive</th><th class="r">Price</th><th></th></tr>
+      <tr><td class="mode"><svg class="ic" style="color:#2F6FB0"><use href="#i-plane"/></svg><svg class="ln"><use href="#ln-plane"/></svg>Plane</td><td>1 day</td><td>Day 6</td><td class="r price num">€110</td><td class="r"><span class="rad"></span></td></tr>
+      <tr class="sel"><td class="mode"><svg class="ic" style="color:#1E8C82"><use href="#i-train"/></svg><svg class="ln"><use href="#ln-train"/></svg>Train</td><td>1 day</td><td>Day 6</td><td class="r price num">€90</td><td class="r"><span class="rad"></span></td></tr>
+      <tr><td class="mode"><svg class="ic" style="color:#C4502F"><use href="#i-bus"/></svg><svg class="ln"><use href="#ln-bus"/></svg>Bus</td><td>2 days</td><td>Day 7</td><td class="r price num">€50</td><td class="r"><span class="rad"></span></td></tr>
+    </table>
+    <div class="btn"><span>Book train · €90</span><small>→ Day 6 · €1,180 left</small></div>
+  </section>
+</div>
+
+<div class="alt" aria-label="Dark mode sample">
+  <div class="cap">Same screen · dark mode</div>
+  <div class="brand">
+    <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+    <span class="homechip"><svg><use href="#i-home"/></svg>Home · Bergen</span>
+  </div>
+  <div class="bar">
+    <div><small>Day</small><b>5 of 30 <em>· 25 left</em></b></div>
+    <div><small>Money</small><b>€1,270</b></div>
+    <div><small>Stamps</small><b>1/5</b><span class="pips"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+  </div>
+  <table>
+    <tr class="sel"><td class="mode"><svg class="ic" style="color:#2AB4A7"><use href="#i-train"/></svg><svg class="ln"><use href="#ln-train-d"/></svg>Train</td><td>1 day</td><td>Day 6</td><td class="r price">€90</td><td class="r"><span class="rad"></span></td></tr>
+  </table>
+</div>
+</figure>
+
+<!-- =========================== 2 · CITY DAY =========================== -->
+<figure>
+<figcaption>2 · City day — Paris</figcaption>
+<div class="phone">
+  <div class="top">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="homechip"><svg><use href="#i-home"/></svg>Home · Bergen</span>
+    </div>
+    <div class="bar">
+      <div><small>Day</small><b>5 of 30 <em>· 25 left</em></b></div>
+      <div><small>Money</small><b>€1,270</b></div>
+      <div><small>Stamps</small><b>2/5</b><span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="hdr"><h2>City day · Paris</h2><span>Day 5 → Day 6</span></div>
+    <!-- day timeline as a line -->
+    <svg class="tl" width="347" height="34" viewBox="0 0 347 34">
+      <path d="M12 12H335" stroke="#0A1826" stroke-width="4"/>
+      <circle cx="12" cy="12" r="7" fill="#0A1826"/><circle cx="174" cy="12" r="7" fill="#fff" stroke="#0A1826" stroke-width="3"/><circle cx="335" cy="12" r="7" fill="#fff" stroke="#0A1826" stroke-width="3"/>
+      <text x="12" y="32" style="font:700 10px var(--sans);fill:#4F5F6B">Arrive · Day 5</text>
+      <text x="174" y="32" text-anchor="middle" style="font:700 10px var(--sans);fill:#4F5F6B">Sights + night</text>
+      <text x="335" y="32" text-anchor="end" style="font:700 10px var(--sans);fill:#4F5F6B">Leave · Day 6</text>
+    </svg>
+
+    <div class="ticket">
+      <div class="stub">
+        <svg width="84" height="84" viewBox="0 0 84 84" aria-label="Paris stamp">
+          <circle cx="42" cy="42" r="36" fill="#EBC256" stroke="#0A1826" stroke-width="2.5"/>
+          <circle cx="42" cy="42" r="29" fill="none" stroke="#0A1826" stroke-width="1"/>
+          <path d="M22 44H62" stroke="#1E8C82" stroke-width="5"/><path d="M22 44H62" stroke="#EBC256" stroke-width="1.4"/>
+          <circle cx="42" cy="44" r="5" fill="#fff" stroke="#0A1826" stroke-width="2"/>
+          <text x="42" y="34" text-anchor="middle" style="font:900 10px var(--sans);letter-spacing:1.5px;fill:#0A1826">PARIS</text>
+          <text x="42" y="60" text-anchor="middle" style="font:800 7px var(--sans);letter-spacing:1px;fill:#0A1826">DAY 5</text>
+        </svg>
+      </div>
+      <div class="info">
+        <h3>Paris stamp collected</h3>
+        <p>Stop 2 on your line. Three stops to the goal.</p>
+        <svg class="prog" width="200" height="22" viewBox="0 0 200 22" aria-label="2 of 5 stamps">
+          <path d="M10 11H190" stroke="#D8D0BE" stroke-width="4"/><path d="M10 11H55" stroke="#0A1826" stroke-width="4"/>
+          <use href="#stamped" x="0" y="1" width="20" height="20"/><use href="#stamped" x="45" y="1" width="20" height="20"/>
+          <circle cx="100" cy="11" r="7" fill="#fff" stroke="#0A1826" stroke-width="2"/><circle cx="145" cy="11" r="7" fill="#fff" stroke="#0A1826" stroke-width="2"/><circle cx="190" cy="11" r="7" fill="#fff" stroke="#0A1826" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="sect"><span>Included</span></div>
+    <div class="item"><div class="th" style="display:grid;place-items:center;background:#EAE3D2"><svg style="width:26px;height:26px"><use href="#i-bed"/></svg></div><div class="t">Guesthouse, 1 night<span>Part of every city day</span></div><div class="p num">€80</div><div class="cb lockd"><i><svg style="width:14px;height:14px;color:#5D6770"><use href="#i-check"/></svg></i></div></div>
+    <div class="sect"><span>Sights · optional</span><span>tap to add to album</span></div>
+    <div class="item">
+      <div class="th"><svg viewBox="0 0 64 50"><rect width="64" height="50" fill="#DCEBEF"/><rect y="40" width="64" height="10" fill="#C9D9C4"/><g fill="none" stroke="#0A1826" stroke-width="1.3"><path d="M32 4V8M30 8H34L33.5 18H30.5ZM29 18H35L38 30H26ZM24 30H40L44 40H38Q32 34 26 40H20Z"/></g></svg></div>
+      <div class="t">Eiffel Tower<span>Photo + fact for your album</span></div><div class="p num">€20</div><div class="cb on"><i><svg><use href="#i-check"/></svg></i></div>
+    </div>
+    <div class="item">
+      <div class="th"><svg viewBox="0 0 64 50"><rect width="64" height="50" fill="#F1E6CF"/><rect y="38" width="64" height="12" fill="#D8CCB0"/><g fill="none" stroke="#0A1826" stroke-width="1.3"><path d="M18 38 32 16 46 38Z"/><path d="M25 27H39M21 33H43M32 16V38" stroke-width=".7"/><path d="M2 38V28H14V38M50 38V28H62V38"/></g></svg></div>
+      <div class="t">Louvre<span>Photo + fact for your album</span></div><div class="p num">€17</div><div class="cb"><i></i></div>
+    </div>
+  </div>
+  <div class="sum">
+    <table>
+      <tr><td>Guesthouse</td><td class="r">€80</td></tr>
+      <tr><td>Eiffel Tower</td><td class="r">€20</td></tr>
+      <tr class="t"><td>Today · leaves you €1,170</td><td class="r">€100</td></tr>
+    </table>
+    <div class="btn"><span>Travel on</span><small>back to the map</small></div>
+  </div>
+</div>
+</figure>
+
+<!-- =========================== 3 · STATE =========================== -->
+<figure>
+<figcaption>3 · State — Jonas, out of money in Rome</figcaption>
+<div class="phone">
+  <div class="top">
+    <div class="brand">
+      <span class="wm">W<svg><use href="#compass"/></svg>RLDBOUND<span class="nm">NOMAD</span></span>
+      <span class="homechip"><svg><use href="#i-home"/></svg>Home · Bergen</span>
+    </div>
+    <div class="bar">
+      <div><small>Day</small><b>12 of 30 <em>· 18 left</em></b></div>
+      <div><small>Money</small><b style="color:#B3401F">€20</b></div>
+      <div><small>Stamps</small><b>4/5</b><span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="hdr"><h2>Routes from Rome</h2><span>7 routes</span></div>
+    <div class="warnbar"><svg><use href="#i-warn"/></svg>You have €20. Every ticket out costs more.</div>
+    <table style="margin-top:8px">
+      <tr><th>Route</th><th>Why not</th><th class="r">Price</th></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-bus"/></svg>Paris<span>· 2 days</span></td><td class="why">Not enough money<span>you have €20 · €30 short</span></td><td class="r price">€50</td></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-bus"/></svg>Istanbul<span>· 3 days</span></td><td class="why">Not enough money<span>you have €20 · €60 short</span></td><td class="r price">€80</td></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-train"/></svg>Paris<span>· 1 day</span></td><td class="why">Not enough money<span>you have €20 · €70 short</span></td><td class="r price">€90</td></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-plane"/></svg>London<span>· 1 day</span></td><td class="why">Not enough money<span>you have €20 · €120 short</span></td><td class="r price">€140</td></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-plane"/></svg>Paris<span>· 1 day</span></td><td class="why">Not enough money<span>you have €20 · €130 short</span></td><td class="r price">€150</td></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-plane"/></svg>Istanbul<span>· 1 day</span></td><td class="why">Not enough money<span>you have €20 · €140 short</span></td><td class="r price">€160</td></tr>
+      <tr class="na"><td class="mode"><svg class="ic"><use href="#i-plane"/></svg>Bergen<span>· 1 day</span></td><td class="why">Not enough money<span>you have €20 · €180 short</span></td><td class="r price">€200</td></tr>
+    </table>
+    <div class="call">
+      <div class="hd"><svg><use href="#i-phone"/></svg>Call home</div>
+      <div class="bd">
+        <p>This costs 7 days and one stamp. No money needed.</p>
+        <div class="diff">
+          <span>Day</span><span></span><b>12 → 19 of 30</b>
+          <span>Stamps</span><span></span><b>4 → 3 (Rome removed)</b>
+          <span>You land in</span><span></span><b>Bergen · €20 kept</b>
+        </div>
+        <div class="pair"><div class="ghost">Cancel</div><div class="btn">Call home</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</figure>
+</main>
+</body>
+</html>

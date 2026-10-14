@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core Screens One</title>
+<style>
+/* =====================================================================
+   SCREENS CORE 1 — built on Direction A3 (Sunrise Expedition, refined)
+   Palette, grouped by semantic role (copied from direction-a3.html)
+   --------------------------------------------------------------------
+   background ........ #F6EEDC paper | #FBE1BF sunrise wash | #E9DFC9 page behind phones
+   surface ........... #FFFBF2 card | #FFFDF8 row / pill | #FFF7E8 selected row
+                       #EFE3C8 sea | #E2CFA4 land | #C9B183 coast / empty slot dash
+   text .............. #0A1826 navy ink | #FBF4E4 text on navy | #3A372F page body copy
+   muted text ........ #5F5848 warm grey (>= 4.5:1 on paper)
+   primary / route ... #0A1826 travelled trail, buttons, selected ring
+                       #B9761A ochre: routes from current city, icons, stamp outer ring
+                       #C8861E logo ochre (compass-rose needle)
+                       #E0A243 light ochre: text and icons on navy
+   accent / pin ...... #B5462F terracotta (current position)
+   stamp ink ......... ring #B9761A + wash #B9761A @12% | dashed ring, code, check #0A1826
+   mode (passport) ... Explorer cover: #0A1826 navy, #E0A243 text, compass glyph
+                       Nomad cover:    #B9761A ochre, #0A1826 text, mountain glyph
+   unavailable ....... #EAE0CB fill | #6E6656 text | dashed #C9B183 border
+   rule / hairline ... #D9C9A6
+   scrim ............. #0A1826 @ 38% (modal sheets)
+   ===================================================================== */
+/* =====================================================================
+   PRD FRs illustrated, per frame
+   --------------------------------------------------------------------
+   MAP-C   Map, final combined layout ........ FR-3, FR-4 (hint), FR-5 (About Paris), FR-8 (Plan the day), FR-10 (stamp hint)
+   MAP-Z   Map, zoomed Europe ................ FR-3, FR-4 (routes from Paris drawn)
+   F1      Arrival fact card, sheet .......... FR-5, FR-10 (passing through = no stamp)
+   F2      Arrival fact card, full screen .... FR-5, FR-6 (arrival line), FR-10
+   S1      Start screen ...................... FR-1
+   S2      One-screen intro .................. FR-2
+   MENU    Menu sheet ........................ FR-2 (reopen intro), FR-22 (Album), FR-1 (new journey discards after confirm)
+   MENU-c  New journey confirm ............... FR-1
+   P1      Passport, Stamps tab .............. FR-10, FR-22 (tabbed screen)
+   P2      Passport, Album tab ............... FR-22
+   H1      Travel home, goal reached ......... FR-7, FR-11
+   H2      Travel home, goal not reached ..... FR-7, FR-11
+   J1      Journey summary, Ingrid ........... FR-14, FR-11, FR-22
+   J2      Journey summary, Jonas ............ FR-14, FR-12 ("Called home"), FR-11
+   ===================================================================== */
+:root{
+  --paper:#F6EEDC; --sun:#FBE1BF; --card:#FFFBF2; --sea:#EFE3C8; --land:#E2CFA4; --coast:#C9B183;
+  --ink:#0A1826; --on-ink:#FBF4E4; --muted:#5F5848; --ochre:#B9761A; --logo-ochre:#C8861E; --ochre-lt:#E0A243;
+  --pin:#B5462F; --rule:#D9C9A6; --na:#EAE0CB; --na-ink:#6E6656; --body:#3A372F;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#E9DFC9;font-family:var(--sans);color:var(--ink);padding:32px 24px 72px}
+.page-head{max-width:1253px;margin:0 auto 26px}
+.page-head .tag,.sec-h .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.page-head h1{font-family:var(--serif);font-size:30px;font-weight:600}
+.page-head p{max-width:820px;font-size:15.5px;line-height:1.55;color:var(--body);margin-top:8px}
+.page-head ul{max-width:820px;margin:10px 0 0 18px;font-size:14px;line-height:1.55;color:var(--body)}
+.sec-h{max-width:1253px;margin:52px auto 18px;border-top:1px solid var(--rule);padding-top:22px}
+.sec-h h2{font-family:var(--serif);font-size:24px;font-weight:600}
+.sec-h p{max-width:820px;font-size:14.5px;line-height:1.5;color:var(--body);margin-top:6px}
+.screens{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;align-items:flex-start;max-width:1300px;margin:0 auto}
+figure{width:391px}
+.flabel{display:flex;align-items:center;gap:10px;margin:0 0 4px 4px}
+.flabel .k{display:grid;place-items:center;min-width:38px;height:28px;padding:0 9px;border-radius:14px;background:var(--ink);color:var(--on-ink);font-weight:800;font-size:13px;letter-spacing:.6px;white-space:nowrap}
+.flabel .d{font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.why{font-size:13px;line-height:1.4;color:var(--body);margin:0 0 10px 4px;min-height:36px}
+.phone{width:391px;height:796px;border:8px solid #1B1A17;border-radius:48px;overflow:hidden;position:relative;
+  background:linear-gradient(180deg,var(--sun) 0,var(--paper) 220px);box-shadow:0 24px 50px -20px rgba(60,40,10,.45)}
+.phone.short{height:auto;min-height:0;border-radius:48px 48px 28px 28px}
+.phone.half{height:auto;border-radius:28px;border-width:6px}
+@media (max-width:520px){ body{padding:16px 8px 40px} .page-head,.sec-h{padding-left:8px;padding-right:8px} }
+
+/* ---------- logo + menu ---------- */
+.top{position:absolute;inset:0 0 auto 0;padding:12px 16px 0;z-index:5}
+.logo{display:flex;align-items:center;justify-content:space-between;gap:10px;height:30px}
+.wm{font-family:var(--sans);font-weight:900;font-size:19px;letter-spacing:.5px;color:var(--ink);display:inline-flex;align-items:center;line-height:1;position:relative}
+.wm svg.co{width:16px;height:16px;margin:0 .5px}
+.wm .mtn{position:absolute;left:0;right:0;bottom:-6px;height:6px;width:100%}
+.wm.xl{font-size:40px;letter-spacing:1px}
+.wm.xl svg.co{width:34px;height:34px;margin:0 1px}
+.wm.xl .mtn{bottom:-13px;height:11px}
+.menu{position:relative;width:34px;height:30px;border-radius:9px;border:1px solid var(--rule);background:var(--card);display:grid;place-items:center;color:var(--ink);flex:none}
+.menu::before{content:"";position:absolute;inset:-7px -5px} /* 44 x 44 hit area */
+.menu svg{width:18px;height:18px}
+
+/* ---------- status row ---------- */
+.chips{display:flex;gap:6px;margin-top:8px}
+.chip{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:44px;padding:0 10px;background:var(--card);border:1px solid var(--rule);border-radius:12px}
+.chip svg{width:18px;height:18px;flex:none;color:var(--ochre)}
+.chip b{display:block;font-family:var(--serif);font-size:16.5px;font-weight:700;line-height:1;white-space:nowrap;font-variant-numeric:lining-nums tabular-nums}
+.chip span{display:block;font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);margin-top:3px;line-height:1;white-space:nowrap}
+.chip.wide{flex:1.5}
+
+/* ---------- slim passport strip ---------- */
+.pslim{position:relative;margin-top:8px;height:38px;display:flex;align-items:center;gap:6px;padding-right:4px;background:var(--card);border:1px solid var(--rule);border-radius:12px}
+.pslim::before{content:"";position:absolute;left:0;right:0;top:-4px;bottom:-4px} /* 46 px hit area */
+.pslim .cv{align-self:stretch;display:flex;align-items:center;gap:6px;padding:0 11px 0 10px;border-radius:11px 0 0 11px;background:var(--ink);color:var(--ochre-lt);font:800 10px var(--sans);letter-spacing:1.3px;white-space:nowrap}
+.pslim .cv svg{width:14px;height:14px}
+.pslim .cv .n{color:var(--on-ink);letter-spacing:.4px;font-size:11px}
+.pslim .sls{display:flex;flex:1;justify-content:space-between;align-items:center;padding:0 2px}
+.sl{width:28px;height:28px;border-radius:50%;border:1.5px dashed var(--coast);display:grid;place-items:center;font-size:9px;font-weight:700;color:var(--muted)}
+.sl.on{border:0}
+.sl.on svg{width:32px;height:32px;transform:rotate(-10deg)}
+.chev{width:16px;height:16px;color:var(--muted);flex:none}
+
+/* ---------- map ---------- */
+.map{position:absolute;left:0;top:144px;width:375px}
+.map > svg{display:block}
+.cityday{position:absolute;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:11px 11px 4px;box-shadow:0 8px 20px -12px rgba(60,40,10,.5)}
+.cityday small{display:block;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+.cityday strong{display:block;font-family:var(--serif);font-size:15px;line-height:1.2;margin:2px 0 6px}
+.cityday .hint{display:flex;gap:5px;align-items:flex-start;font-size:11.5px;line-height:1.3;color:var(--ink);margin-bottom:8px}
+.cityday .hint svg{width:14px;height:14px;flex:none;color:var(--ochre);margin-top:1px}
+.btn-ghost{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;width:100%;border:1.5px solid var(--ink);border-radius:22px;background:transparent;font:600 14px var(--sans);color:var(--ink)}
+.about{display:flex;align-items:center;gap:6px;min-height:44px;font:600 12.5px var(--sans);color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.about svg{width:16px;height:16px;color:var(--ochre);flex:none}
+
+/* resting panel under the map (same 318 px footprint as the route sheet) */
+.rest{position:absolute;left:0;right:0;bottom:0;height:318px;background:var(--card);border-radius:26px 26px 0 0;padding:10px 20px 14px;box-shadow:0 -10px 30px -12px rgba(60,40,10,.3);z-index:4}
+.rest.z{height:216px}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--rule);margin:0 auto 10px}
+.tapline{display:flex;gap:12px;align-items:flex-start}
+.tapline .ico{width:40px;height:40px;border-radius:50%;background:var(--paper);display:grid;place-items:center;flex:none;color:var(--ochre)}
+.tapline .ico svg{width:22px;height:22px}
+.tapline h3{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.2}
+.tapline p{font-size:13px;line-height:1.4;color:var(--muted);margin-top:2px}
+.reach{margin-top:12px}
+.reach .cap{font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.reach .opts{display:flex;flex-wrap:wrap;gap:6px}
+.dchip{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:0 11px;border:1px solid var(--rule);border-radius:22px;background:#FFFDF8;font:600 13.5px var(--sans);color:var(--ink);white-space:nowrap}
+.dchip small{font-weight:500;color:var(--muted);font-size:11.5px}
+.dchip svg{width:14px;height:14px;color:var(--ochre)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-size:11.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{flex:none}
+
+/* zoomed city pills (each pill is the tap target) */
+.cpill{position:absolute;display:flex;align-items:center;gap:7px;min-height:44px;padding:4px 12px 4px 9px;background:#FFFDF8;border:1.5px solid var(--ink);border-radius:22px;box-shadow:0 4px 10px -6px rgba(60,40,10,.5);white-space:nowrap;line-height:1.15}
+.cpill b{display:block;font-size:13.5px;font-weight:700}
+.cpill small{display:flex;align-items:center;gap:3px;font-size:10.5px;color:var(--muted);font-weight:500}
+.cpill small svg{width:11px;height:11px;color:var(--ochre)}
+.cpill > svg{width:18px;height:18px;flex:none}
+.cpill.here{border:2px solid var(--pin);background:#FFF7E8}
+.cpill.here > svg{color:var(--pin)}
+.cpill.off{border:1.5px dashed var(--coast);background:rgba(234,224,203,.92);box-shadow:none}
+.cpill.off b{color:var(--na-ink)}
+.backw{position:absolute;left:10px;top:10px;display:flex;align-items:center;gap:7px;min-height:44px;padding:0 16px 0 12px;background:var(--ink);color:var(--on-ink);border-radius:22px;font:600 14px var(--sans);box-shadow:0 6px 14px -8px rgba(10,24,38,.7);z-index:2}
+.backw svg{width:18px;height:18px;color:var(--ochre-lt)}
+
+/* ---------- modal sheet ---------- */
+.scrim{position:absolute;inset:0;background:rgba(10,24,38,.38);z-index:6}
+.msheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:26px 26px 0 0;padding:10px 20px 18px;box-shadow:0 -10px 30px -12px rgba(10,24,38,.45);z-index:7}
+.msheet .eyebrow + h2{margin-top:2px}
+.sheet-h{display:flex;justify-content:space-between;align-items:flex-start}
+.x{width:44px;height:44px;border-radius:22px;display:grid;place-items:center;margin:-8px -10px 0 0;color:var(--muted);flex:none}
+.x svg{width:20px;height:20px}
+.eyebrow{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
+h2.t{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.15}
+.arr{display:inline-flex;align-items:center;gap:7px;margin-top:8px;padding:6px 12px 6px 9px;border-radius:16px;background:var(--paper);border:1px solid var(--rule);font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.arr svg{width:16px;height:16px;color:var(--ochre)}
+.fact{margin-top:12px;padding:12px 14px 13px;border-radius:14px;background:#FFFDF8;border:1px solid var(--rule);border-left:4px solid var(--ochre)}
+.fact .cap{display:flex;align-items:center;gap:6px;font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fact .cap svg{width:14px;height:14px;color:var(--ochre)}
+.fact p{font-family:var(--serif);font-size:16px;line-height:1.45;color:var(--ink)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;width:100%;border:0;border-radius:25px;background:var(--ink);color:var(--on-ink);font:600 16px var(--sans);margin-top:12px;letter-spacing:.2px}
+.btn svg{width:18px;height:18px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;width:100%;border:1.5px solid var(--ink);border-radius:24px;background:transparent;color:var(--ink);font:600 15px var(--sans);margin-top:8px}
+.conseq{font-size:12.5px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.4}
+.conseq b{color:var(--ink);font-weight:600}
+.link{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;margin-top:4px;font:600 15px var(--sans);color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.link svg{width:16px;height:16px;color:var(--ochre)}
+.nostamp{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);margin-top:2px}
+.nostamp svg{width:14px;height:14px;flex:none}
+
+/* ---------- F2 full-screen arrival ---------- */
+.arrive{position:absolute;top:144px;left:0;right:0;bottom:0;padding:10px 20px 0}
+.arrive .city{font-family:var(--serif);font-size:50px;font-weight:600;line-height:1;margin-top:2px;letter-spacing:-.5px}
+.illus{margin-top:12px;height:178px;border-radius:16px;overflow:hidden;border:1px solid var(--rule)}
+.illus svg{display:block;width:100%;height:100%}
+.foot{position:absolute;left:0;right:0;bottom:0;padding:0 20px 16px}
+
+/* ---------- start + intro ---------- */
+.start{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:96px 28px 0;text-align:center;
+  background:radial-gradient(120% 60% at 50% 0,#FBE1BF 0,#F6EEDC 70%)}
+.start .art{width:220px;height:200px}
+.start .tagl{font-family:var(--serif);font-size:19px;line-height:1.4;color:var(--body);margin-top:28px;max-width:280px}
+.goalbox{margin-top:12px;padding:14px 14px 12px;border-radius:16px;background:var(--ink);color:var(--on-ink)}
+.goalbox .cap{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ochre-lt);display:flex;align-items:center;gap:6px}
+.goalbox .cap svg{width:14px;height:14px}
+.goalbox p{font-family:var(--serif);font-size:19px;line-height:1.3;margin-top:5px}
+.goalbox .slots{display:flex;gap:8px;margin-top:10px}
+.goalbox .slots i{width:26px;height:26px;border-radius:50%;border:1.5px dashed #5D7487;display:grid;place-items:center;font:700 9px var(--sans);font-style:normal;color:#A9B4BC}
+.facts2{display:flex;gap:8px;margin-top:10px}
+.facts2 .chip{height:52px}
+.steps{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+.step{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--rule)}
+.step:first-child{border-top:0}
+.step .n{width:34px;height:34px;border-radius:50%;background:var(--card);border:1px solid var(--rule);display:grid;place-items:center;flex:none;color:var(--ochre)}
+.step .n svg{width:18px;height:18px}
+.step b{display:block;font-size:15px}
+.step span{display:block;font-size:13px;line-height:1.35;color:var(--muted);margin-top:1px}
+
+/* ---------- menu ---------- */
+.mrow{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 4px;border-top:1px solid var(--rule)}
+.mrow:first-of-type{border-top:0}
+.mrow .ic{width:40px;height:40px;border-radius:50%;background:var(--paper);display:grid;place-items:center;color:var(--ink);flex:none}
+.mrow .ic svg{width:20px;height:20px}
+.mrow .t{flex:1;line-height:1.25}
+.mrow .t b{font-size:16px;font-weight:600}
+.mrow .t span{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+.mrow .t span.warn{color:var(--ink)}
+.mrow .t span.warn svg{width:13px;height:13px;vertical-align:-2px;color:var(--ochre);margin-right:3px}
+.mrow > svg{width:18px;height:18px;color:var(--muted);flex:none}
+
+/* ---------- passport screen ---------- */
+.navrow{position:absolute;top:50px;left:8px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:5}
+.backb{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;font:600 15px var(--sans);color:var(--ink)}
+.backb svg{width:20px;height:20px}
+.navrow .st{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pcover{position:absolute;top:100px;left:16px;right:16px;height:104px;border-radius:8px 16px 16px 8px;background:var(--ink);color:var(--ochre-lt);padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:inset 6px 0 0 #1E3346,0 10px 20px -14px rgba(10,24,38,.8)}
+.pcover .em{width:62px;height:62px;border-radius:50%;border:1.5px solid var(--ochre-lt);display:grid;place-items:center;flex:none}
+.pcover .em svg{width:36px;height:36px}
+.pcover .m{font:800 11px var(--sans);letter-spacing:2px}
+.pcover .c{font-family:var(--serif);font-size:24px;color:var(--on-ink);margin-top:4px;line-height:1}
+.pcover .c b{font-weight:700}
+.pcover .g{font-size:11.5px;color:#C9D2D8;margin-top:6px;line-height:1.3}
+.tabs{position:absolute;top:216px;left:16px;right:16px;display:flex;background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:3px}
+.tab{flex:1;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:11px;font:600 14.5px var(--sans);color:var(--muted)}
+.tab svg{width:16px;height:16px}
+.tab.on{background:var(--ink);color:var(--on-ink);font-weight:700}
+.tab.on svg{color:var(--ochre-lt)}
+.tab .cnt{font-size:12px;font-weight:600;padding:1px 7px;border-radius:9px;background:rgba(10,24,38,.08)}
+.tab.on .cnt{background:rgba(251,244,228,.16)}
+.ppage{position:absolute;top:276px;left:16px;right:16px;bottom:18px;background:#FFFDF8;border:1px solid var(--rule);border-radius:6px 16px 16px 6px;padding:16px 14px 14px 20px;
+  background-image:repeating-linear-gradient(0deg,transparent 0 27px,rgba(217,201,166,.35) 27px 28px);box-shadow:inset 7px 0 0 #EFE3C8}
+.ppage .ph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.ppage .ph b{font-family:var(--serif);font-size:18px}
+.ppage .ph span{font-size:11.5px;color:var(--muted);letter-spacing:.4px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 6px}
+.slot{text-align:center}
+.slot > svg{width:80px;height:80px;display:block;margin:0 auto}
+.slot .rot1{transform:rotate(-9deg)} .slot .rot2{transform:rotate(7deg)}
+.slot .nm{font-family:var(--serif);font-size:14.5px;font-weight:700;margin-top:2px}
+.slot .dy{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.slot .dy svg{width:12px;height:12px;color:var(--ochre)}
+.slot .empty{width:72px;height:72px;border:2px dashed var(--coast);border-radius:50%;margin:4px auto;display:grid;place-items:center;font:700 15px var(--sans);color:var(--muted)}
+.slot.e .nm{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--muted)}
+.pnote{display:flex;gap:8px;align-items:flex-start;margin-top:16px;padding:10px 12px;border-radius:12px;background:rgba(246,238,220,.9);border:1px dashed var(--coast);font-size:12.5px;line-height:1.4}
+.pnote svg{width:16px;height:16px;flex:none;color:var(--ochre);margin-top:1px}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.polaroid{background:#FFFDF8;padding:6px 6px 9px;border:1px solid var(--rule);border-radius:3px;box-shadow:0 8px 16px -10px rgba(60,40,10,.55)}
+.polaroid.r1{transform:rotate(-2deg)} .polaroid.r2{transform:rotate(2deg)}
+.polaroid .img{height:86px;overflow:hidden;border:1px solid var(--rule)}
+.polaroid .img svg{display:block;width:100%;height:100%}
+.polaroid h5{font-family:var(--serif);font-size:14px;font-weight:600;margin-top:6px;line-height:1.15}
+.polaroid .wh{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);margin-top:1px}
+.polaroid p{font-size:11.5px;line-height:1.3;color:var(--muted);font-style:italic;margin-top:3px}
+.polaroid.empty{background:transparent;border:1.5px dashed var(--coast);box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:190px;padding:12px}
+.polaroid.empty svg{width:26px;height:26px;color:var(--coast)}
+.polaroid.empty b{font-size:13px;margin-top:6px}
+.polaroid.empty span{font-size:11.5px;line-height:1.35;color:var(--muted);margin-top:3px}
+
+/* ---------- travel home ---------- */
+.route{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.route svg{width:16px;height:16px;color:var(--ochre)}
+.route b{color:var(--ink);font-weight:600}
+.srow5{display:flex;align-items:center;gap:4px;margin-top:12px;padding:8px 10px;border:1px solid var(--rule);border-radius:14px;background:#FFFDF8}
+.srow5 .lbl{font-size:12px;color:var(--muted);margin-right:auto;line-height:1.2}
+.srow5 .lbl b{display:block;font-family:var(--serif);font-size:17px;color:var(--ink)}
+.srow5 .sl{width:34px;height:34px}
+.srow5 .sl.on svg{width:38px;height:38px}
+.goal{display:flex;align-items:center;gap:10px;margin-top:8px;padding:10px 12px;min-height:48px;border-radius:14px;font-size:15px;font-weight:700;line-height:1.3}
+.goal svg{width:24px;height:24px;flex:none}
+.goal.ok{background:#FFF7E8;border:2px solid var(--ink)}
+.goal.ok svg{color:var(--ink)}
+.goal.no{background:var(--paper);border:1.5px dashed var(--coast);font-weight:600}
+.goal.no svg{color:var(--muted)}
+.goal small{display:block;font-size:12.5px;font-weight:500;color:var(--muted)}
+.ba{display:flex;gap:8px;margin-top:8px}
+.bai{flex:1;min-width:0;display:flex;align-items:center;gap:5px;height:40px;padding:0 8px;border-radius:12px;background:var(--paper);border:1px solid var(--rule);font-size:12.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bai svg{width:16px;height:16px;flex:none;color:var(--ochre)}
+.bai .from,.bai .ar{color:var(--muted)}
+.bai b{font-weight:700}
+.bai.wide{flex:1.25}
+.ends{display:flex;align-items:center;gap:7px;justify-content:center;margin-top:10px;font-size:13.5px;font-weight:600}
+.ends svg{width:16px;height:16px;color:var(--ochre)}
+
+/* ---------- journey summary ---------- */
+.sum{position:absolute;top:52px;left:0;right:0;bottom:0;padding:6px 20px 0}
+.headline{display:flex;align-items:center;gap:10px;margin-top:4px}
+.headline svg{width:30px;height:30px;flex:none}
+.headline h2{font-family:var(--serif);font-size:32px;font-weight:600;line-height:1.05}
+.lede{font-size:14.5px;line-height:1.45;color:var(--body);margin-top:6px}
+.called{display:inline-flex;align-items:center;gap:6px;margin-top:8px;min-height:30px;padding:0 12px 0 9px;border-radius:15px;border:1.5px solid var(--ink);font:700 12px var(--sans);letter-spacing:.6px;text-transform:uppercase}
+.called svg{width:14px;height:14px;color:var(--ochre)}
+.pass{margin-top:14px;border:1px solid var(--rule);border-radius:16px;overflow:hidden;background:var(--card)}
+.pass .band{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--ink);color:var(--ochre-lt);font:800 10.5px var(--sans);letter-spacing:1.6px}
+.pass .band span{display:flex;align-items:center;gap:6px}
+.pass .band svg{width:15px;height:15px}
+.pass .band b{font-family:var(--serif);font-size:15px;letter-spacing:0;color:var(--on-ink)}
+.pass .row5{display:grid;grid-template-columns:repeat(5,1fr);padding:10px 4px 10px;text-align:center}
+.pass .row5 svg{width:50px;height:50px;display:block;margin:0 auto}
+.pass .row5 div:nth-child(odd) svg{transform:rotate(-8deg)}
+.pass .row5 div:nth-child(even) svg{transform:rotate(6deg)}
+.pass .row5 small{display:block;font-size:11px;font-weight:600;margin-top:2px;line-height:1.15}
+.pass .row5 .e{width:44px;height:44px;border:1.5px dashed var(--coast);border-radius:50%;margin:3px auto;display:grid;place-items:center;font:700 11px var(--sans);color:var(--muted)}
+.pass .row5 .e + small{color:var(--muted);font-weight:500}
+.stats{display:flex;gap:8px;margin-top:10px}
+.stat{flex:1;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--rule);border-radius:14px;background:var(--card)}
+.stat svg{width:20px;height:20px;color:var(--ochre);flex:none}
+.stat b{display:block;font-family:var(--serif);font-size:19px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{display:block;font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
+.albumstrip{margin-top:12px}
+.albumstrip .cap{display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.albumstrip .ps{display:flex;gap:12px}
+.albumstrip .polaroid{width:118px;padding:5px 5px 7px}
+.albumstrip .polaroid .img{height:62px}
+.albumstrip .polaroid h5{font-size:12.5px}
+.tip{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:9px 12px;border-radius:12px;background:rgba(255,251,242,.8);border:1px dashed var(--coast);font-size:12.5px;line-height:1.4}
+.tip svg{width:16px;height:16px;flex:none;color:var(--ochre);margin-top:1px}
+
+/* ---------- notes under phones ---------- */
+.meas{margin-top:14px;border:1px dashed var(--coast);border-radius:18px;padding:12px 14px 14px;background:rgba(255,251,242,.6)}
+.meas .cap{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.meas dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;line-height:1.35}
+.meas dt{color:var(--muted)}
+.meas dd{font-weight:600}
+.meas p{font-size:12.5px;line-height:1.45;color:var(--body);margin-top:8px}
+.meas p:first-of-type{margin-top:0}
+.meas .demo{margin-top:10px}
+.meas .demo .cityday{position:relative;width:180px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></symbol>
+    <symbol id="i-train" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c-4 0-8 .5-8 4v9.5A3.5 3.5 0 0 0 7.5 19L6 20.5v.5h2l2-2h4l2 2h2v-.5L16.5 19a3.5 3.5 0 0 0 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zM11 10H6V6h5zm2 0V6h5v4zm3.5 7a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><path fill="currentColor" d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6zm3.5 1A1.5 1.5 0 1 1 9 15.5 1.5 1.5 0 0 1 7.5 17zm9 0a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5zM18 11H6V6h12z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a4 4 0 0 0-2 7.46V13H5a2 2 0 0 0-2 2v3h18v-3a2 2 0 0 0-2-2h-5V9.46A4 4 0 0 0 12 2zM4 20h16v2H4z"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15.9V19h-2v-1.1A4 4 0 0 1 8 14h2a2 2 0 0 0 4 0c0-1-1-1.5-2.3-1.8C9.9 11.8 8 11.2 8 9a3.6 3.6 0 0 1 3-3.4V5h2v.6A3.6 3.6 0 0 1 16 9h-2a1.8 1.8 0 0 0-2-1.6c-1.1 0-2 .6-2 1.6 0 .8.9 1.1 2.3 1.5C14 11 16 11.6 16 14a4 4 0 0 1-3 3.9z"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14zM7 12h5v5H7z"/></symbol>
+    <symbol id="i-photo" viewBox="0 0 24 24"><path fill="currentColor" d="M20 5h-3.2L15 3H9L7.2 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-8 13a5 5 0 1 1 5-5 5 5 0 0 1-5 5zm0-8a3 3 0 1 0 3 3 3 3 0 0 0-3-3z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2zm0-8h-2V7h2z"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path fill="currentColor" d="M9.3 6.3 7.9 7.7l4.3 4.3-4.3 4.3 1.4 1.4 5.7-5.7z"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16 8 13.4 13.4 8 16l2.6-5.4z" fill="currentColor"/></symbol>
+    <symbol id="i-mtn" viewBox="0 0 24 24"><path fill="currentColor" d="M1.5 20 9 6.5l4.2 7.4 2.6-4.1L22.5 20z"/><circle cx="18.5" cy="5.5" r="2.2" fill="currentColor"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2.2H3zM3 10.9h18v2.2H3zM3 15.8h18V18H3z"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17h-2v-2h2zm2.07-7.75-.9.92A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.17-2.83l1.24-1.26A2 2 0 1 0 10 9H8a4 4 0 1 1 8 0 3.2 3.2 0 0 1-.93 2.25z"/></symbol>
+    <symbol id="i-restart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.4 12.4l3.1 3.1 6.1-6.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-open" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.6" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3.2 2.4"/><path d="M8 12h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.5 7.5h15M4.5 16.5h15"/></g></symbol>
+    <symbol id="i-tap" viewBox="0 0 24 24"><path fill="currentColor" d="M9 11.2V7.5a2 2 0 0 1 4 0v4.8l4.4.9a2.1 2.1 0 0 1 1.6 2.4l-.8 5a1.6 1.6 0 0 1-1.6 1.4h-6.2a1.7 1.7 0 0 1-1.3-.6L5.3 17a1.4 1.4 0 0 1 1.9-2L9 16.3z"/><path d="M6.5 8.5a4.5 4.5 0 0 1 9 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-zoom" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 14 14.4l.3.3v.8l5 5 1.5-1.5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14zM10 7H9v2H7v1h2v2h1v-2h2V9h-2z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path fill="currentColor" d="M7 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9a4 4 0 0 0-4-4z"/></symbol>
+
+    <!-- ROUND CODE STAMPS: ochre ring, navy ink, code + check (state never by colour alone) -->
+    <symbol id="st-cph" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#B9761A" fill-opacity=".12" stroke="#B9761A" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#0A1826" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing=".6" fill="#0A1826">CPH</text><path d="M18 27l5 5 9-9" fill="none" stroke="#0A1826" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-par" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#B9761A" fill-opacity=".12" stroke="#B9761A" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#0A1826" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing=".6" fill="#0A1826">PAR</text><path d="M18 27l5 5 9-9" fill="none" stroke="#0A1826" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-lon" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#B9761A" fill-opacity=".12" stroke="#B9761A" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#0A1826" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing=".6" fill="#0A1826">LON</text><path d="M18 27l5 5 9-9" fill="none" stroke="#0A1826" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-rom" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#B9761A" fill-opacity=".12" stroke="#B9761A" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#0A1826" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing=".6" fill="#0A1826">ROM</text><path d="M18 27l5 5 9-9" fill="none" stroke="#0A1826" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-ist" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#B9761A" fill-opacity=".12" stroke="#B9761A" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#0A1826" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing=".6" fill="#0A1826">IST</text><path d="M18 27l5 5 9-9" fill="none" stroke="#0A1826" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="st-nyc" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#B9761A" fill-opacity=".12" stroke="#B9761A" stroke-width="2.5"/><circle cx="25" cy="25" r="17" fill="none" stroke="#0A1826" stroke-width="1" stroke-dasharray="2 2"/><text x="25" y="22" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing=".6" fill="#0A1826">NYC</text><path d="M18 27l5 5 9-9" fill="none" stroke="#0A1826" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+    <!-- sight drawings (line art, no people) -->
+    <symbol id="ph-eiffel" viewBox="0 0 160 96"><rect width="160" height="96" fill="#F6D9AE"/><circle cx="122" cy="30" r="12" fill="#F2B866"/><rect y="78" width="160" height="18" fill="#C9B183"/>
+      <g fill="none" stroke="#0A1826" stroke-width="1.6" stroke-linejoin="round"><path d="M80 10V16M76 16H84L82 34H78ZM74 34H86L92 58H68ZM66 58H94L104 82H90Q80 66 70 82H56Z"/><path d="M78 22L82 28M82 22L78 28M72 40L88 54M88 40L72 54" stroke-width=".8"/></g></symbol>
+    <symbol id="ph-louvre" viewBox="0 0 160 96"><rect width="160" height="96" fill="#E9DDC4"/><rect y="74" width="160" height="22" fill="#C9B183"/>
+      <g fill="none" stroke="#0A1826" stroke-width="1.6" stroke-linejoin="round"><path d="M50 74 80 32 110 74Z"/><path d="M65 53H95M58 63H102M80 32V74M72 43 66 74M88 43 94 74" stroke-width=".8"/><path d="M10 74V50H40V74M120 74V50H150V74M10 56H40M120 56H150" stroke-width="1.2"/></g></symbol>
+    <symbol id="ph-tivoli" viewBox="0 0 160 96"><rect width="160" height="96" fill="#E9DDC4"/><rect y="80" width="160" height="16" fill="#C9B183"/>
+      <g fill="none" stroke="#0A1826" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M0 18Q40 34 80 14Q120 34 160 18" stroke-width=".9"/>
+        <path d="M48 44 80 20 112 44Z"/><path d="M80 20V12M80 12l7 2.5-7 2.5"/>
+        <path d="M46 44Q51 50 56 44Q61 50 66 44Q71 50 76 44Q81 50 86 44Q91 50 96 44Q101 50 106 44Q111 50 116 44" stroke-width="1.2"/>
+        <path d="M54 49V76M67 49V76M80 49V76M93 49V76M106 49V76" stroke-width="1"/>
+        <path d="M44 76H116V80H44Z"/>
+        <path d="M60 62h6M73 58h6M86 64h6M99 60h6" stroke-width="2.4"/>
+      </g>
+      <g fill="#0A1826"><circle cx="20" cy="23" r="1.6"/><circle cx="40" cy="27.5" r="1.6"/><circle cx="60" cy="25" r="1.6"/><circle cx="100" cy="25" r="1.6"/><circle cx="120" cy="27.5" r="1.6"/><circle cx="140" cy="23" r="1.6"/></g></symbol>
+
+    <!-- Paris street line art for F2 (no people, no landmark cliche) -->
+    <symbol id="ill-paris" viewBox="0 0 335 146">
+      <rect width="335" height="146" fill="#FBE1BF"/><circle cx="276" cy="34" r="16" fill="#F2B866"/>
+      <rect y="120" width="335" height="26" fill="#E2CFA4"/>
+      <g fill="none" stroke="#0A1826" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+        <!-- building 1: mansard + chimneys -->
+        <path d="M14 120V46H134V120"/><path d="M14 46 22 26H126L134 46"/><path d="M40 26V16H48V26M96 26V18H104V26"/>
+        <path d="M30 36h8v6h-8zM60 36h8v6h-8zM90 36h8v6h-8zM112 36h6v6h-6z" stroke-width="1"/>
+        <path d="M24 54h12v14H24zM50 54h12v14H50zM76 54h12v14H76zM102 54h12v14h-12z" stroke-width="1.1"/>
+        <path d="M20 72H128" stroke-width="1"/><path d="M22 72v4M30 72v4M38 72v4M48 72v4M56 72v4M64 72v4M74 72v4M82 72v4M90 72v4M100 72v4M108 72v4M116 72v4M124 72v4" stroke-width=".8"/>
+        <!-- cafe awning facing the street -->
+        <path d="M18 86H130L136 96H12Z"/>
+        <path d="M12 96Q17 101 22 96Q27 101 32 96Q37 101 42 96Q47 101 52 96Q57 101 62 96Q67 101 72 96Q77 101 82 96Q87 101 92 96Q97 101 102 96Q107 101 112 96Q117 101 122 96Q127 101 132 96Q134 99 136 96" stroke-width="1.1"/>
+        <path d="M30 86 26 96M48 86 46 96M66 86 66 96M84 86 86 96M102 86 106 96M120 86 126 96" stroke-width=".8"/>
+        <!-- tables and chairs on the terrace, facing out -->
+        <ellipse cx="40" cy="110" rx="8" ry="2"/><path d="M40 112V120M36 120h8"/>
+        <ellipse cx="84" cy="110" rx="8" ry="2"/><path d="M84 112V120M80 120h8"/>
+        <path d="M28 120V106h4M52 120V106h-4M72 120V106h4M96 120V106h-4" stroke-width="1.1"/>
+        <!-- building 2 -->
+        <path d="M150 120V40H236V120"/><path d="M150 40 158 24H228L236 40"/><path d="M200 24V14H208V24"/>
+        <path d="M160 48h12v16h-12zM186 48h12v16h-12zM212 48h12v16h-12zM160 76h12v16h-12zM186 76h12v16h-12zM212 76h12v16h-12z" stroke-width="1.1"/>
+        <path d="M156 68H230M156 96H230" stroke-width=".9"/>
+        <path d="M184 120v-16a9 9 0 0 1 18 0v16" />
+        <!-- river and stone bridge -->
+        <path d="M244 120Q260 96 276 96Q292 96 308 120M276 96Q296 96 312 104" stroke-width="1.3"/>
+        <path d="M236 96H335" />
+        <path d="M244 120Q260 104 276 104Q292 104 308 120" stroke-width="1"/>
+        <path d="M252 132q6 -3 12 0t12 0t12 0t12 0t12 0t12 0" stroke-width=".9"/>
+      </g>
+    </symbol>
+
+    <!-- Start screen art: compass with dashed routes -->
+    <symbol id="art-start" viewBox="0 0 220 200">
+      <g fill="none" stroke="#0A1826" stroke-linecap="round">
+        <circle cx="110" cy="100" r="70" stroke-width="1.4"/>
+        <circle cx="110" cy="100" r="62" stroke-width=".8" stroke-dasharray="2 3"/>
+        <path d="M110 22v10M110 168v10M32 100h10M178 100h10" stroke-width="1.4"/>
+      </g>
+      <path d="M110 46 118 100H102z" fill="#C8861E"/><path d="M110 154 102 100h16z" fill="#0A1826"/>
+      <circle cx="110" cy="100" r="4" fill="#FFFBF2" stroke="#0A1826" stroke-width="1.6"/>
+      <text x="110" y="16" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0A1826">N</text>
+      <path d="M14 168Q60 120 110 100T206 40" fill="none" stroke="#B9761A" stroke-width="2.2" stroke-dasharray="5 4" stroke-linecap="round"/>
+      <use href="#st-cph" x="164" y="12" width="44" height="44" transform="rotate(-12 186 34)"/>
+      <g transform="translate(14 168)"><rect x="-9" y="-9" width="18" height="18" rx="3" fill="#0A1826"/><use href="#i-home" x="-6.5" y="-7" width="13" height="13" color="#FBF4E4"/></g>
+    </symbol>
+
+    <!-- coarse world (x = lon+180, y = 90-lat) -->
+    <path id="w-na" d="M12 24 40 20 85 18 100 17 118 30 125 38 114 45 105 52 99 59 100 65 98 61 90 61 83 64 83 70 93 69 97 80 101 82 88 75 75 70 68 60 63 57 56 50 56 42 45 32 30 30 15 30Z"/>
+    <path id="w-gl" d="M130 8 160 8 160 20 135 30 125 22Z"/>
+    <path id="w-sa" d="M100 81 120 80 130 90 145 95 140 112 132 118 122 128 115 145 108 140 108 120 110 108 100 95Z"/>
+    <path id="w-ea" d="M170 54 171 47 178 46 175 42 182 39 188 36 190 33 185 31 185 28 195 21 208 19 220 23 240 20 260 17 285 12 320 18 350 20 360 24 340 30 335 38 320 42 315 55 302 60 300 68 288 72 285 80 280 88 278 82 272 68 260 82 252 70 238 65 230 60 228 62 235 65 238 72 224 78 215 60 215 54 208 53 206 50 200 50 196 52 196 49 192 46 188 46 183 48 175 54Z"/>
+    <path id="w-uk" d="M175 40 181 39 178 34 175 32 174 35Z"/>
+    <path id="w-af" d="M163 69 170 60 175 54 190 53 200 58 212 59 215 62 223 78 231 78 220 95 220 105 215 115 200 125 197 118 192 105 189 91 188 86 172 86 163 76Z"/>
+    <path id="w-au" d="M294 112 302 108 310 102 317 102 322 101 326 109 333 116 330 127 320 128 312 122 295 124Z"/>
+    <path id="w-jp" d="M310 59 320 55 322 50 321 45 319 52Z"/>
+    <path id="w-id" d="M285 92 300 94 305 98 290 97Z"/>
+    <!-- detailed Europe -->
+    <path id="e-main" d="M171 46.5 178.5 46.6 179 44 177.5 42.5 175.5 41.5 178.5 40.3 181.5 39.1 184 38.5 185 37 188 36.3 188.6 34.5 188.1 33.2 190.5 32.4 190.5 33.8 192.5 34.4 190.8 36 194 36 198.5 35.4 201 35 201 33 204 32.5 204 30.6 209 30 205 25 201 25.5 199 26.5 197.5 29 199 30.5 196.5 33 196 34 193 34.6 192 33.5 191 31.2 190.5 30.5 189 31.1 186 32 185 31 185 28.5 187 27.5 191 25.5 194 23 198 20.5 205 19 211 20 213 23 220 23 222 28 222 45 217 43 213 44 210 43.5 209 45 208 46.5 208 48 209 48.8 212 48.2 216 48.5 222 48.5 222 53.5 216 53.5 210 53.7 207 52.7 206 50 206.2 49.2 204 49.2 203 50.5 203.5 52 202.5 53.5 201.5 52.5 201 50.5 199.5 49.5 199.5 48 196 46.5 193.5 44.5 192.4 44.6 192.5 46 194 47.7 196 48.7 198.5 49.8 196.5 51 195.7 52 196 50.5 195.5 49.9 192.5 48.5 190.5 47 188.7 45.6 187 46.4 184.5 46.5 183.2 48 180.5 49.5 180 51 179.5 52 178 53.3 174.5 54 173 52.8 171.2 53 171 51.3 170.6 50.5 171.2 48Z"/>
+    <path id="e-af" d="M174 54.2 178 54.9 183 53.2 190 52.8 191 55 190 56.5 195 57.7 200 59.5 200 57.5 203 57.3 210 58.7 212 58.8 215 60 222 62 222 70 172 70 168 62Z"/>
+    <path id="e-gb" d="M174.3 40 181.4 38.8 181.7 37.3 180 36.5 178.4 34.4 178 32.4 176.5 31.4 175 31.4 174 33 175 35 177 35.5 177 36.7 175.4 37 176 38 174.8 38.3 177 38.6 175.5 39Z"/>
+    <path id="e-ie" d="M174 37.8 174 36 172.5 34.7 170 36 170 38.4Z"/>
+    <path id="e-isl" d="M192.5 51.8 195.5 51.5 195 53.3 192.6 52.4ZM188.3 49 189.7 49 189.6 51.2 188.4 51Z"/>
+    <clipPath id="loupe2"><circle cx="252" cy="344" r="112"/></clipPath>
+
+    <!-- ===== MAP-C: combined. MAP-2 treatment (loupe r112, 5.8x) moved up 136 px to sit under the in-flow slim strip. 375 x 340 ===== -->
+    <symbol id="mapC" viewBox="0 0 375 340">
+      <rect width="375" height="340" fill="#EFE3C8" fill-opacity=".55"/>
+      <g transform="translate(0 -136)">
+        <g stroke="#D9C9A6" stroke-width=".6" fill="none" stroke-dasharray="2 3"><path d="M0 152H375M0 182H375M0 212H375M0 242H375M79 112V272M139 112V272M199 112V272M259 112V272M319 112V272"/></g>
+        <g transform="translate(12 122)" fill="#E2CFA4" stroke="#C9B183" stroke-width=".8" stroke-linejoin="round">
+          <use href="#w-na"/><use href="#w-gl"/><use href="#w-sa"/><use href="#w-ea"/><use href="#w-uk"/><use href="#w-af"/><use href="#w-au"/><use href="#w-jp"/><use href="#w-id"/>
+        </g>
+        <rect x="181" y="149" width="42" height="29" rx="3" fill="none" stroke="#0A1826" stroke-width="1"/>
+        <path d="M181 178 180 258.2M223 178 324 258.2" stroke="#0A1826" stroke-width=".7" stroke-dasharray="2 2" fill="none"/>
+        <g transform="translate(30 172) scale(.75)">
+          <circle r="18" fill="#FFFBF2" stroke="#0A1826" stroke-width="1"/>
+          <path d="M0-15 3 0H-3z" fill="#C8861E"/><path d="M0 15-3 0H3z" fill="#0A1826"/>
+          <path d="M-15 0 0-2.4V2.4zM15 0 0 2.4V-2.4z" fill="#0A1826" opacity=".45"/>
+          <text x="0" y="-21" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#0A1826">N</text>
+        </g>
+        <g fill="#FFFBF2" stroke="#0A1826" stroke-width="1.8"><circle cx="118" cy="171" r="5"/><circle cx="332" cy="176" r="5"/><circle cx="343" cy="246" r="5"/></g>
+        <circle cx="252" cy="344" r="115" fill="#0A1826" opacity=".12"/>
+        <g clip-path="url(#loupe2)">
+          <circle cx="252" cy="344" r="112" fill="#EFE3C8"/>
+          <g transform="translate(252 344) scale(5.8) translate(-194 -40)" fill="#E2CFA4" stroke="#C9B183" stroke-width=".18" stroke-linejoin="round">
+            <use href="#e-main"/><use href="#e-af"/><use href="#e-gb"/><use href="#e-ie"/><use href="#e-isl"/>
+          </g>
+          <path d="M201.7 283.7 243.7 311.1 184.4 350.6" fill="none" stroke="#0A1826" stroke-width="1.7" stroke-linecap="round"/>
+          <g transform="translate(201.7 283.7)"><rect x="-8.5" y="-8.5" width="17" height="17" rx="3" fill="#0A1826"/><use href="#i-home" x="-6.5" y="-7" width="13" height="13" color="#FBF4E4"/></g>
+          <use href="#st-cph" x="228.7" y="296.1" width="30" height="30" transform="rotate(-10 243.7 311.1)"/>
+          <circle cx="170" cy="335.3" r="4.4" fill="#FFFBF2" stroke="#0A1826" stroke-width="1.8"/>
+          <circle cx="184.4" cy="350.6" r="8.5" fill="#B5462F" opacity=".2"/>
+          <circle cx="184.4" cy="350.6" r="4.8" fill="#B5462F" stroke="#FFFBF2" stroke-width="1.8"/>
+          <circle cx="243.3" cy="391" r="4.4" fill="#FFFBF2" stroke="#0A1826" stroke-width="1.8"/>
+          <circle cx="338.9" cy="396.2" r="4.4" fill="#FFFBF2" stroke="#0A1826" stroke-width="1.8"/>
+        </g>
+        <circle cx="252" cy="344" r="112" fill="none" stroke="#0A1826" stroke-width="1.6"/>
+        <circle cx="252" cy="344" r="116" fill="none" stroke="#0A1826" stroke-width=".6"/>
+        <!-- zoom affordance on the loupe rim -->
+        <g transform="translate(296 428)">
+          <rect x="0" y="0" width="70" height="24" rx="12" fill="#0A1826"/>
+          <use href="#i-zoom" x="7" y="4" width="16" height="16" color="#E0A243"/>
+          <text x="26" y="16.5" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="11" font-weight="700" fill="#FBF4E4">Zoom</text>
+        </g>
+        <g font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="11" font-weight="600" fill="#0A1826" stroke="#F3E9D2" stroke-width="3" stroke-linejoin="round" paint-order="stroke">
+          <text x="118" y="161" text-anchor="middle" font-size="10.5">New York</text>
+          <text x="343" y="166" text-anchor="middle" font-size="10.5">Tokyo</text>
+          <text x="343" y="234" text-anchor="middle" font-size="10.5">Sydney</text>
+          <text x="213" y="288">Bergen · home</text>
+          <text x="262" y="309">Copenhagen</text>
+          <text x="262" y="320" font-size="9.5" font-weight="500" fill="#5F5848">stamped</text>
+          <text x="170" y="324" text-anchor="middle">London</text>
+          <text x="184" y="369" text-anchor="middle" font-weight="700">Paris</text>
+          <text x="184" y="380" text-anchor="middle" font-size="9.5" font-weight="500" fill="#5F5848">you're here</text>
+          <text x="243" y="407" text-anchor="middle">Rome</text>
+          <text x="332" y="385" text-anchor="end">Istanbul</text>
+          <text x="252" y="250" text-anchor="middle" font-size="8" letter-spacing="1.2" fill="#5F5848">EUROPE</text>
+        </g>
+      </g>
+    </symbol>
+
+    <!-- ===== MAP-IST: same frame, Day 15 in Istanbul, all five stamped, proposed flight home ===== -->
+    <symbol id="mapIST" viewBox="0 0 375 340">
+      <rect width="375" height="340" fill="#EFE3C8" fill-opacity=".55"/>
+      <g transform="translate(0 -136)">
+        <g transform="translate(12 122)" fill="#E2CFA4" stroke="#C9B183" stroke-width=".8" stroke-linejoin="round">
+          <use href="#w-na"/><use href="#w-gl"/><use href="#w-sa"/><use href="#w-ea"/><use href="#w-uk"/><use href="#w-af"/><use href="#w-au"/><use href="#w-jp"/><use href="#w-id"/>
+        </g>
+        <rect x="181" y="149" width="42" height="29" rx="3" fill="none" stroke="#0A1826" stroke-width="1"/>
+        <path d="M181 178 180 258.2M223 178 324 258.2" stroke="#0A1826" stroke-width=".7" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="252" cy="344" r="115" fill="#0A1826" opacity=".12"/>
+        <g clip-path="url(#loupe2)">
+          <circle cx="252" cy="344" r="112" fill="#EFE3C8"/>
+          <g transform="translate(252 344) scale(5.8) translate(-194 -40)" fill="#E2CFA4" stroke="#C9B183" stroke-width=".18" stroke-linejoin="round">
+            <use href="#e-main"/><use href="#e-af"/><use href="#e-gb"/><use href="#e-ie"/><use href="#e-isl"/>
+          </g>
+          <path d="M201.7 283.7 243.7 311.1 184.4 350.6 170 335.3 243.3 391 338.9 396.2" fill="none" stroke="#0A1826" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M338.9 396.2Q300 300 201.7 283.7" fill="none" stroke="#B9761A" stroke-width="2.8" stroke-dasharray="4 3" stroke-linecap="round"/>
+          <g transform="translate(201.7 283.7)"><rect x="-8.5" y="-8.5" width="17" height="17" rx="3" fill="#0A1826"/><use href="#i-home" x="-6.5" y="-7" width="13" height="13" color="#FBF4E4"/></g>
+          <use href="#st-cph" x="231.7" y="299.1" width="24" height="24"/>
+          <use href="#st-lon" x="148" y="318" width="22" height="22"/>
+          <use href="#st-par" x="180" y="350" width="22" height="22"/>
+          <use href="#st-rom" x="231.3" y="379" width="24" height="24"/>
+          <use href="#st-ist" x="320" y="364" width="24" height="24"/>
+          <circle cx="338.9" cy="396.2" r="8.5" fill="#B5462F" opacity=".2"/>
+          <circle cx="338.9" cy="396.2" r="4.8" fill="#B5462F" stroke="#FFFBF2" stroke-width="1.8"/>
+        </g>
+        <circle cx="252" cy="344" r="112" fill="none" stroke="#0A1826" stroke-width="1.6"/>
+        <g font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="11" font-weight="600" fill="#0A1826" stroke="#F3E9D2" stroke-width="3" stroke-linejoin="round" paint-order="stroke">
+          <text x="213" y="279">Bergen · home</text>
+          <text x="338" y="418" text-anchor="end" font-weight="700">Istanbul</text>
+        </g>
+      </g>
+    </symbol>
+
+    <!-- ===== MAP-Z: zoomed Europe. 375 x 420, 10.6 px per degree, origin lon -5 / lat 70 ===== -->
+    <symbol id="mapZ" viewBox="0 0 375 420">
+      <rect width="375" height="420" fill="#EFE3C8"/>
+      <g transform="scale(10.6) translate(-175 -20)" fill="#E2CFA4" stroke="#C9B183" stroke-width=".1" stroke-linejoin="round">
+        <use href="#e-main"/><use href="#e-af"/><use href="#e-gb"/><use href="#e-ie"/><use href="#e-isl"/>
+      </g>
+      <g stroke="#D9C9A6" stroke-width=".6" fill="none" stroke-dasharray="2 3"><path d="M0 106H375M0 212H375M0 318H375M53 0V420M159 0V420M265 0V420"/></g>
+      <text x="236" y="404" font-family="Iowan Old Style, Palatino, Georgia, serif" font-style="italic" font-size="11" fill="#5F5848">Mediterranean Sea</text>
+      <!-- your trail -->
+      <path d="M109.2 101.8 186.6 151.6 77.9 224.2" fill="none" stroke="#0A1826" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- routes from Paris -->
+      <g fill="none" stroke="#B9761A" stroke-width="2.6" stroke-dasharray="5 4" stroke-linecap="round">
+        <path d="M77.9 224.2Q60 216 51.9 196.1"/>
+        <path d="M77.9 224.2Q150 212 186.6 151.6"/>
+        <path d="M77.9 224.2Q126 286 185.5 297.9"/>
+        <path d="M77.9 224.2Q66 150 109.2 101.8"/>
+        <path d="M77.9 224.2Q40 262 4 276"/>
+      </g>
+      <path d="M4 276 13 268M4 276 14 281" fill="none" stroke="#B9761A" stroke-width="2.6" stroke-linecap="round"/>
+      <!-- leaders from dots to their pills -->
+      <g stroke="#0A1826" stroke-width=".9" fill="none">
+        <path d="M109.2 101.8 121 96"/><path d="M186.6 151.6 199 147"/><path d="M51.9 196.1 48 180"/><path d="M77.9 224.2 80 242"/><path d="M185.5 297.9 186 316"/><path d="M360.4 307.4 340 326"/>
+      </g>
+      <!-- markers -->
+      <g transform="translate(109.2 101.8)"><rect x="-10" y="-10" width="20" height="20" rx="4" fill="#0A1826"/><use href="#i-home" x="-7.5" y="-8" width="15" height="15" color="#FBF4E4"/></g>
+      <use href="#st-cph" x="167.6" y="132.6" width="38" height="38" transform="rotate(-10 186.6 151.6)"/>
+      <circle cx="51.9" cy="196.1" r="6" fill="#FFFBF2" stroke="#0A1826" stroke-width="2"/>
+      <circle cx="77.9" cy="224.2" r="12" fill="#B5462F" opacity=".2"/>
+      <circle cx="77.9" cy="224.2" r="6.5" fill="#B5462F" stroke="#FFFBF2" stroke-width="2"/>
+      <circle cx="185.5" cy="297.9" r="6" fill="#FFFBF2" stroke="#0A1826" stroke-width="2"/>
+      <circle cx="360.4" cy="307.4" r="6" fill="#EAE0CB" stroke="#6E6656" stroke-width="1.6" stroke-dasharray="2 1.6"/>
+      <!-- compass -->
+      <g transform="translate(344 40) scale(.8)">
+        <circle r="18" fill="#FFFBF2" stroke="#0A1826" stroke-width="1"/>
+        <path d="M0-15 3 0H-3z" fill="#C8861E"/><path d="M0 15-3 0H3z" fill="#0A1826"/>
+        <text x="0" y="-21" text-anchor="middle" font-family="Avenir Next, Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#0A1826">N</text>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="page-head">
+  <div class="tag">Screens · core set 1 · built on Direction A3</div>
+  <h1>Core screens, first pass</h1>
+  <p>Every frame uses the approved A3 language: warm paper, navy ink and ochre, the WORLDBOUND wordmark with the compass-rose O, the calendar Day chip, round code stamps, and the passport strip. The mode appears only on the passport cover. Each top bar has a menu button next to the logo, drawn small with a 44 px hit area.</p>
+  <ul>
+    <li><b>Ingrid</b> (UJ-1, Explorer): Bergen → Copenhagen → Paris → London → Rome → Istanbul → home. She's in Paris on Day 5 with €1,270, and in Istanbul on Day 15 with €673.</li>
+    <li><b>Jonas</b> (UJ-2, Explorer): he calls home from Rome with €20 and ends with 3 stamps.</li>
+  </ul>
+</header>
+
+<!-- ======================================================================
+     SECTION 1 · MAP
+     ====================================================================== -->
+<div class="sec-h">
+  <div class="tag">Section 1 · FR-3, FR-4</div>
+  <h2>Map: the final combined layout, and the Europe zoom</h2>
+  <p>This combines MAP-1's slim in-flow passport strip with MAP-2's map treatment and MAP-2's compact city-day card. When no route is open, the bottom 318 px is a resting panel. That's the same footprint as the route sheet, so the map never jumps when a sheet opens or closes.</p>
+</div>
+
+<main class="screens">
+<!-- ============================ MAP-C ============================ -->
+<figure>
+  <div class="flabel"><span class="k">MAP-C</span><span class="d">Map · resting · Paris, Day 5</span></div>
+  <p class="why">Nothing is selected yet. The panel invites the next move, and the Europe loupe tells you it can zoom.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+      <div class="chips">
+        <div class="chip wide"><svg><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+      </div>
+      <div class="pslim" role="button" aria-label="Explorer passport, 1 of 5 stamps. Open passport.">
+        <div class="cv"><svg><use href="#i-compass"/></svg>EXPLORER<span class="n">· 1/5</span></div>
+        <div class="sls"><div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl">2</div><div class="sl">3</div><div class="sl">4</div><div class="sl">5</div></div>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </div>
+    </div>
+    <div class="map">
+      <svg width="375" height="340" viewBox="0 0 375 340" role="img" aria-label="World map with a zoomed view of Europe. You are in Paris. Copenhagen is stamped. Tap the Europe circle to zoom in."><use href="#mapC"/></svg>
+      <div class="cityday" style="left:8px;top:58px;width:128px">
+        <small>You're in Paris</small>
+        <strong>City day in Paris — €80</strong>
+        <div class="hint"><svg><use href="#i-stamp"/></svg>Finish the day to earn your Paris stamp</div>
+        <div class="btn-ghost">Plan the day</div>
+        <div class="about"><svg><use href="#i-info"/></svg>About Paris</div>
+      </div>
+    </div>
+    <section class="rest" aria-label="Where to next">
+      <div class="grab"></div>
+      <div class="tapline">
+        <div class="ico"><svg><use href="#i-tap"/></svg></div>
+        <div><h3>Tap a city to see routes</h3><p>Too small? Tap the Europe circle to zoom.</p></div>
+      </div>
+      <div class="reach">
+        <div class="cap">From Paris you can reach · cheapest fare</div>
+        <div class="opts">
+          <span class="dchip">London <small>€50</small></span>
+          <span class="dchip">Rome <small>€50</small></span>
+          <span class="dchip"><svg><use href="#i-check"/></svg>Copenhagen <small>€70</small></span>
+          <span class="dchip"><svg><use href="#i-home"/></svg>Bergen <small>€180</small></span>
+          <span class="dchip">New York <small>€320</small></span>
+        </div>
+      </div>
+      <div class="legend" aria-label="Map key">
+        <span><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="4.6" fill="#B5462F" stroke="#FFFBF2" stroke-width="1.6"/></svg>You're here</span>
+        <span><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" rx="2.5" fill="#0A1826"/></svg>Home</span>
+        <span><svg width="16" height="16" viewBox="0 0 50 50"><use href="#st-cph"/></svg>Stamped</span>
+        <span><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="4.4" fill="#FFFBF2" stroke="#0A1826" stroke-width="1.8"/></svg>Not yet</span>
+      </div>
+    </section>
+  </div>
+  <div class="meas">
+    <div class="cap">Measured and notes</div>
+    <dl>
+      <dt>Strip</dt><dd>38 px visible, 46 px hit area (MAP-1)</dd>
+      <dt>Map</dt><dd>y 144 → 468 clear · loupe r 112, 5.8× (MAP-2)</dd>
+      <dt>Paris ↔ London</dt><dd>≈ 21 px centre to centre</dd>
+      <dt>Panel</dt><dd>318 px, same as the route sheet</dd>
+    </dl>
+    <p>The "Zoom" tag on the loupe rim is a hint. The whole loupe is the tap target. "About Paris" reopens the arrival fact card (FR-5).</p>
+    <p><b>Proposal, not decided:</b> the "From Paris you can reach" chips give a thumb-sized way to every destination without zooming, and the panel had room to spare. Drop them if you'd rather keep the map as the only way to choose.</p>
+  </div>
+</figure>
+
+<!-- ============================ MAP-Z ============================ -->
+<figure>
+  <div class="flabel"><span class="k">MAP-Z</span><span class="d">Map · Europe zoomed in</span></div>
+  <p class="why">This is what you get after tapping the loupe. Every city label is a pill at least 44 px tall, and the pill is what you tap.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+      <div class="chips">
+        <div class="chip wide"><svg><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+      </div>
+      <div class="pslim" role="button" aria-label="Explorer passport, 1 of 5 stamps. Open passport.">
+        <div class="cv"><svg><use href="#i-compass"/></svg>EXPLORER<span class="n">· 1/5</span></div>
+        <div class="sls"><div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl">2</div><div class="sl">3</div><div class="sl">4</div><div class="sl">5</div></div>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </div>
+    </div>
+    <div class="map" style="height:420px;overflow:hidden">
+      <svg width="375" height="420" viewBox="0 0 375 420" role="img" aria-label="Europe, zoomed in. Routes from Paris go to London, Copenhagen, Rome, Bergen and New York. Istanbul has no direct route."><use href="#mapZ"/></svg>
+      <div class="backw" role="button"><svg><use href="#i-globe"/></svg>Back to world</div>
+      <div class="cpill" style="left:121px;top:74px"><svg style="color:var(--ink)"><use href="#i-home"/></svg><div><b>Bergen · home</b><small><svg><use href="#i-plane"/></svg>€180 · ends the journey</small></div></div>
+      <div class="cpill" style="left:205px;top:126px"><div><b>Copenhagen</b><small><svg><use href="#i-check"/></svg>Stamped · from €70</small></div></div>
+      <div class="cpill" style="left:6px;top:134px"><div><b>London</b><small><svg><use href="#i-plane"/></svg><svg><use href="#i-train"/></svg><svg><use href="#i-bus"/></svg>from €50</small></div></div>
+      <div class="cpill here" style="left:44px;top:242px"><svg><use href="#i-pin"/></svg><div><b>Paris</b><small>You're here</small></div></div>
+      <div class="cpill" style="left:6px;top:300px"><div><b>← New York</b><small><svg><use href="#i-plane"/></svg>€320 · 1 day</small></div></div>
+      <div class="cpill" style="left:150px;top:316px"><div><b>Rome</b><small><svg><use href="#i-plane"/></svg><svg><use href="#i-train"/></svg><svg><use href="#i-bus"/></svg>from €50</small></div></div>
+      <div class="cpill off" style="right:6px;top:326px"><div><b>Istanbul</b><small>No direct route</small></div></div>
+    </div>
+    <section class="rest z" aria-label="Routes from Paris">
+      <div class="grab"></div>
+      <div class="tapline">
+        <div class="ico"><svg><use href="#i-tap"/></svg></div>
+        <div><h3>Routes from Paris</h3><p>Tap a city to compare plane, train and bus. Istanbul needs a stop on the way, via Rome or Copenhagen.</p></div>
+      </div>
+      <div class="legend" aria-label="Map key">
+        <span><svg width="26" height="8" viewBox="0 0 26 8"><path d="M1 4H25" stroke="#B9761A" stroke-width="2.6" stroke-dasharray="5 4" stroke-linecap="round"/></svg>Route from Paris</span>
+        <span><svg width="26" height="8" viewBox="0 0 26 8"><path d="M1 4H25" stroke="#0A1826" stroke-width="2.2" stroke-linecap="round"/></svg>Your trail</span>
+        <span><svg width="24" height="14" viewBox="0 0 24 14"><rect x="1" y="1" width="22" height="12" rx="6" fill="#EAE0CB" stroke="#C9B183" stroke-dasharray="2 1.6"/></svg>No direct route</span>
+      </div>
+    </section>
+  </div>
+  <div class="meas">
+    <div class="cap">Measured and notes</div>
+    <dl>
+      <dt>Zoom</dt><dd>10.6 px per degree (about 1.8× the loupe)</dd>
+      <dt>Paris ↔ London</dt><dd>≈ 38 px between dots</dd>
+      <dt>Targets</dt><dd>Pills ≥ 44 px tall and ≥ 80 px wide, none overlapping</dd>
+      <dt>Back</dt><dd>"Back to world" 44 px, top left, always on</dd>
+    </dl>
+    <p>London and Paris are still closer than 44 px, so the dots alone can't be the targets. Each city gets a labelled pill, offset with a short leader line. Paris is marked by its pin, a terracotta border and "You're here". Istanbul is dashed and reads "No direct route", so it never depends on colour alone. New York sits off the map, shown with an arrow pill.</p>
+  </div>
+</figure>
+</main>
+
+<!-- ======================================================================
+     SECTION 2 · ARRIVAL FACT CARD
+     ====================================================================== -->
+<div class="sec-h">
+  <div class="tag">Section 2 · FR-5, FR-10</div>
+  <h2>Arriving in Paris: two ways to show the fact card</h2>
+  <p>Both show Ingrid stepping off the bus from Copenhagen on Day 5 with €1,270 left. The text and actions are the same in both. Only the stage differs.</p>
+</div>
+
+<div class="screens">
+<!-- ============================ F1 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">F1</span><span class="d">Sheet over the map</span></div>
+  <p class="why">The map stays in view behind a sheet. It's quick, it keeps you in context, and it's the same pattern as the route sheet.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+      <div class="chips">
+        <div class="chip wide"><svg><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+      </div>
+      <div class="pslim"><div class="cv"><svg><use href="#i-compass"/></svg>EXPLORER<span class="n">· 1/5</span></div><div class="sls"><div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl">2</div><div class="sl">3</div><div class="sl">4</div><div class="sl">5</div></div><svg class="chev"><use href="#i-chev"/></svg></div>
+    </div>
+    <div class="map"><svg width="375" height="340" viewBox="0 0 375 340" aria-hidden="true"><use href="#mapC"/></svg></div>
+    <div class="scrim"></div>
+    <section class="msheet" aria-label="Welcome to Paris">
+      <div class="grab"></div>
+      <div class="sheet-h"><div><div class="eyebrow">You've arrived · Day 5 of 30</div><h2 class="t">Welcome to Paris</h2></div><div class="x" aria-label="Close"><svg><use href="#i-x"/></svg></div></div>
+      <div class="arr"><svg><use href="#i-bus"/></svg>Bus from Copenhagen · 2 days · €70</div>
+      <div class="fact">
+        <div class="cap"><svg><use href="#i-info"/></svg>About Paris</div>
+        <p>Paris has been a crossroads of art and ideas for centuries. Its café terraces face outward so people can watch the street go by.</p>
+      </div>
+      <div class="btn">Plan the day</div>
+      <p class="conseq">A city day here costs <b>€80</b> and <b>1 day</b>, and earns your <b>Paris stamp</b>.</p>
+      <div class="btn2">Just passing through</div>
+      <p class="nostamp"><svg><use href="#i-open"/></svg>No stamp unless you spend a day here</p>
+    </section>
+  </div>
+  <div class="meas">
+    <div class="cap">How it's reopened (FR-5)</div>
+    <p>While you're in Paris, the city card on the map has an <b>About Paris</b> link (see MAP-C). It reopens this same sheet without the arrival line, and with a single "Close" instead of the two choices.</p>
+    <div class="demo"><div class="cityday"><small>You're in Paris</small><strong>City day in Paris — €80</strong><div class="btn-ghost">Plan the day</div><div class="about"><svg><use href="#i-info"/></svg>About Paris</div></div></div>
+    <p>"Just passing through" and the × both close the sheet. The city card stays on the map, so you can still plan the day later (FR-10).</p>
+  </div>
+</figure>
+
+<!-- ============================ F2 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">F2</span><span class="d">Full-screen arrival card</span></div>
+  <p class="why">Arrival gets a moment of its own, like a postcard. Day and money stay visible, so the choice still comes with its numbers.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+      <div class="chips">
+        <div class="chip wide"><svg><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+      </div>
+      <div class="pslim"><div class="cv"><svg><use href="#i-compass"/></svg>EXPLORER<span class="n">· 1/5</span></div><div class="sls"><div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl">2</div><div class="sl">3</div><div class="sl">4</div><div class="sl">5</div></div><svg class="chev"><use href="#i-chev"/></svg></div>
+    </div>
+    <div class="arrive">
+      <div class="eyebrow">Welcome to</div>
+      <div class="city">Paris</div>
+      <div class="arr"><svg><use href="#i-bus"/></svg>Bus from Copenhagen · 2 days · €70</div>
+      <div class="illus"><svg viewBox="0 0 335 146" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Line drawing of a Paris street: tall stone buildings with slate roofs, a café terrace facing the street, and a stone bridge over the river"><use href="#ill-paris"/></svg></div>
+      <div class="fact" style="border-left-width:1px">
+        <p style="font-size:15.5px">Paris has been a crossroads of art and ideas for centuries. Its café terraces face outward so people can watch the street go by.</p>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="btn">Plan the day</div>
+      <p class="conseq">City day: <b>€80</b> and <b>1 day</b>, and it earns your <b>Paris stamp</b>.</p>
+      <div class="btn2">Just passing through</div>
+      <p class="nostamp"><svg><use href="#i-open"/></svg>No stamp unless you spend a day here</p>
+    </div>
+  </div>
+  <div class="meas">
+    <div class="cap">How it's reopened (FR-5)</div>
+    <p>The same <b>About Paris</b> link on the map's city card opens this card full screen again. In that case the arrival line becomes "You're in Paris", and the two buttons become one "Back to the map".</p>
+    <p>The drawing shows the street the fact talks about (stone buildings, a café terrace facing out, a bridge), with no people and no tower. Each city needs one drawing like this, on top of the 16 sight drawings.</p>
+  </div>
+</figure>
+</div>
+
+<!-- ======================================================================
+     SECTION 3 · START + INTRO + MENU
+     ====================================================================== -->
+<div class="sec-h">
+  <div class="tag">Section 3 · FR-1, FR-2</div>
+  <h2>Start, intro and menu</h2>
+  <p>The start screen leads to the one-screen intro on a first visit, then to the map. "How to play" on the start screen and in the menu opens the same intro.</p>
+</div>
+
+<div class="screens">
+<!-- ============================ S1 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">S1</span><span class="d">Start screen</span></div>
+  <p class="why">It shows the logo, one line of promise, and one big button. "How to play" is there for anyone who wants it first.</p>
+  <div class="phone">
+    <div class="start">
+      <svg class="art" viewBox="0 0 220 200" aria-hidden="true"><use href="#art-start"/></svg>
+      <span class="wm xl" aria-label="Worldbound" style="margin-top:22px">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+      <p class="tagl">Five stamps. Thirty days.<br>One way home.</p>
+    </div>
+    <div class="foot" style="padding-bottom:28px">
+      <div class="btn">New journey</div>
+      <div class="link"><svg><use href="#i-help"/></svg>How to play</div>
+    </div>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>On a first visit, "New journey" goes through the intro (S2) before the map. After that it goes straight to the map. The tagline is invented and needs your sign-off. "Continue journey" will slot in above "New journey" once saving exists (FR-20).</p>
+  </div>
+</figure>
+
+<!-- ============================ S2 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">S2</span><span class="d">One-screen intro</span></div>
+  <p class="why">The goal is in one sentence, with the two numbers you play against. Then three lines on how it works, and go.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+      </div>
+    </div>
+    <div style="position:absolute;top:54px;left:0;right:0;padding:0 20px">
+      <div class="eyebrow">How to play</div>
+      <h2 class="t" style="margin-top:2px">Your journey</h2>
+      <div class="goalbox">
+        <div class="cap"><svg><use href="#i-stamp"/></svg>The goal</div>
+        <p>Collect 5 passport stamps and get home to Bergen within 30 days.</p>
+        <div class="slots" aria-hidden="true"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div>
+      </div>
+      <div class="facts2">
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€1,500</b><span>You start with</span></div></div>
+        <div class="chip"><svg><use href="#i-cal"/></svg><div><b>30 days</b><span>To get home</span></div></div>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n"><svg><use href="#i-train"/></svg></div><div><b>Travel</b><span>Plane is fast, bus is cheap. Every trip costs days and money.</span></div></div>
+        <div class="step"><div class="n"><svg><use href="#i-bed"/></svg></div><div><b>Spend city days</b><span>Stay a day to earn that city's stamp. Add sights for your album.</span></div></div>
+        <div class="step"><div class="n"><svg><use href="#i-home"/></svg></div><div><b>Get home</b><span>Travel back to Bergen. Your journey ends when you land.</span></div></div>
+      </div>
+    </div>
+    <div class="foot" style="padding-bottom:20px">
+      <div class="btn">Let's go</div>
+      <p class="conseq">You can open this again from the menu.</p>
+    </div>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>On a first visit there's no close button, and "Let's go" starts the journey. When it's reopened from the menu or the start screen, the same screen shows an × at the top right and the button reads "Back to my journey". It's still one screen either way (FR-2).</p>
+  </div>
+</figure>
+
+<!-- ============================ MENU ============================ -->
+<figure>
+  <div class="flabel"><span class="k">MENU</span><span class="d">Menu sheet · with the New journey confirm</span></div>
+  <p class="why">It has three items, nothing hidden. The one that ends things says so before you tap it, and asks once more after.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Close menu" style="background:var(--ink);color:var(--on-ink);border-color:var(--ink)"><svg><use href="#i-menu"/></svg></span>
+      </div>
+      <div class="chips">
+        <div class="chip wide"><svg><use href="#i-cal"/></svg><div><b>Day 5 of 30</b><span>25 days left</span></div></div>
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€1,270</b><span>Money</span></div></div>
+      </div>
+      <div class="pslim"><div class="cv"><svg><use href="#i-compass"/></svg>EXPLORER<span class="n">· 1/5</span></div><div class="sls"><div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl">2</div><div class="sl">3</div><div class="sl">4</div><div class="sl">5</div></div><svg class="chev"><use href="#i-chev"/></svg></div>
+    </div>
+    <div class="map"><svg width="375" height="340" viewBox="0 0 375 340" aria-hidden="true"><use href="#mapC"/></svg></div>
+    <div class="scrim"></div>
+    <section class="msheet" aria-label="Menu">
+      <div class="grab"></div>
+      <div class="sheet-h"><h2 class="t" style="font-size:22px">Menu</h2><div class="x" aria-label="Close menu"><svg><use href="#i-x"/></svg></div></div>
+      <div class="mrow"><div class="ic"><svg><use href="#i-help"/></svg></div><div class="t"><b>How to play</b><span>The goal, money and days on one screen</span></div><svg><use href="#i-chev"/></svg></div>
+      <div class="mrow"><div class="ic"><svg><use href="#i-photo"/></svg></div><div class="t"><b>Album</b><span>Photos from the sights you've visited</span></div><svg><use href="#i-chev"/></svg></div>
+      <div class="mrow"><div class="ic"><svg><use href="#i-restart"/></svg></div><div class="t"><b>New journey</b><span class="warn"><svg><use href="#i-info"/></svg>Starts over from Bergen. This journey will be lost.</span></div><svg><use href="#i-chev"/></svg></div>
+      <!-- confirm step (shown after tapping New journey) -->
+      <div style="margin-top:12px;border:2px solid var(--ink);border-radius:18px;padding:12px 14px 12px;background:#FFFDF8">
+        <div class="eyebrow">After tapping New journey</div>
+        <b style="display:block;font-family:var(--serif);font-size:19px;margin-top:3px">Start a new journey?</b>
+        <p style="font-size:13px;line-height:1.4;color:var(--body);margin-top:3px">You're in Paris on Day 5 with 1 stamp. Starting over ends this journey, and it can't be brought back.</p>
+        <div class="btn" style="margin-top:10px;min-height:46px;font-size:15px">Keep my journey</div>
+        <div class="btn2" style="min-height:44px;font-size:14.5px">Start over</div>
+      </div>
+    </section>
+  </div>
+  <div class="meas">
+    <div class="cap">Where each item goes</div>
+    <dl>
+      <dt>How to play</dt><dd>The same intro screen (S2), with ×</dd>
+      <dt>Album</dt><dd>Passport screen, Album tab (P2)</dd>
+      <dt>New journey</dt><dd>Confirm, then start screen → map (FR-1)</dd>
+    </dl>
+    <p>The confirm is drawn inside the sheet so it fits one frame. In the build it replaces the list, so there's only one decision on screen at a time. The safe choice ("Keep my journey") is the filled button.</p>
+  </div>
+</figure>
+</div>
+
+<!-- ======================================================================
+     SECTION 4 · PASSPORT
+     ====================================================================== -->
+<div class="sec-h">
+  <div class="tag">Section 4 · FR-10, FR-22</div>
+  <h2>Passport: Stamps and Album</h2>
+  <p>Tapping the passport strip opens this screen. Day complete's "View album" link lands on the Album tab. The state is Day 6 with €1,170, right after Paris (CD2).</p>
+</div>
+
+<div class="screens">
+<!-- ============================ P1 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">P1</span><span class="d">Passport · Stamps tab</span></div>
+  <p class="why">It feels like a passport page: ink stamps at a slight angle, each with its city and the day you earned it.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+    </div>
+    <div class="navrow"><div class="backb" role="button"><svg><use href="#i-back"/></svg>Map</div><span class="st">Day 6 of 30 · €1,170</span></div>
+    <div class="pcover">
+      <div class="em"><svg><use href="#i-compass"/></svg></div>
+      <div><div class="m">EXPLORER PASSPORT</div><div class="c">Stamps <b>2/5</b></div><div class="g">Collect 5 and get home to Bergen by Day 30</div></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <div class="tab on" role="tab" aria-selected="true"><svg><use href="#i-stamp"/></svg>Stamps<span class="cnt">2</span></div>
+      <div class="tab" role="tab" aria-selected="false"><svg><use href="#i-photo"/></svg>Album<span class="cnt">2</span></div>
+    </div>
+    <div class="ppage">
+      <div class="ph"><b>Stamps</b><span>3 to go</span></div>
+      <div class="sgrid">
+        <div class="slot"><svg class="rot1" viewBox="0 0 50 50" role="img" aria-label="Copenhagen stamp"><use href="#st-cph"/></svg><div class="nm">Copenhagen</div><div class="dy"><svg><use href="#i-cal"/></svg>Day 3</div></div>
+        <div class="slot"><svg class="rot2" viewBox="0 0 50 50" role="img" aria-label="Paris stamp"><use href="#st-par"/></svg><div class="nm">Paris</div><div class="dy"><svg><use href="#i-cal"/></svg>Day 6</div></div>
+        <div class="slot e"><div class="empty">3</div><div class="nm">Empty</div><div class="dy">Next city day</div></div>
+        <div class="slot e"><div class="empty">4</div><div class="nm">Empty</div></div>
+        <div class="slot e"><div class="empty">5</div><div class="nm">Empty</div></div>
+      </div>
+      <div class="pnote"><svg><use href="#i-info"/></svg><span>Every new city gives one stamp. Spend a full day there to get it. A second visit to the same city doesn't add one.</span></div>
+    </div>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>The selected tab shows its state three ways: a filled background, bold text and <code>aria-selected</code>. Empty slots are dashed and numbered, with the word "Empty". The Explorer mode appears only on the cover, as decided. A Nomad passport would get the ochre cover with the mountain glyph.</p>
+  </div>
+</figure>
+
+<!-- ============================ P2 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">P2</span><span class="d">Passport · Album tab</span></div>
+  <p class="why">These are polaroids of the sights you chose, each with its fact. The empty frame shows what to do next, not what you're missing.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+    </div>
+    <div class="navrow"><div class="backb" role="button"><svg><use href="#i-back"/></svg>Map</div><span class="st">Day 6 of 30 · €1,170</span></div>
+    <div class="pcover">
+      <div class="em"><svg><use href="#i-compass"/></svg></div>
+      <div><div class="m">EXPLORER PASSPORT</div><div class="c">Stamps <b>2/5</b></div><div class="g">Collect 5 and get home to Bergen by Day 30</div></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <div class="tab" role="tab" aria-selected="false"><svg><use href="#i-stamp"/></svg>Stamps<span class="cnt">2</span></div>
+      <div class="tab on" role="tab" aria-selected="true"><svg><use href="#i-photo"/></svg>Album<span class="cnt">2</span></div>
+    </div>
+    <div class="ppage" style="background-image:none;padding:16px 14px 14px 18px">
+      <div class="ph"><b>Album</b><span>2 photos · one per sight</span></div>
+      <div class="agrid">
+        <div class="polaroid r1" aria-label="Tivoli Gardens, Copenhagen, Day 3">
+          <div class="img"><svg viewBox="0 0 160 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#ph-tivoli"/></svg></div>
+          <h5>Tivoli Gardens</h5><div class="wh">Copenhagen · Day 3</div>
+          <p>Opened in 1843, it's one of the oldest amusement parks in the world.</p>
+        </div>
+        <div class="polaroid r2" aria-label="Eiffel Tower, Paris, Day 6">
+          <div class="img"><svg viewBox="0 0 160 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#ph-eiffel"/></svg></div>
+          <h5>Eiffel Tower</h5><div class="wh">Paris · Day 6</div>
+          <p>Built for the 1889 World's Fair.</p>
+        </div>
+        <div class="polaroid empty" style="grid-column:1 / span 2;min-height:96px;flex-direction:row;gap:12px;text-align:left;justify-content:flex-start">
+          <svg><use href="#i-photo"/></svg>
+          <div><b style="display:block;margin:0">Your next photo goes here</b><span style="display:block">Add a sight on a city day, and its photo and fact land in your album.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>Captions say where and when each photo was taken. The empty-state frame is a single, wide dashed tile, not a grid of missing photos, because sights are optional and nobody should feel behind. When the album is empty (FR-22), only this tile shows.</p>
+  </div>
+</figure>
+</div>
+
+<!-- ======================================================================
+     SECTION 5 · TRAVEL HOME
+     ====================================================================== -->
+<div class="sec-h">
+  <div class="tag">Section 5 · FR-7, FR-11</div>
+  <h2>Travel home: one last check</h2>
+  <p>Before the trip home is booked, the sheet shows the stamp count, whether the goal will be reached, and that the journey ends on landing (FR-7). Ingrid is in Istanbul on Day 15 with €673, and has chosen the plane.</p>
+</div>
+
+<div class="screens">
+<!-- ============================ H1 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">H1</span><span class="d">Fly home · goal will be reached</span></div>
+  <p class="why">The answer comes first, in words and an icon. The numbers come next, then the one thing that can't be undone.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+      <div class="chips">
+        <div class="chip wide"><svg><use href="#i-cal"/></svg><div><b>Day 15 of 30</b><span>15 days left</span></div></div>
+        <div class="chip"><svg><use href="#i-coin"/></svg><div><b>€673</b><span>Money</span></div></div>
+      </div>
+      <div class="pslim"><div class="cv"><svg><use href="#i-compass"/></svg>EXPLORER<span class="n">· 5/5</span></div><div class="sls"><div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl on"><svg><use href="#st-par"/></svg></div><div class="sl on"><svg><use href="#st-lon"/></svg></div><div class="sl on"><svg><use href="#st-rom"/></svg></div><div class="sl on"><svg><use href="#st-ist"/></svg></div></div><svg class="chev"><use href="#i-chev"/></svg></div>
+    </div>
+    <div class="map"><svg width="375" height="340" viewBox="0 0 375 340" aria-hidden="true"><use href="#mapIST"/></svg></div>
+    <div class="scrim"></div>
+    <section class="msheet" aria-label="Fly home to Bergen?">
+      <div class="grab"></div>
+      <div class="sheet-h"><div>
+        <div class="route"><svg><use href="#i-plane"/></svg><span><b>Istanbul → Bergen</b> · Plane €250 · 1 day</span></div>
+        <h2 class="t" style="margin-top:4px">Fly home to Bergen?</h2>
+      </div><div class="x" aria-label="Close"><svg><use href="#i-x"/></svg></div></div>
+      <div class="srow5" aria-label="Stamps 5 of 5">
+        <div class="lbl">Stamps<b>5/5</b></div>
+        <div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl on"><svg><use href="#st-par"/></svg></div><div class="sl on"><svg><use href="#st-lon"/></svg></div><div class="sl on"><svg><use href="#st-rom"/></svg></div><div class="sl on"><svg><use href="#st-ist"/></svg></div>
+      </div>
+      <div class="goal ok"><svg><use href="#i-ok"/></svg><span>Goal will be reached ✓<small>5 stamps, home on Day 16 of 30</small></span></div>
+      <div class="ba" aria-label="After the flight: money from 673 to 423 euros; Day 15 to Day 16 of 30">
+        <div class="bai"><svg><use href="#i-coin"/></svg><span class="from">€673</span><span class="ar">→</span><b>€423</b></div>
+        <div class="bai wide"><svg><use href="#i-cal"/></svg><span class="from">Day 15</span><span class="ar">→</span><b>Day 16</b><span class="from">of 30</span></div>
+      </div>
+      <p class="ends"><svg><use href="#i-info"/></svg>Your journey ends when you land.</p>
+      <div class="btn">Fly home · €250</div>
+      <div class="btn2">Not yet</div>
+    </section>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>This sheet comes up after you pick a mode on the Istanbul → Bergen route. "Not yet" takes you back to that route sheet, so nothing is lost. The goal line has a solid border, a check icon and the words "will be reached". The not-reached version (H2) has a dashed border, an open icon and different words.</p>
+  </div>
+</figure>
+
+<!-- ============================ H2 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">H2</span><span class="d">Compact · goal not reached (3/5)</span></div>
+  <p class="why">Same sheet, same buttons. It states the facts plainly and adds one helpful line about the time left. No red, no warning sign.</p>
+  <div class="phone half" style="position:relative;height:520px;background:var(--card)">
+    <section class="msheet" style="position:absolute;top:0;border-radius:22px" aria-label="Fly home to Bergen?">
+      <div class="grab"></div>
+      <div class="sheet-h"><div>
+        <div class="route"><svg><use href="#i-plane"/></svg><span><b>Istanbul → Bergen</b> · Plane €250 · 1 day</span></div>
+        <h2 class="t" style="margin-top:4px">Fly home to Bergen?</h2>
+      </div><div class="x" aria-label="Close"><svg><use href="#i-x"/></svg></div></div>
+      <div class="srow5" aria-label="Stamps 3 of 5">
+        <div class="lbl">Stamps<b>3/5</b></div>
+        <div class="sl on"><svg><use href="#st-cph"/></svg></div><div class="sl on"><svg><use href="#st-par"/></svg></div><div class="sl on"><svg><use href="#st-ist"/></svg></div><div class="sl">4</div><div class="sl">5</div>
+      </div>
+      <div class="goal no"><svg><use href="#i-open"/></svg><span>You have 3 of 5 stamps — goal not reached<small>You still have 15 days, enough for more city days if you want them.</small></span></div>
+      <div class="ba">
+        <div class="bai"><svg><use href="#i-coin"/></svg><span class="from">€673</span><span class="ar">→</span><b>€423</b></div>
+        <div class="bai wide"><svg><use href="#i-cal"/></svg><span class="from">Day 15</span><span class="ar">→</span><b>Day 16</b><span class="from">of 30</span></div>
+      </div>
+      <p class="ends"><svg><use href="#i-info"/></svg>Your journey ends when you land.</p>
+      <div class="btn">Fly home · €250</div>
+      <div class="btn2">Not yet</div>
+    </section>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>The numbers are the same as H1, so only the goal line changes. The "15 days" line tells you what's still possible. It doesn't nudge or count down. If going home would also miss the day limit, the line would say so instead, for example "You'd land on Day 31, after the 30-day limit."</p>
+  </div>
+</figure>
+</div>
+
+<!-- ======================================================================
+     SECTION 6 · JOURNEY SUMMARY
+     ====================================================================== -->
+<div class="sec-h">
+  <div class="tag">Section 6 · FR-14, FR-11, FR-12</div>
+  <h2>Journey summary</h2>
+  <p>Both journeys get the same warm frame: the passport, the photos, the numbers, and a way to go again. Not reaching the goal is stated plainly and never punished.</p>
+</div>
+
+<div class="screens">
+<!-- ============================ J1 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">J1</span><span class="d">Ingrid · goal reached</span></div>
+  <p class="why">A full passport, two photos and two plain numbers. The reward is the record of the trip, not fireworks.</p>
+  <div class="phone">
+    <div class="top">
+      <div class="logo">
+        <span class="wm" aria-label="Worldbound">W<svg class="co" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M12 2.6 14.2 12H9.8z" fill="#C8861E"/><path d="M12 21.4 9.8 12h4.4z" fill="currentColor"/></svg>RLDBOUND<svg class="mtn" viewBox="0 0 160 6" preserveAspectRatio="none" aria-hidden="true"><path d="M0 5.5Q80 1 160 5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M96 4.2l6-4 4 2.5 4-2 6 3.4z" fill="currentColor"/></svg></span>
+        <span class="menu" role="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></span>
+      </div>
+    </div>
+    <div class="sum">
+      <div class="eyebrow">Journey complete · home in Bergen</div>
+      <div class="headline"><svg style="color:var(--ink)"><use href="#i-ok"/></svg><h2>Goal reached</h2></div>
+      <p class="lede">Five stamps, and home with 14 days to spare. What a trip.</p>
+      <div class="pass">
+        <div class="band"><span><svg><use href="#i-compass"/></svg>EXPLORER PASSPORT</span><b>5/5</b></div>
+        <div class="row5">
+          <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-cph"/></svg><small>Copenhagen</small></div>
+          <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-par"/></svg><small>Paris</small></div>
+          <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-lon"/></svg><small>London</small></div>
+          <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-rom"/></svg><small>Rome</small></div>
+          <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-ist"/></svg><small>Istanbul</small></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><svg><use href="#i-cal"/></svg><div><b>16 days</b><span>used of 30</span></div></div>
+        <div class="stat"><svg><use href="#i-coin"/></svg><div><b>€423</b><span>left over</span></div></div>
+      </div>
+      <div class="albumstrip">
+        <div class="cap"><span>Photo album</span><span>2 photos</span></div>
+        <div class="ps">
+          <div class="polaroid r1"><div class="img"><svg viewBox="0 0 160 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#ph-eiffel"/></svg></div><h5>Eiffel Tower</h5><div class="wh">Paris</div></div>
+          <div class="polaroid r2"><div class="img"><svg viewBox="0 0 160 96" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#ph-louvre"/></svg></div><h5>Louvre</h5><div class="wh">Paris</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="btn">New journey</div>
+      <p class="conseq">Every journey starts fresh from Bergen with €1,500.</p>
+    </div>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>The photos follow UJ-1 (Eiffel Tower and Louvre, both in Paris). Tapping a polaroid opens it with its fact. The goal line has an icon and words, and "Goal reached" is the exact string from the PRD addendum §7. After a journey ends, the menu offers only "How to play" and "New journey" (FR-13).</p>
+  </div>
+</figure>
+
+<!-- ============================ J2 ============================ -->
+<figure>
+  <div class="flabel"><span class="k">J2</span><span class="d">Jonas · compact · called home</span></div>
+  <p class="why">Same layout, kinder words. It says what happened and gives one tip for next time. Nothing is crossed out or shown in red.</p>
+  <div class="phone half" style="position:relative;background:linear-gradient(180deg,var(--sun) 0,var(--paper) 200px);padding:14px 20px 18px">
+    <div class="eyebrow">Journey complete · home in Bergen</div>
+    <div class="headline"><svg style="color:var(--muted)"><use href="#i-open"/></svg><h2>Goal not reached</h2></div>
+    <div class="called"><svg><use href="#i-phone"/></svg>Called home</div>
+    <p class="lede">You made it back. Calling home took 7 days and your Rome stamp, and New York, Paris and London are still in your passport.</p>
+    <div class="pass">
+      <div class="band"><span><svg><use href="#i-compass"/></svg>EXPLORER PASSPORT</span><b>3/5</b></div>
+      <div class="row5">
+        <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-nyc"/></svg><small>New York</small></div>
+        <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-par"/></svg><small>Paris</small></div>
+        <div><svg viewBox="0 0 50 50" aria-hidden="true"><use href="#st-lon"/></svg><small>London</small></div>
+        <div><div class="e">4</div><small>Empty</small></div>
+        <div><div class="e">5</div><small>Empty</small></div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><svg><use href="#i-cal"/></svg><div><b>17 days</b><span>used of 30</span></div></div>
+      <div class="stat"><svg><use href="#i-coin"/></svg><div><b>€20</b><span>left over</span></div></div>
+    </div>
+    <div class="tip"><svg><use href="#i-info"/></svg><span>Next time, keep enough for a ticket out before your last city day.</span></div>
+    <div class="btn">New journey</div>
+  </div>
+  <div class="meas">
+    <div class="cap">Notes</div>
+    <p>"Called home" is a label with a phone icon, not a red badge. The photo album strip goes in the same place as J1. Jonas visited no sights in UJ-2, so it reads "No photos this time. Sights are optional." That line is left out here to keep the frame compact. <b>Day 17, not Day 19:</b> see the open question in the hand-off.</p>
+  </div>
+</figure>
+</div>
+
+</body>
+</html>

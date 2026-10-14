@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UX Design Validation: WORLDBOUND: NOMAD</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+
+    --verdict-strong: #16a34a;
+    --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706;
+    --verdict-broken: #dc2626;
+
+    --sev-low: #64748b;
+    --sev-medium: #ca8a04;
+    --sev-high: #ea580c;
+    --sev-critical: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header.report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  .synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .dimension-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before {
+    content: "▸";
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+
+  .findings-list { padding: 0 20px 4px; }
+  article.finding {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100, 116, 139, 0.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202, 138, 4, 0.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234, 88, 12, 0.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220, 38, 38, 0.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+
+  .reviewer-source {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  .mechanical {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .mechanical h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+
+  footer.report-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header class="report-header">
+      <div class="title">
+        <h1>WORLDBOUND: NOMAD — UX Design Validation Report</h1>
+        <div class="subtitle">/Users/christianstorum/Rammeverket/Worldbound/.docs/planning-artifacts/ux-designs/ux-worldbound-nomad-2026-10-13/DESIGN.md<br>/Users/christianstorum/Rammeverket/Worldbound/.docs/planning-artifacts/ux-designs/ux-worldbound-nomad-2026-10-13/EXPERIENCE.md</div>
+      </div>
+    </header>
+    <div class="synthesis">
+      <p>The pair is a solid downstream contract. Every UJ and FR from the PRD and addendum maps to a surface, a component row and a flow, all flow numbers reconcile with the addendum tables, every {token} reference resolves, and the stated contrast values match recomputation. The rubric found two high gaps that would push guesswork onto story-dev: “navy” components that collapse in dark mode because they bind to primary/ink, which flip to ochre and cream (1.0:1), and a Call home sheet with no defined trigger and no persistent entry after “Not now”.</p>
+      <p>The two extra reviewers shift the picture from “nearly ready” to “ready for architecture once behaviour is filled in”. The developer lens finds four critical gaps a builder could not resolve alone: no back or exit model, no reload/URL/persistence model, no map geometry or hit model, and the Call home trigger, which it rates critical. The accessibility lens confirms the visual floor but finds the behavioural layer thin: dialog semantics, a map screen-reader model that can't be built, and no 200% text strategy. All three reviewers independently hit the dark-mode ochre-on-ochre collision. The 8 px stamp-code exception is now approved and logged (R1); the reviewer's correction that the codes render at about 4.5–4.8 px stays open as L11. The missing mockups/ folder is a known pending promotion step (H5). After deduplication: Critical 4 · High 13 · Medium 18 · Low 25, plus 1 resolved.</p>
+    </div>
+    <div class="dimension-summary">
+      <div class="dim-card">
+        <div class="dim-name">Flow coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Token completeness</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Component coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">State coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Visual reference coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Bloat &amp; overspecification</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Inheritance discipline</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Shape fit</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong</div>
+      </div>
+    </div>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>1. Flow coverage</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Checked UJ-1, UJ-2 and UJ-3 from PRD §2.4 and FR-1 to FR-23 against Key Flows and IA. Each UJ has a named protagonist, numbered steps, a bold climax and failure paths, and all euro and day arithmetic recomputes against addendum §2–§5 (UJ-1 ends at 16 days used and €423; UJ-2 at €20, Day 11, 17 days used; Flow 5 Day 6 → Rome Day 7 with €1,140). No blocking findings; the one UJ-3 string mismatch is logged under Inheritance (L10).</p>
+          </div>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>2. Token completeness</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>All 35 colour roles have a light and a -dark hex, every {token} reference resolves, and the contrast table recomputes within 0.05. The gap is dark-mode role binding: "navy" components bound to flipping tokens collide, and many component sizes have no type role.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H1 · Dark mode: ochre content on the ochre primary-dark collapses (1.0:1)</h3>
+              <span class="finding-location">DESIGN → Colors (primary-dark = ochre-light-dark = #E0A243); components button-primary icon, Tabs selected, region-loupe zoom-tag, Intro goal box, Feedback box, Night row disc, "Back to world" pill, map-marker-home</span>
+            </header>
+            <div class="finding-note">Components described as "navy" bind to <code>primary</code>/<code>ink</code>, which flip to ochre and cream in dark mode. Ochre-light on primary-dark is 1.00:1 and cream on it 1.94:1: the intro goal-box caption, the correct-answer check (the non-colour cue for "correct"), the selected-tab icon, the zoom-tag icon and the primary-button icon vanish, the feedback link fails, and map-marker-home's icon is #F4EFE1 on #F4EFE1. Prose "navy fill" / "cream text" is never mapped to a token. None of these pairs are in the contrast table.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Split the roles: keep <code>primary</code> for the button, add <code>navy-surface</code> / <code>on-navy-surface</code> (e.g. light #0A1826, dark #0A121A) for decorative navy blocks, and/or <code>on-primary-icon</code> with a navy dark value. Give map-marker-home a contrasting dark icon token. Replace every prose "navy"/"cream" with tokens and add the dark pairs to the contrast table.</div>
+            <div class="reviewer-source">Raised by: rubric §2, accessibility H4, developer H2</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M1 · Tokens incomplete for a CSS-variable build</h3>
+              <span class="finding-location">DESIGN → Components table, frontmatter, Shapes</span>
+            </header>
+            <div class="finding-note">Many type sizes have no role (12.5, 13.5/600, 14/600, serif 14/14.5/19/24, 16 bold, 11.5 px), plus icon sizes, shadows, motion durations and the focus ring. Literals remain (answer-row min-height 52px, progress-dot 28px, cover radii, menu row 60 px). Composite strings don't map 1:1 to variables; stamp-code is in viewBox units, not CSS px.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Map each size to an existing role or add a few (meta, label-strong, serif-sm); add elevation.*, motion.*, icon.*; split border composites; express alpha separately; mark stamp-code as SVG units.</div>
+            <div class="reviewer-source">Raised by: rubric §2 (medium + low), developer M8</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>3. Component coverage</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>49 component names checked across both spines; every Component Patterns row has a DESIGN visual spec with real rules. Two map components lack table rows.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L1 · City pill has no Components table row</h3>
+              <span class="finding-location">DESIGN → Region loupe → Zoomed region</span>
+            </header>
+            <div class="finding-note">Visual spec exists only as a sentence in a paragraph.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a row with current / no-route / off-map arrow variants.</div>
+            <div class="reviewer-source">Raised by: rubric §3</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L2 · Map markers and map key have no Components row</h3>
+              <span class="finding-location">DESIGN → Map, Resting panel</span>
+            </header>
+            <div class="finding-note">Five marker states are tokenised but unspecified as a component; world-map treatment of a non-selectable destination and the legend content are missing.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a "Map marker" row with all five states and a one-line legend spec.</div>
+            <div class="reviewer-source">Raised by: rubric §3</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>4. State coverage</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>All 25 IA surfaces walked for empty, cold-load, focus, error, offline, unavailable and dark states. Most are covered; the Call home trigger, city-day-unavailable and repeat-visit states are not. The developer review escalated the Call home gap to critical.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-critical">critical</span>
+              <h3 class="finding-title">C4 · Call home and journey end have no trigger moment and no persistent entry point</h3>
+              <span class="finding-location">EXPERIENCE → IA "Call home sheet", Component Patterns "Call home sheet", State Patterns "Cannot afford any travel" / "No action left", UJ-2 failure paths; PRD FR-12, FR-13</span>
+            </header>
+            <div class="finding-note">"Shown when the FR-12 condition holds" never says when the sheet opens (return to Map, after the arrival card, on tapping a route). After "Not now" it is "offered again while the condition holds" with no named control. Jonas in Rome with €20 cannot afford a city day either, so a dismissed sheet leaves him stuck, which FR-13 forbids. The FR-13 auto-end has no screen sequence, and the "can't fit" variant is a confirm while FR-12/FR-13 read as the game ending the journey.</div>
+            <div class="finding-fix"><strong>Fix:</strong> (1) A persistent "Call home" entry while FR-12 holds (resting panel in place of the chips, plus the city-day card) with copy and cost line. (2) Auto-open once on the first Map view where the condition becomes true. (3) Define the FR-13 end sequence (e.g. arrival card → Continue → Journey summary, failed-away copy). (4) Decide whether can't-fit is a confirm or a notice; align with FR-12 or log a PRD change.</div>
+            <div class="reviewer-source">Raised by: rubric §4 (high), developer C4, accessibility M6 (re-entry part)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H10 · City day unavailable (FR-8) and repeat-visit arrival are not designed</h3>
+              <span class="finding-location">EXPERIENCE → State Patterns; Component Patterns → City-day card, Arrival fact card; Decided strings → Arrival, Map</span>
+            </header>
+            <div class="finding-note">FR-8 makes the city day unavailable when money is below the stay price or 0 days remain, but "Plan the day" has no unavailable variant or reason copy. On an already-stamped city the Arrival card still says "No stamp unless you spend a day here" and the card hint says "Finish the day to earn your Paris stamp"; repeat visit is defined only for City day.</div>
+            <div class="finding-fix"><strong>Fix:</strong> "Plan the day" uses Button unavailable with reasons ("Not enough for a night here (you have €20)" / "No days left"). Add repeat-visit variants for the Arrival fact card and City-day card ("You already have your Paris stamp.").</div>
+            <div class="reviewer-source">Raised by: rubric §4 (two mediums), developer H7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H11 · Copy is given as examples, not templates; key strings still missing</h3>
+              <span class="finding-location">EXPERIENCE → Decided strings, State Patterns "Call home can't fit days", Open Item 1</span>
+            </header>
+            <div class="finding-note">Strings carry hard-coded sample values. Undefined: variable names, pluralisation, number formatting, numbers-as-words, transport verbs, the "Money's tight" threshold, via-city hint, Tip selection, target-city choice, Day complete variants, the Bergen panel title, failed-away eyebrow. The Call home "can't fit the days" string is still [ASSUMPTION], the only FR-12 path with no player-facing string, and the Call home cost line has no 0-stamp variant.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Convert Decided strings to a key/template table (e.g. route.consequence = "You'll reach {city} on Day {day} with {money} left.") with plural and format rules and a rule-source column. Write the can't-fit and 0-stamp Call home strings now.</div>
+            <div class="reviewer-source">Raised by: developer H8, developer L7, rubric §4 (low)</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>5. Visual reference coverage</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>imports/ (the pptx) is linked inline with what was lifted and rejected; mockups are linked per surface with frame IDs and "spines win on conflict" is stated in both spines. The mockups/ folder doesn't exist yet: promotion from .working/ is a known pending step, tracked as H5 together with the MAP-1 reference.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H5 · Visual-reference links don't resolve: mockups/ not yet promoted (known pending step)</h3>
+              <span class="finding-location">DESIGN header and body; EXPERIENCE → Foundation, IA "Reference" column</span>
+            </header>
+            <div class="finding-note">Known pending promotion step: the spines link mockups/screens-core.html, screens-ext.html and city-day.html, but mockups/ doesn't exist yet; renders sit in .working/ under other names. The Route sheet is cited as "city-day MAP-1", but Foundation lists city-day.html as CD1/CD1b/CD2/CD2b only, and MAP-1 lives in direction-a3.html beside a superseded strip/loupe layout. CD1 shows inconsistent day labels.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Run the promotion: copy renders into mockups/ under the referenced names, include MAP-1 in city-day.html with the note "route sheet panel only; map layout per MAP-C", list it in Foundation, and fix the day labels on promotion.</div>
+            <div class="reviewer-source">Raised by: developer H1, rubric §5 (medium, MAP-1; promotion noted as pending)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L3 · References to files that won't be promoted; dark-value provenance inconsistent</h3>
+              <span class="finding-location">DESIGN frontmatter comment, Colors intro; EXPERIENCE Open Item 1</span>
+            </header>
+            <div class="finding-note">direction-a2-merged and direction-sunrise-expedition.html are cited; frontmatter and body name different sources for the dark values.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Say "working render, not shipped" or drop the reference; pick one provenance.</div>
+            <div class="reviewer-source">Raised by: rubric §5, developer L1</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L4 · Orphan frames after promotion</h3>
+              <span class="finding-location"><code>.working/</code> X1c, MAP-IST, MAP-TYO</span>
+            </header>
+            <div class="finding-note">These frames aren't cited by either spine.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Cite X1c on "Unreadable save", or drop the uncited frames during promotion.</div>
+            <div class="reviewer-source">Raised by: rubric §5</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>6. Bloat &amp; overspecification</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Decided strings, Render conflicts and Content Assets earn their length as direct story inputs, and EXPERIENCE prose stays neutral. A few rationale and restatement passages can go.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L5 · Layout overspecified as absolute values</h3>
+              <span class="finding-location">DESIGN → Passport cover → Cover block, Layout (y = 144, 318 px panel)</span>
+            </header>
+            <div class="finding-note">The cover-width derivation is rationale, not spec; absolute y, a font-measured width and "verified in renders" claims will fight a real layout engine.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Keep {spacing.cover-width} plus one clause; restate the rest as constraints (min targets, min map height, panel ≤ 40% of viewport).</div>
+            <div class="reviewer-source">Raised by: rubric §6, developer L8</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L6 · Directions B, C, D repeat boilerplate</h3>
+              <span class="finding-location">EXPERIENCE → Inspiration</span>
+            </header>
+            <div class="finding-note">Each ends "Reason not recorded beyond the user picking A".</div>
+            <div class="finding-fix"><strong>Fix:</strong> Collapse to one line.</div>
+            <div class="reviewer-source">Raised by: rubric §6</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L7 · Open Items restates the memlog</h3>
+              <span class="finding-location">EXPERIENCE → Open Items</span>
+            </header>
+            <div class="finding-note">The "Resolved 2026-10-13 (memlog)" paragraph is unused by any consumer.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Remove it.</div>
+            <div class="reviewer-source">Raised by: rubric §6</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>7. Inheritance discipline</h2>
+          <span class="verdict-pill verdict-adequate">adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>sources resolve, UJ titles are verbatim, component names and token references match across spines, and the memlog's later decisions are reflected. The stamp-code sign-off gap the rubric raised is now resolved (R1); three wording mismatches remain.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L8 · "N days left" called a glossary term</h3>
+              <span class="finding-location">EXPERIENCE → Component Patterns "Status chip"</span>
+            </header>
+            <div class="finding-note">The PRD glossary term is "Days remaining".</div>
+            <div class="finding-fix"><strong>Fix:</strong> Call it a UI label for the glossary term.</div>
+            <div class="reviewer-source">Raised by: rubric §7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L9 · "stay" vs glossary "accommodation"</h3>
+              <span class="finding-location">EXPERIENCE → Voice rule, Decided strings</span>
+            </header>
+            <div class="finding-note">Voice says use glossary terms exactly, yet the UI says "stay".</div>
+            <div class="finding-fix"><strong>Fix:</strong> State once that "stay" is the player-facing word for accommodation.</div>
+            <div class="reviewer-source">Raised by: rubric §7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L10 · UJ-3 failure string differs from Decided strings</h3>
+              <span class="finding-location">EXPERIENCE → UJ-3 failure paths vs Work unavailable</span>
+            </header>
+            <div class="finding-note">"No shifts left — …" vs "No more work in Tokyo — …".</div>
+            <div class="finding-fix"><strong>Fix:</strong> Use the decided string in the flow.</div>
+            <div class="reviewer-source">Raised by: rubric §7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">resolved</span>
+              <h3 class="finding-title">R1 · 8 px stamp-code exception to the 11 px floor — pending sign-off</h3>
+              <span class="finding-location">DESIGN → Typography rules, stamp-code, Stamp; EXPERIENCE → Accessibility Floor → Text; .memlog.md</span>
+            </header>
+            <div class="finding-note">Rubric (§7, medium) and accessibility (L1) flagged that the spines present the exception as decided while the memlog said sign-off was pending. Resolved: the user approved the exception and it is logged in .memlog.md (decision: stamp codes inside small (&lt;70 px) stamps are part of the stamp graphic; the city name is always available as text or screen-reader label). The accessibility reviewer's size correction (≈4.5–4.8 px, not 8 px) stays open as L11.</div>
+            <div class="finding-fix"><strong>Fix:</strong> None; already approved and logged.</div>
+            <div class="reviewer-source">Raised by: rubric §7 (medium), accessibility L1</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>8. Shape fit</h2>
+          <span class="verdict-pill verdict-strong">strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>DESIGN sections are in canonical order; all EXPERIENCE required defaults are present; Inspiration and Responsive are present and triggered; invented sections (Content Assets, Core vs Extension, Render conflicts, Open Items) earn their place. No findings.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+    <section class="reviewer-section">
+      <details>
+        <summary>
+          <h2>Accessibility review</h2>
+          <span class="reviewer-source">review-accessibility.md</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>“The visual floor is unusually solid. I recomputed every pair in DESIGN.md → Contrast targets and all of them are correct.” The gaps are behavioural: the spines do not yet define dialog semantics and focus containment, the plan to hide the map from screen readers contradicts itself, the world map's markers break the 44 px floor outside the loupe, the dark-mode flip of primary to ochre collides with every component that puts ochre on primary, and fixed-height layout has no strategy for 200% text. “None of these block sign-off of the visual identity, but the five High items should be fixed in the spines before architecture and story breakdown use them.”</p>
+            <p>Reviewer counts: Critical 0 · High 5 · Medium 9 · Low 12. Off-table pairs it measured: ochre route dash 2.42:1 on light map-land, ochre-light on dark primary 1.00:1, on-navy on dark primary 1.94:1, cover-explorer-dark vs background-dark 1.08:1, unavailable fill vs surface 1.27:1.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H1 — Modal sheets lack dialog semantics, focus containment and inert background</h3>
+              <span class="finding-location">EXPERIENCE → Component Patterns → Modal sheet; Accessibility Floor → Focus</span>
+            </header>
+            <div class="finding-note">Focus "moves into the sheet and returns to the trigger", but there is no role="dialog", aria-modal, accessible name, focus trap or inert background. Keyboard and screen-reader users can leave the sheet for controls behind the scrim (WCAG 2.4.3). The resting panel looks like a dialog but isn't, and the spine doesn't separate them.</div>
+            <div class="finding-fix"><strong>Fix:</strong> role="dialog", aria-modal="true", aria-labelledby to the headline; rest of the app <code>inert</code>; Tab wraps; background scroll locked; initial focus on the headline (tabindex="-1"). State that the resting panel is a normal region (section with heading).</div>
+            <div class="reviewer-source">Consolidated as H2</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H2 — "Map is aria-hidden apart from its tappable markers" cannot be built</h3>
+              <span class="finding-location">EXPERIENCE → Accessibility Floor → Screen readers; Component Patterns → Map, Region loupe, Zoomed region</span>
+            </header>
+            <div class="finding-note">Children of an aria-hidden element can't be re-exposed; focusable content inside it is focusable but silent. Keyboard access to the loupe (the only way into the Zoomed region) is unspecified. The renders use a third model (role="img" with a label).</div>
+            <div class="finding-fix"><strong>Fix:</strong> SVG artwork aria-hidden with pointer-only markers; the loupe is an HTML button ("Zoom in on Europe"); zoomed-region city pills and "Back to world" are HTML buttons; chips and route sheet remain the full accessible path; add a visually hidden "Map" heading with a where-you-are line. Drop the [ASSUMPTION] tag.</div>
+            <div class="reviewer-source">Consolidated as H3</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H3 — World-map destination markers break the 44 px floor outside the loupe</h3>
+              <span class="finding-location">DESIGN → Region loupe, Zoomed region, Components "Map"; EXPERIENCE → Content Assets, Component Patterns → Map, Accessibility Floor → Targets</span>
+            </header>
+            <div class="finding-note">No city coordinates, projection bounds, crop or base scale; "5.8×" and "2.1×" have no reference. Unclear whether the loupe is a scaled copy of the world SVG or separate inset art. Route-line shape unspecified. "Tap a destination marker" conflicts with "the whole loupe is the tap target". At 375 px the world map is about 1 px per degree, so from Tokyo or New York the European markers sit a few px apart: tappable markers break NFR-5 (44 × 44) and WCAG 2.5.8, and their hit areas overlap. There is no zoom path to Europe from outside it.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a Map data contract: per place {id, name, iata, lat, lon, regionId, labelOffset, pillOffset}; world map equirectangular with stated crop and viewBox; region record {bounds, loupeCentre, loupeRadius, scale, zoomScale, geometry asset}. Tap rules: markers inside a loupe are never individual targets; other markers are tappable only with non-overlapping ≥ 44 px hit circles, otherwise decorative; outside Europe the Europe box is a single 44 px target or not interactive (chips remain the path). Add the hit-circle rule to Accessibility Floor → Targets.</div>
+            <div class="reviewer-source">Consolidated as C3 (raised to critical on merge) · also raised by developer C3</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H4 — Dark primary flips to ochre, so ochre-on-primary components lose content</h3>
+              <span class="finding-location">DESIGN → Colors (primary-dark = ochre-light-dark = #E0A243); components button-primary icon, Tabs selected, region-loupe zoom-tag, Intro goal box, Feedback box, Night row disc, "Back to world" pill, map-marker-home</span>
+            </header>
+            <div class="finding-note">Components described as "navy" bind to <code>primary</code>/<code>ink</code>, which flip to ochre and cream in dark mode. Ochre-light on primary-dark is 1.00:1 and cream on it 1.94:1: the intro goal-box caption, the correct-answer check (the non-colour cue for "correct"), the selected-tab icon, the zoom-tag icon and the primary-button icon vanish, the feedback link fails, and map-marker-home's icon is #F4EFE1 on #F4EFE1. Prose "navy fill" / "cream text" is never mapped to a token. None of these pairs are in the contrast table.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Split the roles: keep <code>primary</code> for the button, add <code>navy-surface</code> / <code>on-navy-surface</code> (e.g. light #0A1826, dark #0A121A) for decorative navy blocks, and/or <code>on-primary-icon</code> with a navy dark value. Give map-marker-home a contrasting dark icon token. Replace every prose "navy"/"cream" with tokens and add the dark pairs to the contrast table.</div>
+            <div class="reviewer-source">Consolidated as H1 · also raised by rubric §2, developer H2</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H5 — No strategy for 200% text; fixed heights will clip</h3>
+              <span class="finding-location">EXPERIENCE → Accessibility Floor → Zoom; DESIGN → Layout &amp; Spacing; tokens status-chip-height, strip-height, cover-height, cover-width, panel-height</span>
+            </header>
+            <div class="finding-note">Cover width (172 px) was derived from "EXPLORER PASSPORT" at 11 px and needs about 250–270 px at 200%. Chips, strip and panel are fixed heights (WCAG 1.4.4, 1.4.10, 1.4.12). At 375 × 667 the map gets about 205 px and the r112 loupe doesn't fit. Nothing forbids maximum-scale=1 / user-scalable=no.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Fixed sizes become min-height with rem type. Large-text fallback: chips wrap, cover drops to the slim strip, slots wrap, panel and sheets scroll internally, map may shrink; "fits without scrolling" applies at 100% only. State a minimum supported height and behaviour below it. Viewport meta must not disable zoom. Promote the 200% target from [ASSUMPTION].</div>
+            <div class="reviewer-source">Consolidated as H4 · also raised by developer M1</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M1 — Focus after in-place content swaps and screen changes is undefined</h3>
+              <span class="finding-location">EXPERIENCE → IA navigation model; Route sheet, Menu sheet, Confirm block, Day complete, Zoomed region, Arrival fact card</span>
+            </header>
+            <div class="finding-note">When content swaps (route sheet → Travel home, menu → confirm), the focused element disappears and focus falls to body. Screen changes don't set focus or document.title.</div>
+            <div class="finding-fix"><strong>Fix:</strong> On any swap or screen change, focus the new headline (tabindex="-1") and set document.title; "Back to world" returns focus to the loupe button; one h1 per screen.</div>
+            <div class="reviewer-source">Consolidated as M2</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M2 — No announcements for the stamp landing, money and day changes, or the running total</h3>
+              <span class="finding-location">EXPERIENCE → Accessibility Floor → Screen readers; Status chip, Running total, Day complete, Sight card</span>
+            </header>
+            <div class="finding-note">Only the info banner and answer feedback are live; the stamp moment, balance change and total updates are silent to screen readers.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Stamp animation aria-hidden with the Day complete headline carrying the stamp; arrival card states the balance; running total is a polite live region; sight toggles use aria-pressed with the price in the name. Status chips are not live.</div>
+            <div class="reviewer-source">Consolidated as M3</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M3 — Light-mode map graphics and the focus ring fall below 3:1 on map colours</h3>
+              <span class="finding-location">DESIGN → Region loupe, Colors → Contrast targets; EXPERIENCE → State Patterns → Focus</span>
+            </header>
+            <div class="finding-note">Ochre route dash is 2.91:1 on map-sea and 2.42:1 on map-land (WCAG 1.4.11). The ochre focus ring is 2.42:1 on land; its paper inner ring is about 1.3:1. The contrast table only measures ochre on background.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Draw dashes in ochre-text (4.73 on land) or add a paper casing; focus ring on the map uses ink outer + paper inner; add map pairs to the contrast table.</div>
+            <div class="reviewer-source">Consolidated as M4</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M4 — The dashed border is overloaded</h3>
+              <span class="finding-location">DESIGN → Option row, option-row-warning, Destination chip, Button unavailable; EXPERIENCE → Never colour alone</span>
+            </header>
+            <div class="finding-note">A dashed slot-dash border means six different things. Unavailable vs selectable-with-warning rows differ mainly by a fill at 1.27:1 (1.06:1 dark).</div>
+            <div class="finding-fix"><strong>Fix:</strong> Unavailable rows: block icon in place of the radio + on-unavailable text. Warning rows: live radio + warning glyph. Write the distinction into Never colour alone.</div>
+            <div class="reviewer-source">Consolidated as M5</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M5 — The confirm pattern is inconsistent; initial focus and Esc unspecified</h3>
+              <span class="finding-location">EXPERIENCE → Buttons ("safe choice is primary") vs Travel home, Call home; Confirm block</span>
+            </header>
+            <div class="finding-note">Three irreversible confirms use two opposite button conventions; Enter on an auto-focused primary would commit Travel home or Call home. Safe-exit words differ ("Not yet" / "Not now").</div>
+            <div class="finding-fix"><strong>Fix:</strong> Scope the rule: data-loss confirms make the safe action primary; goal-action confirms make the commit primary. Initial focus on the headline, Esc/scrim = safe action, one safe-exit word.</div>
+            <div class="reviewer-source">Consolidated as M6 · also raised by developer M4</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M6 — Esc and scrim on replaced-content sheets, and Call home re-entry</h3>
+              <span class="finding-location">EXPERIENCE → IA, Component Patterns → City day, Modal sheet, Travel home sheet; render CD1</span>
+            </header>
+            <div class="finding-note">City day's only action is "End the day — €X". There is no back, cancel or × to return to the Map without committing. The Passport's "‹ Map" control exists in the render but not in the spine. Browser and Android back are never mentioned. Esc on a replaced-content sheet closes the whole sheet, while "Not yet" goes one step back, so one surface has two meanings of "back".</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a Back-navigation table: per surface, the visible back control (City day: "‹ Map" top-left, discards the draft) and browser-back behaviour (closes the open sheet, then returns full screens to the Map, never leaves the game mid-journey). Esc on a replaced sheet = one step back; scrim = close all. Add "‹ Map" to the City day anatomy in DESIGN.</div>
+            <div class="reviewer-source">Consolidated as C1 + C4 (raised to critical on merge) · also raised by developer C1</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M7 — Quiz answers: the accessible result and focus after locking</h3>
+              <span class="finding-location">DESIGN → Answer row; EXPERIENCE → Answer row, Feedback box</span>
+            </header>
+            <div class="finding-note">"Wrong" is carried by an unlabelled cross; locking disables the focused row so focus is lost; answer-row spacing unspecified while a single tap commits.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Accessible names after locking; rows aria-disabled not disabled; move focus to the feedback box then "Next question"; ≥ 8 px between rows.</div>
+            <div class="reviewer-source">Consolidated as M7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M8 — The compact sight-card toggle is 26 px</h3>
+              <span class="finding-location">DESIGN → Sight card compact EXT variant</span>
+            </header>
+            <div class="finding-note">If the 26 px circle is the target it fails NFR-5; the spine doesn't say the whole card is the target.</div>
+            <div class="finding-fix"><strong>Fix:</strong> "The whole compact card is the toggle target (≥ 44 px tall); the circle is the state indicator only."</div>
+            <div class="reviewer-source">Consolidated as M8</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M9 — The name field's hard stop gives no feedback</h3>
+              <span class="finding-location">EXPERIENCE → Name field</span>
+            </header>
+            <div class="finding-note">Typing silently stops at 14 characters; screen-reader and low-vision users get no signal.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Visible counter ("8/14") via aria-describedby and a polite announcement at the limit; keep the hard stop.</div>
+            <div class="reviewer-source">Consolidated as M9</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L1 — Stamp-code exception: approve with conditions, and correct the wording (≈4.5–4.8 px)</h3>
+              <span class="finding-location">DESIGN → Typography rules, stamp-code, Stamp; EXPERIENCE → Accessibility Floor → Text; .memlog.md</span>
+            </header>
+            <div class="finding-note">Rubric (§7, medium) and accessibility (L1) flagged that the spines present the exception as decided while the memlog said sign-off was pending. Resolved: the user approved the exception and it is logged in .memlog.md (decision: stamp codes inside small (&lt;70 px) stamps are part of the stamp graphic; the city name is always available as text or screen-reader label). The accessibility reviewer's size correction (≈4.5–4.8 px, not 8 px) stays open as L11.</div>
+            <div class="finding-fix"><strong>Fix:</strong> See consolidated entry.</div>
+            <div class="reviewer-source">Consolidated as R1 + L11 · also raised by rubric §7 (medium)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L2 — 11 px weight-400 sublabels</h3>
+              <span class="finding-location">DESIGN → chip-label, label-caps</span>
+            </header>
+            <div class="finding-note">"25 DAYS LEFT" meets the floor but is the weakest readable text on the main screen.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Weight 600 or 12 px for chip-label.</div>
+            <div class="reviewer-source">Consolidated as L12</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L3 — The grab bar is a false affordance</h3>
+              <span class="finding-location">DESIGN → Resting panel, Modal sheet</span>
+            </header>
+            <div class="finding-note">Bergen has 8 routes: 8 chips plus title, hint, caption and map key in 318 px, with no wrap/scroll rule. The 40 × 4 grab bar suggests drag that doesn't exist.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Chips wrap and the panel body scrolls internally. Drop the grab bar, or mark it decorative and aria-hidden.</div>
+            <div class="reviewer-source">Consolidated as M10 (raised to medium on merge) · also raised by developer M2</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L4 — The strip's 46 px hit area overlaps the map and loupe</h3>
+              <span class="finding-location">DESIGN → Layout &amp; Spacing</span>
+            </header>
+            <div class="finding-note">Map starts at y = 144 with the loupe placed high under the strip.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Strip hit area takes precedence and the loupe hit circle is clipped, or reserve 4 px.</div>
+            <div class="reviewer-source">Consolidated as L13</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L5 — Copy: abbreviations and sensory wording</h3>
+              <span class="finding-location">DESIGN → fare tags; EXPERIENCE → Decided strings → Map</span>
+            </header>
+            <div class="finding-note">"1 d" and "Tap the Europe circle" (WCAG 1.3.3).</div>
+            <div class="finding-fix"><strong>Fix:</strong> Accessible "1 day"; region-aware hint naming the zoom button.</div>
+            <div class="reviewer-source">Consolidated as L14</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L6 — Keyboard models for radios and tabs</h3>
+              <span class="finding-location">EXPERIENCE → Option row, Mode card, End-of-day choice, Tabs</span>
+            </header>
+            <div class="finding-note">No radiogroup or tablist model stated.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Native radios styled as rows; tablist model with arrow keys and aria-controls.</div>
+            <div class="reviewer-source">Consolidated as L15</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L7 — No alt-text policy for content images</h3>
+              <span class="finding-location">EXPERIENCE → Content Assets; DESIGN → Polaroid, Sight card, Arrival fact card</span>
+            </header>
+            <div class="finding-note">No file formats, aspect ratios, master sizes, naming, ids linking assets to content, licence/source fields (NFR-8) or dark-mode treatment for line art. Sight images are "photos" in text and line drawings in renders. Stamp art is listed as assets yet "generated from the spec". No alt-text policy for content images.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Per-asset rows (format, master size, aspect, theming via currentColor), naming convention, and a schema sketch for sight / destination / question with imageAlt, source and licence. Alt policy: street drawings alt="", sight photos short alt, polaroids alt="". Stamps are a component, not assets.</div>
+            <div class="reviewer-source">Consolidated as H9 (raised to high on merge) · also raised by developer H6</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L8 — The dark Explorer cover disappears into the background</h3>
+              <span class="finding-location">DESIGN → Colors</span>
+            </header>
+            <div class="finding-note">cover-explorer-dark vs background-dark is 1.08:1.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a 1 px rule-dark outline or lift to about #1E3346.</div>
+            <div class="reviewer-source">Consolidated as L16</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L9 — Motion details</h3>
+              <span class="finding-location">EXPERIENCE → Motion</span>
+            </header>
+            <div class="finding-note">Loupe → zoom scale transition and counting animations not addressed.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Remove (not shorten) the zoom transition under prefers-reduced-motion; values change without counting.</div>
+            <div class="reviewer-source">Consolidated as L17</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L10 — Saving failures are silent or easy to miss</h3>
+              <span class="finding-location">EXPERIENCE → State Patterns → Storage unavailable, Unreadable save</span>
+            </header>
+            <div class="finding-note">Content present at load is often not announced.</div>
+            <div class="finding-fix"><strong>Fix:</strong> One calm line on Start when storage is unavailable; insert the banner into a live region after first paint, or focus it.</div>
+            <div class="reviewer-source">Consolidated as L18</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L11 — The "next slot" marker is colour-only</h3>
+              <span class="finding-location">DESIGN → Stamp slot</span>
+            </header>
+            <div class="finding-note">2 px ochre dashed ring and wash.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Accept as decorative and say so, or thicken the dash.</div>
+            <div class="reviewer-source">Consolidated as L19</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L12 — Interaction primitives: tap-only commits</h3>
+              <span class="finding-location">EXPERIENCE → Interaction Primitives</span>
+            </header>
+            <div class="finding-note">Answer rows and sight toggles act on one tap with 6 px stack-tight spacing.</div>
+            <div class="finding-fix"><strong>Fix:</strong> ≥ 8 px between adjacent targets that act on tap.</div>
+            <div class="reviewer-source">Consolidated as L20</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="reviewer-section">
+      <details>
+        <summary>
+          <h2>Developer / implementability review</h2>
+          <span class="reviewer-source">review-developer.md</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>“The visual system is unusually concrete: every token reference resolves, every colour role has a dark pair, and the component table is close to buildable. The behaviour spine is weaker.” A builder would get stuck on navigation (no exit from City day, no back, reload or URL model), on the map (no coordinates, projection, loupe mechanics or region data schema), and on rule-to-UI seams (when Call home and journey end appear, more than 5 stamps, multiple night departures). “Not ready to hand to implementation until the 4 critical and the high findings below are closed. Most fixes are short additions, not redesigns.”</p>
+            <p>Reviewer counts: Critical 4 · High 10 · Medium 12 · Low 8. Kept as solid: the rules-layer "unavailable with reason" seam (NFR-2), the never-colour-alone mapping and 11 px floor, and the UJ-1, UJ-2 and Flow 5 numbers.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-critical">critical</span>
+              <h3 class="finding-title">C1 — City day has no exit, and no screen defines "back"</h3>
+              <span class="finding-location">EXPERIENCE → IA, Component Patterns → City day, Modal sheet, Travel home sheet; render CD1</span>
+            </header>
+            <div class="finding-note">City day's only action is "End the day — €X". There is no back, cancel or × to return to the Map without committing. The Passport's "‹ Map" control exists in the render but not in the spine. Browser and Android back are never mentioned. Esc on a replaced-content sheet closes the whole sheet, while "Not yet" goes one step back, so one surface has two meanings of "back".</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a Back-navigation table: per surface, the visible back control (City day: "‹ Map" top-left, discards the draft) and browser-back behaviour (closes the open sheet, then returns full screens to the Map, never leaves the game mid-journey). Esc on a replaced sheet = one step back; scrim = close all. Add "‹ Map" to the City day anatomy in DESIGN.</div>
+            <div class="reviewer-source">Consolidated as C1 · also raised by accessibility M6 (Esc part)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-critical">critical</span>
+              <h3 class="finding-title">C2 — Reload, URL and deep-link model is undefined; core persistence contradicts the PRD</h3>
+              <span class="finding-location">EXPERIENCE → Foundation "Persistence", State Patterns "Storage unavailable", Core vs Extension; PRD FR-20, NFR-9</span>
+            </header>
+            <div class="finding-note">Foundation says browser storage holds game state, but save/resume is FR-20 [EXT]. What a mid-journey reload does in the core is unstated, as is whether screens have URLs and what a reload on City day, mid-sheet or mid-shift restores.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Single URL, no deep links, in-memory screen state. Core: reload returns to Start and the journey is lost (or pull autosave into core). EXT: reload restores the last committed game state and lands on the Map (or Journey summary if ended). Drafts and open sheets are never restored.</div>
+            <div class="reviewer-source">Consolidated as C2</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-critical">critical</span>
+              <h3 class="finding-title">C3 — Map geometry is left to guesswork</h3>
+              <span class="finding-location">DESIGN → Region loupe, Zoomed region, Components "Map"; EXPERIENCE → Content Assets, Component Patterns → Map, Accessibility Floor → Targets</span>
+            </header>
+            <div class="finding-note">No city coordinates, projection bounds, crop or base scale; "5.8×" and "2.1×" have no reference. Unclear whether the loupe is a scaled copy of the world SVG or separate inset art. Route-line shape unspecified. "Tap a destination marker" conflicts with "the whole loupe is the tap target". At 375 px the world map is about 1 px per degree, so from Tokyo or New York the European markers sit a few px apart: tappable markers break NFR-5 (44 × 44) and WCAG 2.5.8, and their hit areas overlap. There is no zoom path to Europe from outside it.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a Map data contract: per place {id, name, iata, lat, lon, regionId, labelOffset, pillOffset}; world map equirectangular with stated crop and viewBox; region record {bounds, loupeCentre, loupeRadius, scale, zoomScale, geometry asset}. Tap rules: markers inside a loupe are never individual targets; other markers are tappable only with non-overlapping ≥ 44 px hit circles, otherwise decorative; outside Europe the Europe box is a single 44 px target or not interactive (chips remain the path). Add the hit-circle rule to Accessibility Floor → Targets.</div>
+            <div class="reviewer-source">Consolidated as C3 · also raised by accessibility H3</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-critical">critical</span>
+              <h3 class="finding-title">C4 — Call home and journey-end triggers have no defined moment or persistent entry point</h3>
+              <span class="finding-location">EXPERIENCE → IA "Call home sheet", Component Patterns "Call home sheet", State Patterns "Cannot afford any travel" / "No action left", UJ-2 failure paths; PRD FR-12, FR-13</span>
+            </header>
+            <div class="finding-note">"Shown when the FR-12 condition holds" never says when the sheet opens (return to Map, after the arrival card, on tapping a route). After "Not now" it is "offered again while the condition holds" with no named control. Jonas in Rome with €20 cannot afford a city day either, so a dismissed sheet leaves him stuck, which FR-13 forbids. The FR-13 auto-end has no screen sequence, and the "can't fit" variant is a confirm while FR-12/FR-13 read as the game ending the journey.</div>
+            <div class="finding-fix"><strong>Fix:</strong> (1) A persistent "Call home" entry while FR-12 holds (resting panel in place of the chips, plus the city-day card) with copy and cost line. (2) Auto-open once on the first Map view where the condition becomes true. (3) Define the FR-13 end sequence (e.g. arrival card → Continue → Journey summary, failed-away copy). (4) Decide whether can't-fit is a confirm or a notice; align with FR-12 or log a PRD change.</div>
+            <div class="reviewer-source">Consolidated as C4 · also raised by rubric §4 (high), accessibility M6 (re-entry part)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H1 — Every visual-reference link is broken</h3>
+              <span class="finding-location">DESIGN header and body; EXPERIENCE → Foundation, IA "Reference" column</span>
+            </header>
+            <div class="finding-note">Known pending promotion step: the spines link mockups/screens-core.html, screens-ext.html and city-day.html, but mockups/ doesn't exist yet; renders sit in .working/ under other names. The Route sheet is cited as "city-day MAP-1", but Foundation lists city-day.html as CD1/CD1b/CD2/CD2b only, and MAP-1 lives in direction-a3.html beside a superseded strip/loupe layout. CD1 shows inconsistent day labels.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Run the promotion: copy renders into mockups/ under the referenced names, include MAP-1 in city-day.html with the note "route sheet panel only; map layout per MAP-C", list it in Foundation, and fix the day labels on promotion.</div>
+            <div class="reviewer-source">Consolidated as H5 · also raised by rubric §5 (medium, MAP-1; promotion noted as pending)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H2 — Dark mode makes several icons and captions invisible</h3>
+              <span class="finding-location">DESIGN → Colors (primary-dark = ochre-light-dark = #E0A243); components button-primary icon, Tabs selected, region-loupe zoom-tag, Intro goal box, Feedback box, Night row disc, "Back to world" pill, map-marker-home</span>
+            </header>
+            <div class="finding-note">Components described as "navy" bind to <code>primary</code>/<code>ink</code>, which flip to ochre and cream in dark mode. Ochre-light on primary-dark is 1.00:1 and cream on it 1.94:1: the intro goal-box caption, the correct-answer check (the non-colour cue for "correct"), the selected-tab icon, the zoom-tag icon and the primary-button icon vanish, the feedback link fails, and map-marker-home's icon is #F4EFE1 on #F4EFE1. Prose "navy fill" / "cream text" is never mapped to a token. None of these pairs are in the contrast table.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Split the roles: keep <code>primary</code> for the button, add <code>navy-surface</code> / <code>on-navy-surface</code> (e.g. light #0A1826, dark #0A121A) for decorative navy blocks, and/or <code>on-primary-icon</code> with a navy dark value. Give map-marker-home a contrasting dark icon token. Replace every prose "navy"/"cream" with tokens and add the dark pairs to the contrast table.</div>
+            <div class="reviewer-source">Consolidated as H1 · also raised by rubric §2, accessibility H4</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H3 — More than 5 stamps isn't designed</h3>
+              <span class="finding-location">DESIGN → Stamp slot, passport strip/cover, Stamp page, Journey summary; EXPERIENCE → Day complete copy; addendum §6</span>
+            </header>
+            <div class="finding-note">The goal is "at least 5" and 6 are reachable in EXT, but there are five slots, a "row of five" on the summary, "Three to go" copy and "Stamps 5/5" on Travel home.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Count reads "6 stamps · goal 5"; strip shows 5 slots plus a "+1" badge; Stamp page grid grows; summary row wraps; post-goal Day complete copy ("That's 6. Goal already met."). Or tag the case [EXT] if the core can't reach 6.</div>
+            <div class="reviewer-source">Consolidated as H6</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H4 — Multiple night departures per city vs one "Leave tonight" row</h3>
+              <span class="finding-location">EXPERIENCE → End-of-day choice, Flow 5; DESIGN → Option row "Night row"; addendum §5</span>
+            </header>
+            <div class="finding-note">If night routes are bidirectional, Paris has three night departures and London two, yet the spine shows one "Leave tonight" row. It doesn't say whether night departures appear in the Route sheet.</div>
+            <div class="finding-fix"><strong>Fix:</strong> One "Leave tonight" row per night departure, noting the height impact; night departures absent from the Route sheet (or unavailable with "Leaves after a city day here"). Confirm directionality with the PM.</div>
+            <div class="reviewer-source">Consolidated as H7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H5 — Game state vs UI state isn't classified</h3>
+              <span class="finding-location">Missing throughout (hints in Status chip, Earnings pill, Running total)</span>
+            </header>
+            <div class="finding-note">NFR-2 needs a clean rules API, but nothing separates committed game state from draft or presentational state. Is each shift answer a rules action (so a mid-shift reload can't re-answer), or is the shift atomic?</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a State ownership table: game state (saved), draft UI state (discarded on leave/reload), presentational state. Recommend the shift commits per answer and pays out on the result screen.</div>
+            <div class="reviewer-source">Consolidated as H8</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H6 — Content asset requirements are missing formats, sizes, naming and schema</h3>
+              <span class="finding-location">EXPERIENCE → Content Assets; DESIGN → Polaroid, Sight card, Arrival fact card</span>
+            </header>
+            <div class="finding-note">No file formats, aspect ratios, master sizes, naming, ids linking assets to content, licence/source fields (NFR-8) or dark-mode treatment for line art. Sight images are "photos" in text and line drawings in renders. Stamp art is listed as assets yet "generated from the spec". No alt-text policy for content images.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Per-asset rows (format, master size, aspect, theming via currentColor), naming convention, and a schema sketch for sight / destination / question with imageAlt, source and licence. Alt policy: street drawings alt="", sight photos short alt, polaroids alt="". Stamps are a component, not assets.</div>
+            <div class="reviewer-source">Consolidated as H9 · also raised by accessibility L7</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H7 — City day unavailable (FR-8) is not designed</h3>
+              <span class="finding-location">EXPERIENCE → State Patterns; Component Patterns → City-day card, Arrival fact card; Decided strings → Arrival, Map</span>
+            </header>
+            <div class="finding-note">FR-8 makes the city day unavailable when money is below the stay price or 0 days remain, but "Plan the day" has no unavailable variant or reason copy. On an already-stamped city the Arrival card still says "No stamp unless you spend a day here" and the card hint says "Finish the day to earn your Paris stamp"; repeat visit is defined only for City day.</div>
+            <div class="finding-fix"><strong>Fix:</strong> "Plan the day" uses Button unavailable with reasons ("Not enough for a night here (you have €20)" / "No days left"). Add repeat-visit variants for the Arrival fact card and City-day card ("You already have your Paris stamp.").</div>
+            <div class="reviewer-source">Consolidated as H10 · also raised by rubric §4 (two mediums)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H8 — Copy is given as examples, not templates</h3>
+              <span class="finding-location">EXPERIENCE → Decided strings, State Patterns "Call home can't fit days", Open Item 1</span>
+            </header>
+            <div class="finding-note">Strings carry hard-coded sample values. Undefined: variable names, pluralisation, number formatting, numbers-as-words, transport verbs, the "Money's tight" threshold, via-city hint, Tip selection, target-city choice, Day complete variants, the Bergen panel title, failed-away eyebrow. The Call home "can't fit the days" string is still [ASSUMPTION], the only FR-12 path with no player-facing string, and the Call home cost line has no 0-stamp variant.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Convert Decided strings to a key/template table (e.g. route.consequence = "You'll reach {city} on Day {day} with {money} left.") with plural and format rules and a rule-source column. Write the can't-fit and 0-stamp Call home strings now.</div>
+            <div class="reviewer-source">Consolidated as H11 · also raised by rubric §4 (low)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H9 — The Route sheet selection and transitions are ambiguous</h3>
+              <span class="finding-location">EXPERIENCE → Component Patterns → Option row, Route sheet, Travel home sheet; IA Route sheet</span>
+            </header>
+            <div class="finding-note">Unclear: default selection, the primary button before a pick, when the Bergen route swaps to Travel home, and where closing the sheet returns when opened from a Zoomed region pill.</div>
+            <div class="finding-fix"><strong>Fix:</strong> No preselection; primary is unavailable "Choose how to travel" until a row is picked. For Bergen, "Continue · €X" swaps to Travel home. The sheet opens over the current view and closing returns there.</div>
+            <div class="reviewer-source">Consolidated as H12</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">H10 — "Name never truncates at 14 characters" isn't guaranteed</h3>
+              <span class="finding-location">DESIGN → Passport cover; EXPERIENCE → Name field; PRD FR-1</span>
+            </header>
+            <div class="finding-note">14 wide glyphs at 13.5 px bold measure about 170–190 px against roughly 152 px available. Counting unit (UTF-16 vs graphemes), trimming and whitespace-only fallback are unspecified.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Count graphemes, trim, fall back to "Traveller". Safety net: shrink to 11 px, then ellipsis (or restrict input). Use "Ingrid's journey" only when a name is set.</div>
+            <div class="reviewer-source">Consolidated as H13</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M1 — Viewport height isn't specified, so the map can collapse</h3>
+              <span class="finding-location">EXPERIENCE → Accessibility Floor → Zoom; DESIGN → Layout &amp; Spacing; tokens status-chip-height, strip-height, cover-height, cover-width, panel-height</span>
+            </header>
+            <div class="finding-note">Cover width (172 px) was derived from "EXPLORER PASSPORT" at 11 px and needs about 250–270 px at 200%. Chips, strip and panel are fixed heights (WCAG 1.4.4, 1.4.10, 1.4.12). At 375 × 667 the map gets about 205 px and the r112 loupe doesn't fit. Nothing forbids maximum-scale=1 / user-scalable=no.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Fixed sizes become min-height with rem type. Large-text fallback: chips wrap, cover drops to the slim strip, slots wrap, panel and sheets scroll internally, map may shrink; "fits without scrolling" applies at 100% only. State a minimum supported height and behaviour below it. Viewport meta must not disable zoom. Promote the 200% target from [ASSUMPTION].</div>
+            <div class="reviewer-source">Consolidated as H4 (raised to high on merge) · also raised by accessibility H5</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M2 — The resting panel's content may not fit</h3>
+              <span class="finding-location">DESIGN → Resting panel, Modal sheet</span>
+            </header>
+            <div class="finding-note">Bergen has 8 routes: 8 chips plus title, hint, caption and map key in 318 px, with no wrap/scroll rule. The 40 × 4 grab bar suggests drag that doesn't exist.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Chips wrap and the panel body scrolls internally. Drop the grab bar, or mark it decorative and aria-hidden.</div>
+            <div class="reviewer-source">Consolidated as M10 · also raised by accessibility L3</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M3 — The core has no unaffordable state for destination chips</h3>
+              <span class="finding-location">EXPERIENCE → Core vs Extension; Destination chip</span>
+            </header>
+            <div class="finding-note">The "€X short" chip is [EXT], so in the core an unaffordable destination looks affordable.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Move the "short" variant into [CORE]; Work only adds the "would cover" hint.</div>
+            <div class="reviewer-source">Consolidated as M11</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M4 — "Safe choice is primary" contradicts Travel home and Call home</h3>
+              <span class="finding-location">EXPERIENCE → Buttons ("safe choice is primary") vs Travel home, Call home; Confirm block</span>
+            </header>
+            <div class="finding-note">Three irreversible confirms use two opposite button conventions; Enter on an auto-focused primary would commit Travel home or Call home. Safe-exit words differ ("Not yet" / "Not now").</div>
+            <div class="finding-fix"><strong>Fix:</strong> Scope the rule: data-loss confirms make the safe action primary; goal-action confirms make the commit primary. Initial focus on the headline, Esc/scrim = safe action, one safe-exit word.</div>
+            <div class="reviewer-source">Consolidated as M6 · also raised by accessibility M5</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M5 — Where "New journey" lands is unclear</h3>
+              <span class="finding-location">Journey summary, Menu confirm, UJ-1 step 10, Flow 4, Intro</span>
+            </header>
+            <div class="finding-note">Start screen or straight to Map? Name remembered? The reopened intro says "Back to my journey" even from Start with no journey.</div>
+            <div class="finding-fix"><strong>Fix:</strong> New journey → Start with last name prefilled → Map; intro from Start reads "Got it".</div>
+            <div class="reviewer-source">Consolidated as M12</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M6 — Sight affordability with tiers and night departures</h3>
+              <span class="finding-location">Sight card (FR-21), End-of-day choice</span>
+            </header>
+            <div class="finding-note">FR-21 measures money "after accommodation"; the baseline with [EXT] tiers or a night ticket, and what happens when a tier switch makes a sight unaffordable, are unstated.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Baseline = currently selected end-of-day cost; an option whose total exceeds money is unavailable with "Too much with your sights — remove one".</div>
+            <div class="reviewer-source">Consolidated as M13</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M7 — Surface types are ambiguous</h3>
+              <span class="finding-location">EXPERIENCE → IA (Passport, Arrival fact card, Zoomed region)</span>
+            </header>
+            <div class="finding-note">Is Passport a screen or a sheet? Does the arrival card keep the top stack? Read mode has both × and Close. Does Zoomed region keep strip and panel?</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add "Surface type" and "Top stack visible" columns to the IA table.</div>
+            <div class="reviewer-source">Consolidated as M14</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M8 — Tokens are incomplete for a CSS-variable build</h3>
+              <span class="finding-location">DESIGN → Components table, frontmatter, Shapes</span>
+            </header>
+            <div class="finding-note">Many type sizes have no role (12.5, 13.5/600, 14/600, serif 14/14.5/19/24, 16 bold, 11.5 px), plus icon sizes, shadows, motion durations and the focus ring. Literals remain (answer-row min-height 52px, progress-dot 28px, cover radii, menu row 60 px). Composite strings don't map 1:1 to variables; stamp-code is in viewBox units, not CSS px.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Map each size to an existing role or add a few (meta, label-strong, serif-sm); add elevation.*, motion.*, icon.*; split border composites; express alpha separately; mark stamp-code as SVG units.</div>
+            <div class="reviewer-source">Consolidated as M1 · also raised by rubric §2 (medium + low)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M9 — Logo: type tokens or a vector?</h3>
+              <span class="finding-location">DESIGN → Logo</span>
+            </header>
+            <div class="finding-note">The wordmark is both {typography.wordmark} (system stack) and "needs a vector redraw"; a compass-O can't be built from a system font.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Ship the logo as an SVG asset (stand-in until the redraw); tokens apply to fallback text only.</div>
+            <div class="reviewer-source">Consolidated as M15</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M10 — Extension city-card actions are vague</h3>
+              <span class="finding-location">EXPERIENCE → City-day card [EXT]</span>
+            </header>
+            <div class="finding-note">"Reachable from 'About &lt;City&gt;' and the route panel" names no real control; no rule for when work is unavailable.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Name the exact control (e.g. secondary "Plan another day · €80" link).</div>
+            <div class="reviewer-source">Consolidated as M16</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M11 — Zoomed region per region</h3>
+              <span class="finding-location">DESIGN → Zoomed region</span>
+            </header>
+            <div class="finding-note">Is 10.6 px/° Europe-only? Oceania has one city. Are off-map arrow pills tappable? Return transition unspecified.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Zoom scale as a region field; allow zoomable: false; arrow pills open that destination's Route sheet.</div>
+            <div class="reviewer-source">Consolidated as M17</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">M12 — Day counter edge values</h3>
+              <span class="finding-location">EXPERIENCE → Decided strings → Day counter</span>
+            </header>
+            <div class="finding-note">The cap ("Day 30 of 30"), "0 days left" / "1 day left" singular and the before/after box at the limit are missing.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add the cap and plural rules.</div>
+            <div class="reviewer-source">Consolidated as M18</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L1 — Dark-value provenance inconsistent</h3>
+              <span class="finding-location">DESIGN frontmatter comment, Colors intro; EXPERIENCE Open Item 1</span>
+            </header>
+            <div class="finding-note">direction-a2-merged and direction-sunrise-expedition.html are cited; frontmatter and body name different sources for the dark values.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Say "working render, not shipped" or drop the reference; pick one provenance.</div>
+            <div class="reviewer-source">Consolidated as L3 · also raised by rubric §5</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L2 — Core/EXT tag mismatch</h3>
+              <span class="finding-location">DESIGN Name field vs EXPERIENCE; region data</span>
+            </header>
+            <div class="finding-note">Name field is [EXT start] in DESIGN but [CORE] in EXPERIENCE; Madrid sits in the core Europe inset.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Tag consistently; make region data extensible.</div>
+            <div class="reviewer-source">Consolidated as L21</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L3 — Scrim vs FR-3</h3>
+              <span class="finding-location">EXPERIENCE → Route sheet</span>
+            </header>
+            <div class="finding-note">—</div>
+            <div class="finding-fix"><strong>Fix:</strong> State whether the scrim stops below the top stack.</div>
+            <div class="reviewer-source">Consolidated as L22</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L4 — Polaroid sheet openers</h3>
+              <span class="finding-location">EXPERIENCE → Polaroid sheet</span>
+            </header>
+            <div class="finding-note">Day complete "New in album" polaroid and the Album line are omitted.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add them or state they aren't tappable.</div>
+            <div class="reviewer-source">Consolidated as L23</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L5 — Stamp rotation and NFR-1</h3>
+              <span class="finding-location">DESIGN → Stamp</span>
+            </header>
+            <div class="finding-note">"−8° to −12°, alternating ±6–9°" breaks stable screenshots and tests (NFR-1).</div>
+            <div class="finding-fix"><strong>Fix:</strong> Deterministic angle per destination.</div>
+            <div class="reviewer-source">Consolidated as L24</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L6 — Under 375 px</h3>
+              <span class="finding-location">DESIGN → Passport cover</span>
+            </header>
+            <div class="finding-note">At 320 px the cover leaves 108 px for 152 px of slots.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Give "may drop to its slim form" a breakpoint.</div>
+            <div class="reviewer-source">Consolidated as L25</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L7 — Call home with 0 stamps</h3>
+              <span class="finding-location">EXPERIENCE → Decided strings, State Patterns "Call home can't fit days", Open Item 1</span>
+            </header>
+            <div class="finding-note">Strings carry hard-coded sample values. Undefined: variable names, pluralisation, number formatting, numbers-as-words, transport verbs, the "Money's tight" threshold, via-city hint, Tip selection, target-city choice, Day complete variants, the Bergen panel title, failed-away eyebrow. The Call home "can't fit the days" string is still [ASSUMPTION], the only FR-12 path with no player-facing string, and the Call home cost line has no 0-stamp variant.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Convert Decided strings to a key/template table (e.g. route.consequence = "You'll reach {city} on Day {day} with {money} left.") with plural and format rules and a rule-source column. Write the can't-fit and 0-stamp Call home strings now.</div>
+            <div class="reviewer-source">Consolidated as H11 (raised to high on merge) · also raised by rubric §4 (low)</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">L8 — Overspecification that will fight implementation</h3>
+              <span class="finding-location">DESIGN → Passport cover → Cover block, Layout (y = 144, 318 px panel)</span>
+            </header>
+            <div class="finding-note">The cover-width derivation is rationale, not spec; absolute y, a font-measured width and "verified in renders" claims will fight a real layout engine.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Keep {spacing.cover-width} plus one clause; restate the rest as constraints (min targets, min map height, panel ≤ 40% of viewport).</div>
+            <div class="reviewer-source">Consolidated as L5 · also raised by rubric §6</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <div class="mechanical">
+      <h3>Mechanical notes</h3>
+      <ul>
+        <li>EXPERIENCE.md frontmatter uses <code>title:</code>; the shape examples use <code>name:</code>. Consider adding <code>name: 'WORLDBOUND: NOMAD'</code> for parity with DESIGN.md.</li>
+        <li><code>scrim</code> / <code>scrim-dark</code> are 8-digit hex (#0A182661, #00000080). Confirm downstream token tooling accepts alpha hex, or split into colour plus opacity.</li>
+        <li><code>typography.*.note</code> fields (tabular-nums, uppercase) carry load-bearing rendering rules outside the standard keys. Keep <code>note</code> in the export, or promote to fontFeature / textTransform.</li>
+        <li>UJ-1 step 3 says "the loupe shows Europe" at Bergen, but the region list never says which region Bergen belongs to. Add "Europe (incl. Bergen, Madrid [EXT])".</li>
+        <li>No Mermaid in either spine. Internal links (DESIGN.md ↔ EXPERIENCE.md, imports/…pptx) resolve; mockups/*.html links resolve once promotion runs (known pending, H5).</li>
+        <li>Both files are <code>status: draft</code> with <code>updated: 2026-10-13</code>, which is consistent.</li>
+      </ul>
+    </div>
+
+    <footer class="report-footer">
+      <div class="meta">
+        <span>Rubric: /Users/christianstorum/Rammeverket/Worldbound/.docs/planning-artifacts/ux-designs/ux-worldbound-nomad-2026-10-13/review-rubric.md</span>
+        <span>Accessibility: review-accessibility.md</span>
+        <span>Developer: review-developer.md</span>
+        <span>DESIGN.md: /Users/christianstorum/Rammeverket/Worldbound/.docs/planning-artifacts/ux-designs/ux-worldbound-nomad-2026-10-13/DESIGN.md</span>
+        <span>EXPERIENCE.md: /Users/christianstorum/Rammeverket/Worldbound/.docs/planning-artifacts/ux-designs/ux-worldbound-nomad-2026-10-13/EXPERIENCE.md</span>
+        <span>Generated: 2026-10-13</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
