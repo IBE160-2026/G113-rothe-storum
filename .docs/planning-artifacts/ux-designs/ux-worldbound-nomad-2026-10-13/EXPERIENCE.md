@@ -248,7 +248,7 @@ Behavioural. Visual specs are in DESIGN.md → Components, under the same names,
 
 | Component | Tag | Behavioural rules |
 |---|---|---|
-| Sight card | [CORE] | Toggle with `aria-pressed`; its name includes the price. At most 2 per day (FR-21). Unavailable, with its reason, when the money left after the selected end-of-day cost (core: the stay) is below its ticket price. Already-visited sights appear as Album lines (FR-22 assumption). Compact variant [EXT]: the whole card is the target. Adjacent cards are `{spacing.stack-tap}` apart. |
+| Sight card | [CORE] | Toggle with `aria-pressed`; its name includes the price. At most 2 per day (FR-21). Unavailable, with its reason, when the money left after the selected end-of-day cost (core: the stay) is below its ticket price. A sight already in the album shows an "In your album" line, is not selectable and does not count toward the 2-sight limit; tapping it opens its Polaroid sheet for free (FR-22, PRD Decision G, 2026-11-13). Compact variant [EXT]: the whole card is the target. Adjacent cards are `{spacing.stack-tap}` apart. |
 | End-of-day choice | [EXT] | Single-select radio group: Budget stay / Comfort stay / one "Leave tonight" row per night departure from this city (FR-23). Picking a night row shows the keep/skip lines and changes the button to "End the day & board — {total}". An option whose total with the chosen sights exceeds money is unavailable with "Too much with your sights — remove one". |
 | Running total | [CORE] | Live sum of the stay (or night ticket) plus the chosen sights; before/after boxes for money and day; the button label carries the total. A polite live region announces the new total after each toggle. |
 | Day complete | [CORE] | First city day: the stamp lands (Motion) and focus goes to the headline, which announces the stamp. Repeat visit: no stamp moment. "Back to the map" returns to the Map; "View album" opens the Passport on the Album tab. [EXT] After a night departure, the button is "{verb}" and leads to the next Arrival fact card. |
@@ -585,10 +585,10 @@ NFR-4 requires tablet and PC to work. Layout constraints are in DESIGN.md → La
 
 ## Open Items
 
-1. **C4 / PRD:** FR-12 ends the journey when Call home can't fit, but FR-13 ends it only when no action is left (a city day or [EXT] shift may still be possible). The UI follows the rules layer's `ended` flag; the PM reconciles the two rules.
-2. **H7 / PM:** night-departure direction. Addendum §5 lists one direction per night route; routes are bidirectional. The UI shows one "Leave tonight" row per night departure that the data defines.
+1. ~~**C4 / PRD:** FR-12 vs FR-13 end rule~~ — resolved 2026-11-13 (PRD Decision H): FR-13 now names "stranded" and "out of days"; the UI still follows the rules layer's `ended` flag.
+2. **H7 / PM:** night-departure direction (now PRD Open Question 7). Addendum §5 lists one direction per night route; routes are bidirectional. The UI shows one "Leave tonight" row per night departure that the data defines.
 3. **H11:** sign-off for new copy tagged [ASSUMPTION] in Copy templates (0-stamp Call home, out-of-days sheet, 5th-stamp and repeat Day complete, stranded tip, can't-save line, no-days shift reason, the "Money's tight" threshold).
 4. **C3:** region records for North America / Atlantic, Oceania and Africa [EXT] have no rendered radius, scale or placement; set them in data and check on a device.
-5. **UJ-3 balance** (PRD Open Question 5): Amira reaches Sydney with €36 and can't afford a city day there.
+5. ~~**UJ-3 balance**~~ — resolved 2026-11-13: PRD UJ-3 now uses two shifts (€456 → Sydney with €156). The UJ-3 flow below still shows one shift and is updated with the Work epic.
 6. **Fact-check** of the Tivoli Gardens fact (NFR-8), pending with the team: "Opened in 1843, Tivoli is the world's second-oldest amusement park still running — the oldest, Bakken, is just up the road."
 7. **Logo:** the clean vector redraw (DESIGN.md → Logo).
