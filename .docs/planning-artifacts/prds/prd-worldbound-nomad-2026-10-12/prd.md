@@ -2,7 +2,7 @@
 title: "WORLDBOUND: NOMAD — PRD"
 status: final
 created: 2026-10-12
-updated: 2026-11-13
+updated: 2026-11-16
 ---
 
 # PRD: WORLDBOUND: NOMAD
@@ -171,7 +171,7 @@ The player can spend a city day at the current destination.
 - A city day deducts the accommodation price (base accommodation price × cost factor, rounded to whole euros, halves up) and adds 1 day to days used.
 - A city day is unavailable when money is below the accommodation price or days remaining is 0.
 - A city day is not possible at home (arriving home ends the journey).
-- A city day is one rules action applied in a fixed order (§9.5, Decision F): (1) the accommodation price is deducted, 1 day is added to days used, and the stamp is awarded if this is the first city day at the destination (FR-10); (2) the chosen 0–2 sights are paid from the money left (FR-21); (3) the city day is over — the player travels on, calls home if offered, or spends another city day. No sight can be bought for a city day after it is over.
+- A city day is one rules action applied in a fixed order (§9.6, Decision F): (1) the accommodation price is deducted, 1 day is added to days used, and the stamp is awarded if this is the first city day at the destination (FR-10); (2) the chosen 0–2 sights are paid from the money left (FR-21); (3) the city day is over — the player travels on, calls home if offered, or spends another city day. No sight can be bought for a city day after it is over.
 - The UI may let the player pick sights before confirming the day (nothing is charged until "End the day", EXPERIENCE.md → City day); the rules apply the order above when the day is confirmed. [EXT] When the city day ends with a night departure (FR-23), step 1 charges no accommodation.
 
 #### FR-9: Money never goes below €0
@@ -247,7 +247,7 @@ The player can call home when they cannot afford any travel out of the current d
 #### FR-13: End the journey
 
 **Consequences (testable):**
-- The journey ends when the player arrives home (by travel or call home), or away from home in one of two cases (§9.5, Decision H):
+- The journey ends when the player arrives home (by travel or call home), or away from home in one of two cases (§9.6, Decision H):
   - **Stranded:** the player cannot afford any travel out of the current destination (FR-12) and call home does not fit days remaining. In the MVP core no action can raise money, so the journey ends at once, even if a city day is still affordable. [EXT, ASSUMPTION: once work exists, the journey is not stranded while a shift is available; confirm when the Work epic starts.]
   - **Out of days:** the player has no available action: no affordable travel that fits days remaining, no affordable city day, and no call home that fits days remaining.
 - A journey that ends away from home is failed, and the summary names the reason ("Stranded in {city} — no way home in time." or "Out of days in {city}.").
@@ -358,7 +358,7 @@ The player can turn sound effects on or off from the menu.
 - **NFR-5 Accessibility basics:** readable text on mobile, touch targets of at least 44 × 44 px, and information never conveyed by color alone. No formal WCAG certification.
 - **NFR-6 Language:** all player-facing text, including fact cards, sights, and trivia, is in English, as are planning documents and code.
 - **NFR-7 Content as data:** destinations, routes, prices, cost factors, fact cards, sights, and trivia are stored as data files separate from game code and can be changed without code changes. Graphics and sight photos live in their own assets folder. Test data (fixed game states and small test routes) lives with the automated tests, not in the game content files.
-- **NFR-8 Content quality:** every fact card and trivia question is fact-checked by a team member and reviewed for stereotypes before it is merged; the reviewer is recorded in the Git history. Content (fact cards, sight facts, illustration photos, [EXT] trivia) goes through three steps: an AI content agent drafts it, a second AI agent fact-checks it and records what it flagged and corrected, and Christian Storum does the final check of facts, stereotypes and photo licences before merge (§9.6, Decision I). Photos come from freely licensed sources (e.g. Wikimedia Commons, Unsplash, Pexels) or are AI-generated; photos from ordinary web pages are never copied. Source, author and licence are recorded per photo, and licences that require attribution are credited in the game or README. Every sight photo is made by the team, AI-generated, or freely licensed, and its source and license are recorded with the content. Placeholder photos (typically AI-generated) are allowed in the MVP core and follow the same source and license rule; they can be replaced later without code changes (NFR-7, §9.5 Decision B).
+- **NFR-8 Content quality:** every fact card and trivia question is fact-checked by a team member and reviewed for stereotypes before it is merged; the reviewer is recorded in the Git history. Content (fact cards, sight facts, illustration photos, [EXT] trivia) goes through three steps: an AI content agent drafts it, a second AI agent fact-checks it and records what it flagged and corrected, and Christian Storum does the final check of facts, stereotypes and photo licences before merge. The other team member then reviews the content pull request independently on GitHub; that review is recorded separately in the PR (§9.6, Decision I). Photos come from freely licensed sources (e.g. Wikimedia Commons, Unsplash, Pexels) or are AI-generated; photos from ordinary web pages are never copied. Source, author and licence are recorded per photo, and licences that require attribution are credited in the game or README. Placeholder photos (typically AI-generated) are allowed in the MVP core and follow the same source and license rule; they can be replaced later without code changes (NFR-7, §9.5 Decision B).
 - **NFR-9 No personal data:** the game collects and sends no personal data. Browser storage holds only game state, the intro flag, the optional traveller name (FR-1), and the sound setting (FR-24); none of it leaves the device.
 
 ## 6. Development Process Constraints
@@ -415,7 +415,7 @@ Built only after the core passes its tests and a playtest, one item at a time; e
 
 ### 9.3 Decision: Time in the Core
 
-In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 days, and money is the binding constraint (addendum §6). Time only binds at about 14 days, which would give up the 30-day journey. The MVP extension makes time scarce: work turns spare days into money, so every day spent travelling or sightseeing is a day not earned. **Given up:** a core where time already hurts. **Revisit:** after the first playtest, measured by SM-2b. If SM-2b fails, the balance test (SM-3) is run with 21 days; 21 days is adopted if SM-3 still holds with 21 days, otherwise 30 days stay and slower routes are tried instead (§9.5, Decision J).
+In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 days, and money is the binding constraint (addendum §6). Time only binds at about 14 days, which would give up the 30-day journey. The MVP extension makes time scarce: work turns spare days into money, so every day spent travelling or sightseeing is a day not earned. **Given up:** a core where time already hurts. **Revisit:** after the first playtest, measured by SM-2b. If SM-2b fails, the balance test (SM-3) is run with 21 days; 21 days is adopted if SM-3 still holds with 21 days, otherwise 30 days stay and slower routes are tried instead (§9.6, Decision J).
 
 ### 9.4 Out of Scope for MVP
 
@@ -433,12 +433,12 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 
 ### 9.6 Decisions After Instructor Feedback (2026-11-13)
 
-Taken by the team on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The AI agent proposed the wording; the team chose each option.
+Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The AI agent proposed the wording and Christian Storum chose each option; Thomas Rothe confirmed F–K, with a clarification of I, in his review of PR #4 (2026-11-16).
 
 - **F. City day order.** A city day is applied as accommodation + day + stamp → 0–2 sights → day over (FR-8). Adopted from the instructor's suggestion §4.4.
 - **G. Revisiting a sight.** A visited sight cannot be bought again; it can be reopened for free to view its photo and fact, with no reward (FR-22). Close to the instructor's suggestion ("not offered again"), plus free viewing. The team first chose "offered again at full price" and changed this the same day to free viewing, because a paid visit with no effect gives the player nothing. Replaces the former FR-22 assumption. EXPERIENCE.md updated.
 - **H. Stranded vs out of days.** The team accepted the UX solution (EXPERIENCE.md → Can't-continue sheet): FR-12 and FR-13 now name the two ways a journey ends away from home. Closes UX Open Item 1.
-- **I. Content ownership.** Three steps per item: an AI content agent drafts fact cards, sight facts, illustration photos and (EXT) trivia; a second AI agent fact-checks and logs its corrections; Christian Storum does the final check, including photo licences, before merge (NFR-8). Closes the content half of Open Question 3.
+- **I. Content ownership.** Three steps per item: an AI content agent drafts fact cards, sight facts, illustration photos and (EXT) trivia; a second AI agent fact-checks and logs its corrections; Christian Storum does the final check, including photo licences, before merge (NFR-8). The final check (Christian) and the independent review (the other team member, on the pull request) are two separate steps and are recorded separately. Closes the content half of Open Question 3.
 - **J. Time measured in the playtest.** SM-2b is added with a lever decided in advance (§9.3). Adopted from the instructor's suggestion §4.1.
 - **K. FR-4 is rule logic.** FR-4 joins NFR-2 and SM-1 (instructor §4.5).
 
@@ -463,7 +463,7 @@ Taken by the team on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-
 
 1. **Tokyo and Sydney in the core.** With the proposed prices, no winning core journey includes Tokyo or Sydney; they become reachable once work exists. Keep this as a deliberate "far destinations need work" design, or lower long-haul prices?
 2. **Nomad values and night departures.** Proposed Nomad: €1,000 and 30 days. Night departures make the game easier (6 stamps become reachable without work); prices for both are checked with the balance test once work exists. Since Decision E, a night departure saves both the stay and a day, which makes it stronger still.
-3. **Team split.** Content ownership is settled (Decision I). Still open: how implementation work is split by feature area between Thomas Rothe and Christian Storum, and who reviews whose pull requests (§6). Proposed split in the sprint plan; to be confirmed by the team.
+3. ~~Team split~~ — resolved 2026-11-16: content ownership is settled (Decision I); the implementation split and review pairs were agreed in Thomas Rothe's review of PR #4, with UI work starting in Sprint 1 and both team members testing and reviewing the rules logic. See the sprint plan (`.docs/implementation-artifacts/sprint-plan.md`).
 4. **AI travel assistant.** Reserve architectural room for it now, or treat it as fully deferred? Currently fully deferred.
 5. ~~UJ-3 balance~~ — resolved 2026-11-13: UJ-3 now uses two shifts (§2.4).
 6. **Work offered per destination [EXT].** Instructor suggestion (§4.3): "Work is only offered at a destination whose full question sequence is merged and reviewed," so work can ship destination by destination. Not yet decided; decide before the Work epic.
@@ -483,5 +483,6 @@ Taken by the team on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-
 ## 13. Revision Log
 
 - **2026-11-13 — revision after instructor feedback** (`tilbakemelding-prd.md`, 2026-11-12). Changed: UJ-3 recomputed (two shifts, €456 → Sydney with €156); FR-8 city day order (Decision F); FR-22 revisit rule (Decision G); FR-12/FR-13 stranded vs out of days (Decision H); NFR-8 content ownership (Decision I); SM-2b and the §9.3 lever (Decision J); FR-4 added to NFR-2 and SM-1 (Decision K); Open Questions 3, 5 updated, 6 and 7 added. Not changed: all addendum values. FR numbers are stable and not in numeric order in §4 (FR-21/22 sit in §4.5, FR-23/24 in §4.11 and §4.15); FR index below.
+- **2026-11-16 — corrections after Thomas Rothe's review of PR #4.** Changed: references to Decisions F, H and J now point to §9.6 (were §9.5); NFR-8 duplicate photo sentence removed and the independent PR review added as a separate step; Decision I clarified the same way; §9.6 intro states who chose and who confirmed F–K; Open Question 3 resolved. Not changed: all rules and addendum values.
 
 **FR index:** FR-1 §4.1 · FR-2 §4.1 · FR-3 §4.2 · FR-4 §4.2 · FR-5 §4.2 · FR-6 §4.3 · FR-7 §4.3 · FR-8 §4.4 · FR-9 §4.4 · FR-10 §4.6 · FR-11 §4.6 · FR-12 §4.7 · FR-13 §4.8 · FR-14 §4.8 · FR-15 §4.9 · FR-16 §4.9 · FR-17 §4.10 · FR-18 §4.12 · FR-19 §4.13 · FR-20 §4.14 · FR-21 §4.5 · FR-22 §4.5 · FR-23 §4.11 · FR-24 §4.15
