@@ -31,3 +31,22 @@ Brukeren ba Claude vurdere PRD-en og foreslå research- og idémyldringstemaer. 
 ### Åpne punkter
 - Gruppen må ta stilling til anbefaling 1 (FR-20 i CORE eller §1 til «one sitting») og 2 (avsnitt om inspirasjon kontra kopiering). Dette bør bli GitHub-issues når brukeren har godkjent det.
 - Safari-regelen bygger på en primærkilde fra 2020. Den må sjekkes mot WebKits release notes før FR-20 implementeres.
+
+## 2026-11-16 kl. 09:32 — Albion812
+
+### Oppgave
+Brukeren spurte hva Claude anbefaler for videre håndtering av researchen, og godkjente forslaget.
+
+### Plan
+- Researchen holdes utenfor PR #4, slik at Thomas' godkjenning ikke trekker ut. Den legges på en egen branch og får en egen PR etter at #4 er merget.
+- Det opprettes issues for de to beslutningene, og Thomas varsles om FR-20 fordi den påvirker Sprint 1.
+
+### Resultat
+- Branch `research-konkurrenter` er laget fra `planlegging-core-sprint`. Commit `7fce047` inneholder research-mappen (rapport, 3 digests, memlog). Branchen er pushet.
+- Issue #13: «Avgjør om FR-20 (autolagring) flyttes til CORE før Story 1.3», med label `question`. Thomas og Christian er tildelt. Kommentaren til Thomas ber ham se på den før 1.3.
+- Issue #14: «Skriv avsnitt om inspirasjon kontra kopi (Backpacker)», med label `documentation`.
+- PR for researchen er ikke åpnet ennå. Den venter på at PR #4 merges, slik at diffen mot `main` bare viser researchen.
+
+### Åpne punkter
+- Beslutningene ligger i issue #13 og #14.
+- Åpne PR for `research-konkurrenter` mot `main` når PR #4 er merget.
