@@ -1,6 +1,16 @@
 ## Sesjonslogg
 
-Når en oppgave eller økt avsluttes, før sluttoppsummeringen, bruk `sesjonslogg`-skillen: dokumenter Oppgave + Plan + Resultat + åpne punkter i `.logs/<bruker>/`, og før åpne punkter i `.logs/<bruker>/issues.md`. Skillen committer loggfila lokalt; push gjør du selv. Gruppens egne regler for commit og språk gjelder foran dette.
+Når en oppgave eller økt avsluttes, før sluttoppsummeringen, bruk `sesjonslogg`-skillen: dokumenter Oppgave + Plan + Resultat + åpne punkter i `.logs/<bruker>/`, og før åpne punkter som GitHub-issues (se under). Skillen committer loggfila lokalt; push gjør du selv. Gruppens egne regler for commit og språk gjelder foran dette.
+
+### Åpne punkter → GitHub Issues
+
+Åpne punkter føres som GitHub-issues med GitHub CLI (`gh`), ikke i `.logs/<bruker>/issues.md` (krav fra faglærer).
+
+- Opprett: `gh issue create --title "<kort tittel>" --body "<kontekst, lenke til sesjonslogg/story/PR>" --label <label>`
+- Sjekk før du oppretter: `gh issue list --search "<nøkkelord>"` for å unngå duplikater.
+- Lukk ved løsning: `Closes #<nr>` i commit/PR, eller `gh issue close <nr> --comment "<hvordan løst>"`.
+- Sesjonsloggens «Åpne punkter»-seksjon lenker til issue-numrene (#nr).
+- Opprett eller lukk aldri issues uten at brukeren har godkjent listen først.
 
 # Worldbound – Project Development Guidelines
 
