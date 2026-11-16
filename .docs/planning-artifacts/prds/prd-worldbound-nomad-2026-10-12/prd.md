@@ -21,6 +21,22 @@ The game is short, replayable, and played on the phone the player already carrie
 
 NOMAD is also the vehicle for a research goal: examining how AI agents perform across a full development cycle under human control. That goal shapes how the game is built — small, deterministic, testable rules; content as reviewable data; traceable Git history — but never at the expense of the game being a real game.
 
+### 1.1 Inspiration, Not a Copy
+
+NOMAD is inspired by the Swedish Backpacker series (PC 1995–2006; mobile by Qiiwi Games, 2017). Several ideas come from that tradition: earning travel money by answering questions at work, a passport stamp per city, a daily cost of staying somewhere, starting and ending the journey at home, and calling home when the money runs out. NOMAD's own design, and all its code, art, text and content, are independent (addendum: Inspiration vs. copying). The Backpacker name is used only in planning documents to make the comparison traceable; the game and the README say "inspired by classic travel games" and never use another game's name, logo, art, questions or text.
+
+| | Backpacker | NOMAD |
+|---|---|---|
+| Goal | Circle the world in the shortest time, or collect job certificates (PC) | Collect 5 stamps and be home in Bergen within a fixed 30 days |
+| Clock | A race: the faster, the better | A fixed budget of days: what can you make of them? |
+| Out of money | Call home: the family may send money, or you are sent home and lose (PC 1995); sleep in the street with less energy (mobile) | Call home always works: it costs 7 days and one stamp, no money, and the goal can still be reached |
+| Work | Jobs tied to quiz questions; more correct answers pay more | [EXT] A shift costs 1 day; each destination has a finite, non-repeating sequence of 15 questions |
+| Places | 70–100 destinations (PC), 69 cities (mobile) | 8 destinations: Europe as a plane/train/bus hub, three far goals by plane |
+| Rewards | Job certificates (PC); stamps, mementos, minigames (mobile) | Stamps and a photo album of chosen sights |
+| Business model | Mobile: ads, coin purchases, paid subscription to skip waiting | None: no ads, purchases or accounts (§8) |
+
+The finite question sequence also answers the most common complaint about the mobile Backpacker: that questions repeat. Sources and confidence: competitive research 2026-11-16, sections 1 and 4 (`.docs/planning-artifacts/research/competitive-travel-game-benchmarks-2026-11-16/research.md`).
+
 ## 2. Target User
 
 ### 2.1 Jobs To Be Done
@@ -484,5 +500,6 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 
 - **2026-11-13 — revision after instructor feedback** (`tilbakemelding-prd.md`, 2026-11-12). Changed: UJ-3 recomputed (two shifts, €456 → Sydney with €156); FR-8 city day order (Decision F); FR-22 revisit rule (Decision G); FR-12/FR-13 stranded vs out of days (Decision H); NFR-8 content ownership (Decision I); SM-2b and the §9.3 lever (Decision J); FR-4 added to NFR-2 and SM-1 (Decision K); Open Questions 3, 5 updated, 6 and 7 added. Not changed: all addendum values. FR numbers are stable and not in numeric order in §4 (FR-21/22 sit in §4.5, FR-23/24 in §4.11 and §4.15); FR index below.
 - **2026-11-16 — corrections after Thomas Rothe's review of PR #4.** Changed: references to Decisions F, H and J now point to §9.6 (were §9.5); NFR-8 duplicate photo sentence removed and the independent PR review added as a separate step; Decision I clarified the same way; §9.6 intro states who chose and who confirmed F–K; Open Question 3 resolved. Not changed: all rules and addendum values.
+- **2026-11-16 — §1.1 Inspiration, Not a Copy added** (issue #14), based on the competitive research of the same day. Names the Backpacker series, what NOMAD shares with it and what is its own; the name is kept to planning documents (team choice). Not changed: rules and values.
 
 **FR index:** FR-1 §4.1 · FR-2 §4.1 · FR-3 §4.2 · FR-4 §4.2 · FR-5 §4.2 · FR-6 §4.3 · FR-7 §4.3 · FR-8 §4.4 · FR-9 §4.4 · FR-10 §4.6 · FR-11 §4.6 · FR-12 §4.7 · FR-13 §4.8 · FR-14 §4.8 · FR-15 §4.9 · FR-16 §4.9 · FR-17 §4.10 · FR-18 §4.12 · FR-19 §4.13 · FR-20 §4.14 · FR-21 §4.5 · FR-22 §4.5 · FR-23 §4.11 · FR-24 §4.15
