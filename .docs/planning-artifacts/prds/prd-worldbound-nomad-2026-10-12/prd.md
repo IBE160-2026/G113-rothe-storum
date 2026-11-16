@@ -17,7 +17,7 @@ Vocabulary is anchored in the Glossary (§3); every requirement uses those terms
 
 WORLDBOUND: NOMAD is a browser-based travel and decision game. The player leaves Bergen with €1,500 and 30 days, travels between world destinations, and has to collect at least five passport stamps and make it home before time runs out. Every choice trades time against money: the plane is fast and expensive, the bus is cheap and slow, London drains the budget faster than Istanbul, every sight is a choice between a memory and the next ticket, and a day spent working is a day not spent travelling.
 
-The game is short, replayable, and played on the phone the player already carries — no install, no account. A journey takes one or two sittings. Losing is possible but rarely brutal: running out of money is a crisis, not game over. In the core, the way out is to call home, at a price; the MVP extension adds work and budget accommodation.
+The game is short, replayable, and played on the phone the player already carries — no install, no account. A journey takes one sitting: in the core, a journey is not saved, so closing the tab ends it (save and resume is [EXT], FR-20; §9.7, Decision L). Losing is possible but rarely brutal: running out of money is a crisis, not game over. In the core, the way out is to call home, at a price; the MVP extension adds work and budget accommodation.
 
 NOMAD is also the vehicle for a research goal: examining how AI agents perform across a full development cycle under human control. That goal shapes how the game is built — small, deterministic, testable rules; content as reviewable data; traceable Git history — but never at the expense of the game being a real game.
 
@@ -458,6 +458,10 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 - **J. Time measured in the playtest.** SM-2b is added with a lever decided in advance (§9.3). Adopted from the instructor's suggestion §4.1.
 - **K. FR-4 is rule logic.** FR-4 joins NFR-2 and SM-1 (instructor §4.5).
 
+### 9.7 Decisions After Competitive Research (2026-11-16)
+
+- **L. Saving stays in the extension.** The group decided to keep FR-20 (save and resume) in [EXT], in its planned place in §9.2, because saving can be added in the extension without changing the core: the architecture already plans the saved journey for [EXT] (AD-8). The core therefore does not save a journey, and §1 promises one sitting. **Rejected:** the AI agent's recommendation to move a minimal autosave into the core (competitive research, recommendation 1; brainstorming 2026-11-16). **Given up:** a journey that survives a closed tab or a reload in the core. **Revisit:** if the playtest shows that journeys do not fit in one sitting.
+
 ## 10. Success Metrics
 
 **Primary**
@@ -501,5 +505,6 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 - **2026-11-13 — revision after instructor feedback** (`tilbakemelding-prd.md`, 2026-11-12). Changed: UJ-3 recomputed (two shifts, €456 → Sydney with €156); FR-8 city day order (Decision F); FR-22 revisit rule (Decision G); FR-12/FR-13 stranded vs out of days (Decision H); NFR-8 content ownership (Decision I); SM-2b and the §9.3 lever (Decision J); FR-4 added to NFR-2 and SM-1 (Decision K); Open Questions 3, 5 updated, 6 and 7 added. Not changed: all addendum values. FR numbers are stable and not in numeric order in §4 (FR-21/22 sit in §4.5, FR-23/24 in §4.11 and §4.15); FR index below.
 - **2026-11-16 — corrections after Thomas Rothe's review of PR #4.** Changed: references to Decisions F, H and J now point to §9.6 (were §9.5); NFR-8 duplicate photo sentence removed and the independent PR review added as a separate step; Decision I clarified the same way; §9.6 intro states who chose and who confirmed F–K; Open Question 3 resolved. Not changed: all rules and addendum values.
 - **2026-11-16 — §1.1 Inspiration, Not a Copy added** (issue #14), based on the competitive research of the same day. Names the Backpacker series, what NOMAD shares with it and what is its own; the name is kept to planning documents (team choice). Not changed: rules and values.
+- **2026-11-16 — saving stays in the extension** (issue #13, Decision L). Decided by the group. Changed: §1 "one or two sittings" → "one sitting"; §9.7 added with Decision L. Not changed: FR-20 and its place in §9.2, the architecture and the epics (they already keep saving in [EXT]), rules and values.
 
 **FR index:** FR-1 §4.1 · FR-2 §4.1 · FR-3 §4.2 · FR-4 §4.2 · FR-5 §4.2 · FR-6 §4.3 · FR-7 §4.3 · FR-8 §4.4 · FR-9 §4.4 · FR-10 §4.6 · FR-11 §4.6 · FR-12 §4.7 · FR-13 §4.8 · FR-14 §4.8 · FR-15 §4.9 · FR-16 §4.9 · FR-17 §4.10 · FR-18 §4.12 · FR-19 §4.13 · FR-20 §4.14 · FR-21 §4.5 · FR-22 §4.5 · FR-23 §4.11 · FR-24 §4.15
