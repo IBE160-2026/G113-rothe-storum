@@ -6,6 +6,7 @@
 Idémyldring om punkt 1 fra PRD-vurderingen: er lagring egentlig CORE? Målet var å skaffe underlag til gruppens beslutning i issue #13 før Story 1.3.
 
 ### Plan
+- Idémyldringen ble gjort etter anbefaling fra faglærer, ifølge Christian. Anbefalingen var muntlig og står ikke i de skriftlige tilbakemeldingene (`tilbakemelding-product-brief.md`, `tilbakemelding-prd.md`). I BMAD er idémyldring et valgfritt «anytime»-verktøy. Her ble det brukt etter arkitekturen. Hvis forslaget i #13 vedtas, er neste BMAD-steg `bmad-correct-course`.
 - Brukte `bmad-brainstorming` i Fasilitator-modus. Brukeren valgte teknikkene i valgarket: Random Stimulation, Disney-metoden, Five Whys og First Principles. Deretter konvergerte vi med MoSCoW.
 - Brukeren laget alle ideene. Fasilitatoren ga ett forslag, en reisekode, fordi brukeren ba om det. Brukeren avviste forslaget som for avansert for CORE.
 - Memlog: `.docs/brainstorming/brainstorm-lagring-core-2026-11-16/.memlog.md`. Den har 39 linjer og status `complete`.
