@@ -72,3 +72,23 @@ Brukeren ba om mer research på to punkter for tabellen i §1.1 (#14): (1) hva s
 
 ### Åpne punkter
 - Hva som skjer i Backpacker 2 og 3 når pengene er brukt opp, må eventuelt sjekkes manuelt via MobyGames i en vanlig nettleser eller i en video. Dette hører til #14.
+
+## 2026-11-16 kl. 10:18 — Albion812
+
+### Oppgave
+Skrive §1.1 om inspirasjon kontra kopi inn i PRD (#14).
+
+### Plan
+- Brukeren var bekymret for opphavsrett hvis Backpacker nevnes ved navn. Claude svarte, med forbehold om at det ikke er juridisk råd, at:
+  - mekanikk er ideer og ikke beskyttet,
+  - det er lov å vise til et navn,
+  - navnet står allerede i brief og addendum.
+- Claude ga tre alternativer, og brukeren valgte A: navnet beholdes i PRD-en, men spillet og README sier bare «inspired by classic travel games».
+
+### Resultat
+- PRD §1.1 «Inspiration, Not a Copy» er lagt inn. Den har en sammenligningstabell med 7 rader og regelen om at navnet bare brukes i planleggingsdokumenter.
+- Ny oppføring i revisjonsloggen.
+- Commit `8a05651` inneholder PRD-endringen og research-utdypingen, med `Closes #14`. Branchen er ikke pushet.
+
+### Åpne punkter
+- Ingen nye. #14 lukkes når research-PR-en merges til `main`.
