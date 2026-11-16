@@ -34,3 +34,34 @@ Statusanalyse av Worldbound mot sensorveiledningen IBE160, deretter første arbe
 - Spør faglærer hva technology.md (Pytagoras) var ment som.
 - Uavhengig review av arkitekturen (andre gruppemedlem / egen review-økt) siden reviewer-gaten ble kjørt inline.
 - Thomas Rothe har ingen commits i historikken — bør lede og reviewe stories.
+
+## 2026-11-16 kl. 09:05 — Albion812
+
+### Oppgave
+Thomas Rothe har lagt inn en review på GitHub. Gå gjennom den, kontroller punktene og foreslå rettelser. Selve rettelsene ble bevisst utsatt fordi gruppen har andre oppgaver først.
+
+### Plan
+- Logget inn GitHub CLI (`gh auth login`, gjort av brukeren) og hentet review og kommentarer på PR #4.
+- Kontrollerte hvert punkt i reviewen mot `prd.md` og `sprint-plan.md` før noe ble foreslått.
+- Presenterte et endringsforslag. Ingen filer ble endret, i tråd med regelen om godkjenning før endringer.
+
+### Resultat
+- **PR #4** (`planlegging-core-sprint`) har status *Changes requested* fra ThomasRothe88 (2026-11-15). Det er ingen inline-kommentarer og ingen åpne issues.
+- Thomas støtter Vite 8 + React 19 + TypeScript 6.0, arkitekturen (AD-1–AD-3) og beslutningene F, G, H, J og K.
+- Alle punktene ble kontrollert mot filene, og alle stemmer:
+  - `prd.md:174` (F), `:250` (H) og `:418` (J) viser til §9.5, men beslutningene står i §9.6.
+  - `prd.md:361` (NFR-8) sier to ganger at sight-foto skal være fritt lisensiert med kilde og lisens. Første setning («fact-checked by a team member») passer ikke helt med Beslutning I.
+  - `prd.md:436` (§9.6) sier «Taken by the team», men F–K bekreftes først gjennom reviewen.
+  - Story 1.2 mangler i arbeidsdelingen i `sprint-plan.md`, og S1 har ingen UI-stories (S2 har åtte).
+- `sprint-status.yaml` sier ikke noe om sprinter eller eiere, så den trenger ingen endring.
+- Endringsforslag som ble lagt fram (ikke utført):
+  - PRD: rette §9.5 til §9.6, rydde i NFR-8 og la innhold gå gjennom fire steg (AI-utkast → AI-faktasjekk → Christians sluttkontroll → uavhengig review på PR-en).
+  - PRD: skrive om innledningen i §9.6 til «valgt av Christian, bekreftet av Thomas i PR #4», presisere Beslutning I og føre en ny linje i endringsloggen.
+  - Sprintplan: flytte 1.5 og en statisk 1.6 inn i S1, la begge teste og reviewe spillogikken, gi 1.2 en ansvarlig og fjerne «TEAM DECISION NEEDED».
+- Ingen kode- eller dokumentendringer. Ingen tester ble kjørt, fordi ingenting ble endret.
+
+### Åpne punkter
+- Rettelsene fra Thomas på PR #4 er ikke utført ennå: §9.5 → §9.6, NFR-8, Beslutning I og innledningen i §9.6.
+- Sprintplanen må justeres: UI-arbeidet starter i S1 (1.5 og en statisk 1.6), og begge tester og reviewer spillogikken.
+- Hvem som skal ha ansvaret for Story 1.2 er ikke avgjort. Forslaget er Christian.
+- Etter rettelsene: push, svar Thomas på PR #4 og be om ny godkjenning.
