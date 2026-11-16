@@ -34,3 +34,27 @@ Idémyldring om punkt 1 fra PRD-vurderingen: er lagring egentlig CORE? Målet va
 ### Åpne punkter
 - Forslaget må avgjøres sammen med Thomas i issue #13. Hvis det blir vedtatt, må PRD §9.1/§9.2, AD-8, epics og sprintplanen oppdateres.
 - PRD §1 sier «one or two sittings», men reiselengden er ukjent. Den bør måles i playtesten (SM-2). Det dekkes av #13 og trenger ingen egen issue.
+
+## 2026-11-16 kl. 10:44 — Albion812
+
+### Oppgave
+Gruppen har bestemt at lagring (FR-20) blir i EXT, ikke CORE, fordi lagring kan legges til der. Christian ba om at beslutningen føres inn i PRD-en, at issue #13 lukkes, og at det lages PR-er for det som lå igjen på branchene. Før det sjekket vi om Thomas hadde gjort sine endringer.
+
+### Plan
+- Sjekket bidragene til Thomas. Han har ingen commits, men han har reviewet og godkjent PR #4 (ThomasRothe88).
+- PR #4 var allerede merget. Jeg hentet `main` og laget PR #15 for `research-konkurrenter`.
+- Laget branchen `lagring-ext` fra `research-konkurrenter`, fordi begge legger til linjer i PRD-ens endringslogg (§13). PR #16 bygger derfor på #15.
+- **Korrigert av Christian:** Claudes første versjon gikk for fort. Den sa at Thomas bestemte, og den la til et playtest-mål (SM-2c) med en grense Claude hadde funnet på. Christian ba om at beslutningen står som gruppens, med gruppens begrunnelse. Christian beholdt AD-8-henvisningen, fjernet SM-2c og ba om at commit-meldingen skrives om.
+
+### Resultat
+- **PR #15** (`research-konkurrenter` → `main`): konkurrentresearch, idémyldring og PRD §1.1. Anbefalingen om lagring i CORE er ikke tatt inn.
+- **PR #16** (`lagring-ext` → `research-konkurrenter`) endrer `prd.md`:
+  - §1: «one or two sittings» er endret til «one sitting».
+  - Ny §9.7 med Decision L. Gruppen bestemte at lagring blir i EXT, fordi den kan legges til der uten å endre CORE (AD-8). KI-anbefalingen om autolagring i CORE (anbefaling 1 i researchen og idémyldringen over) er **avvist**. Saken vurderes på nytt hvis playtesten viser at reisene ikke holder for én økt.
+  - Ny linje i endringsloggen.
+- Arkitekturen (AD-8) og epics (Epic 6) har allerede lagring i EXT og er ikke endret.
+- **Issue #13** er lukket med en kommentar om beslutningen. Story 1.3 trenger ikke å lagre spilltilstanden.
+- Forslaget fra idémyldringen over er dermed forkastet av gruppen.
+
+### Åpne punkter
+Ingen.
