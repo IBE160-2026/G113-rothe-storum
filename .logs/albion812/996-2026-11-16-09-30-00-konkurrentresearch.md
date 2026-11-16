@@ -50,3 +50,25 @@ Brukeren spurte hva Claude anbefaler for videre håndtering av researchen, og go
 ### Åpne punkter
 - Beslutningene ligger i issue #13 og #14.
 - Åpne PR for `research-konkurrenter` mot `main` når PR #4 er merget.
+
+## 2026-11-16 kl. 10:13 — Albion812
+
+### Oppgave
+Brukeren ba om mer research på to punkter for tabellen i §1.1 (#14): (1) hva som skjer i Backpacker når pengene er brukt opp, også via YouTube, utgivelser og andre kilder, og (2) bedre kilder.
+
+### Plan
+- Researchen ble utdypet med `bmad-deep-recon` (Deepen), men bare for Backpacker. Brukeren godkjente planen.
+- To researchere jobbet parallelt, en for PC og en for mobil. I tillegg kjørte Claude ett eget verifiseringssøk.
+- Claude sa fra på forhånd at verktøyene ikke kan se video, bare lese tittel, beskrivelse og tekst rundt den.
+
+### Resultat
+- Funnene står i ny seksjon 4 i `research.md`, med kildene [23]–[33]. Kildesjekken er OK. Telling: 7 verifisert, 9 uverifisert, 1 omstridt.
+- **Backpacker 1 (1995):** Spilleren som er tom for penger, ringer hjem fra en telefonkiosk. Familien sender penger, eller spilleren sendes hjem og har tapt. Reisen starter og slutter i Göteborg. Kildene er MobyGames via svensk Wikipedia og en uavhengig spillerminne-tråd på Flashback.
+- NOMADs «call home» og Bergen som start og slutt har dermed et klart forbilde. Anbefaling 2 og sammendraget er oppdatert.
+- **Backpacker 2 og 3:** Ingen kilde viser hva som skjer når pengene er brukt opp. Kildene er uenige om hvem som utviklet spillet.
+- **Backpacker mobil:** Tomme mynter avslutter ikke spillet. Man kan sove på gata gratis, men får mindre energi og risikerer å bli ranet. Spillet ble lansert globalt 12. oktober 2017.
+- **Ikke tilgjengelig for verktøyene:** MobyGames, Wayback, Reddit, Google Play og svenske aviser. Det ble ikke funnet noen PC-video. To mobilvideoer er listet slik at et menneske kan se dem.
+- Endringene i `research.md` er ikke committet ennå.
+
+### Åpne punkter
+- Hva som skjer i Backpacker 2 og 3 når pengene er brukt opp, må eventuelt sjekkes manuelt via MobyGames i en vanlig nettleser eller i en video. Dette hører til #14.
