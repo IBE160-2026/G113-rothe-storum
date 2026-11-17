@@ -433,7 +433,7 @@ In the MVP core, time is deliberately roomy: winning journeys use 14–16 of 30 
 
 ### 9.6 Decisions After Instructor Feedback (2026-11-13)
 
-Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The AI agent proposed the wording and Christian Storum chose each option; Thomas Rothe confirmed F–K, with a clarification of I, in his review of PR #4 (2026-11-16).
+Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The AI agent proposed the wording and Christian Storum chose each option; Thomas Rothe confirmed F–K, with a clarification of I, in his review of PR #4 (2026-11-15; approved 2026-11-16).
 
 - **F. City day order.** A city day is applied as accommodation + day + stamp → 0–2 sights → day over (FR-8). Adopted from the instructor's suggestion §4.4.
 - **G. Revisiting a sight.** A visited sight cannot be bought again; it can be reopened for free to view its photo and fact, with no reward (FR-22). Close to the instructor's suggestion ("not offered again"), plus free viewing. The team first chose "offered again at full price" and changed this the same day to free viewing, because a paid visit with no effect gives the player nothing. Replaces the former FR-22 assumption. EXPERIENCE.md updated.
@@ -484,5 +484,6 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 
 - **2026-11-13 — revision after instructor feedback** (`tilbakemelding-prd.md`, 2026-11-12). Changed: UJ-3 recomputed (two shifts, €456 → Sydney with €156); FR-8 city day order (Decision F); FR-22 revisit rule (Decision G); FR-12/FR-13 stranded vs out of days (Decision H); NFR-8 content ownership (Decision I); SM-2b and the §9.3 lever (Decision J); FR-4 added to NFR-2 and SM-1 (Decision K); Open Questions 3, 5 updated, 6 and 7 added. Not changed: all addendum values. FR numbers are stable and not in numeric order in §4 (FR-21/22 sit in §4.5, FR-23/24 in §4.11 and §4.15); FR index below.
 - **2026-11-16 — corrections after Thomas Rothe's review of PR #4.** Changed: references to Decisions F, H and J now point to §9.6 (were §9.5); NFR-8 duplicate photo sentence removed and the independent PR review added as a separate step; Decision I clarified the same way; §9.6 intro states who chose and who confirmed F–K; Open Question 3 resolved. Not changed: all rules and addendum values.
+- **2026-11-17 — follow-up to Thomas Rothe's approval of PR #4.** Changed: §9.6 intro dates his review to 2026-11-15 (approved 2026-11-16). Not changed: all rules and addendum values.
 
 **FR index:** FR-1 §4.1 · FR-2 §4.1 · FR-3 §4.2 · FR-4 §4.2 · FR-5 §4.2 · FR-6 §4.3 · FR-7 §4.3 · FR-8 §4.4 · FR-9 §4.4 · FR-10 §4.6 · FR-11 §4.6 · FR-12 §4.7 · FR-13 §4.8 · FR-14 §4.8 · FR-15 §4.9 · FR-16 §4.9 · FR-17 §4.10 · FR-18 §4.12 · FR-19 §4.13 · FR-20 §4.14 · FR-21 §4.5 · FR-22 §4.5 · FR-23 §4.11 · FR-24 §4.15
