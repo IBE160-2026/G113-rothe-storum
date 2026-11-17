@@ -1,0 +1,15 @@
+# Not app code, or not Prettier-formatted
+_bmad/
+.claude/
+.docs/
+.logs/
+CLAUDE.md
+package-lock.json
+
+# Build output and test reports
+dist/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

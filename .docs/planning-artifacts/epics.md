@@ -125,7 +125,7 @@ So that every later story builds, runs and is tested the same way.
 
 **Acceptance Criteria:**
 
-**Given** a clean clone and Node.js ≥ 22.12
+**Given** a clean clone and a supported Node.js version (^22.22.2 || ^24.15.0 || ≥ 26)
 **When** a developer runs `npm install` and `npm run dev`
 **Then** the app opens in the browser and shows a placeholder Start screen
 **And** `npm test`, `npm run test:e2e`, `npm run lint` and `npm run build` all exist and pass on the skeleton

@@ -114,7 +114,7 @@ graph TD
 
 | Name | Version |
 | --- | --- |
-| Node.js (dev only) | ≥ 22.12 (tested with 26.8.1) |
+| Node.js (dev only) | ^22.22.2 \|\| ^24.15.0 \|\| ≥ 26 (tested with 26.8.1; raised 2026-11-16: ESLint 10.15 and jsdom 31 need it) |
 | TypeScript | 6.0.x (not 7: typescript-eslint supports < 6.1) |
 | Vite | 8.3 |
 | React / React DOM | 19.3 |
@@ -123,9 +123,9 @@ graph TD
 | Vitest | 5.1 |
 | @testing-library/react | 16.3 |
 | Playwright (@playwright/test) | 1.65 |
-| ESLint / typescript-eslint / Prettier | 10.14 / 8.72 / 3.10 |
+| ESLint / typescript-eslint / Prettier | 10.15 / 8.72 / 3.10 |
 
-Versions were checked against the npm registry on 2026-11-13.
+Versions were checked against the npm registry on 2026-11-13 (Node floor and ESLint rechecked 2026-11-16, Story 1.1).
 
 ## Structural Seed
 
