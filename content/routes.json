@@ -1,0 +1,259 @@
+{
+  "routes": [
+    {
+      "between": ["home", "copenhagen"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 140,
+          "days": 1
+        },
+        {
+          "mode": "train",
+          "price": 110,
+          "days": 1
+        },
+        {
+          "mode": "bus",
+          "price": 70,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "between": ["home", "london"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 150,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["home", "paris"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 180,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["home", "rome"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 200,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["home", "istanbul"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 250,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["home", "new-york"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 350,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["home", "tokyo"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 600,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["home", "sydney"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 800,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "between": ["copenhagen", "paris"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 130,
+          "days": 1
+        },
+        {
+          "mode": "train",
+          "price": 120,
+          "days": 1
+        },
+        {
+          "mode": "bus",
+          "price": 70,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "between": ["copenhagen", "london"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 120,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["copenhagen", "istanbul"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 200,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["london", "paris"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 110,
+          "days": 1
+        },
+        {
+          "mode": "train",
+          "price": 90,
+          "days": 1
+        },
+        {
+          "mode": "bus",
+          "price": 50,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "between": ["london", "rome"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 140,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["london", "new-york"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 300,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["paris", "rome"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 150,
+          "days": 1
+        },
+        {
+          "mode": "train",
+          "price": 90,
+          "days": 1
+        },
+        {
+          "mode": "bus",
+          "price": 50,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "between": ["paris", "new-york"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 320,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["rome", "istanbul"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 160,
+          "days": 1
+        },
+        {
+          "mode": "bus",
+          "price": 80,
+          "days": 3
+        }
+      ]
+    },
+    {
+      "between": ["istanbul", "tokyo"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 450,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["istanbul", "sydney"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 600,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "between": ["new-york", "tokyo"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 500,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "between": ["tokyo", "sydney"],
+      "modes": [
+        {
+          "mode": "plane",
+          "price": 300,
+          "days": 1
+        }
+      ]
+    }
+  ]
+}

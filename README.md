@@ -52,6 +52,10 @@ tests/           rules, content, balance, ui, e2e and fixtures
 
 `npm run test:e2e` builds the app first and serves it on port 4173, so stop any running `npm run preview` before you start it.
 
+### Editing game content
+
+Places, routes and core values live in `content/config.json`, `content/destinations.json` and `content/routes.json`. These files are the source of truth for game values. Edit them, then run `npm test`: the content test validates them against the schemas in `src/content/schema.ts`. Invalid content fails with a `ContentError` that names the file and path, for example `routes.json: routes[1].between[1]: unknown place id "parris"`.
+
 ### Documentation
 
 - [Product requirements (PRD)](.docs/planning-artifacts/prds/prd-worldbound-nomad-2026-10-12/prd.md)

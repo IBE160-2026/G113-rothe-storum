@@ -4,7 +4,7 @@
 
 ## Goal
 
-The player opens WORLDBOUND: NOMAD, starts a journey from Bergen (`home`) and travels between 8 European destinations, weighing the real price and time trade-offs of plane, train and bus. The epic also lays the project foundation (scaffold, tooling, validated content) that every later epic builds on, so its conventions bind the rest of the project.
+The player opens WORLDBOUND: NOMAD, starts a journey from Bergen (`home`) and travels between 8 destinations (5 in Europe plus New York, Tokyo and Sydney), weighing the real price and time trade-offs of plane, train and bus. The epic also lays the project foundation (scaffold, tooling, validated content) that every later epic builds on, so its conventions bind the rest of the project.
 
 ## Stories
 
