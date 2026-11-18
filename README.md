@@ -54,7 +54,7 @@ tests/           rules, content, balance, ui, e2e and fixtures
 
 ### Editing game content
 
-Places, routes and core values live in `content/config.json`, `content/destinations.json` and `content/routes.json`. These files are the source of truth for game values. Edit them, then run `npm test`: the content test validates them against the schemas in `src/content/schema.ts`. Invalid content fails with a `ContentError` that names the file and path, for example `routes.json: routes[1].between[1]: unknown place id "parris"`.
+Places, routes and core values live in `content/config.json`, `content/destinations.json` and `content/routes.json`. These files are the source of truth for game values. Edit them, then run `npm test`: the content test validates them against the schemas in `src/content/schema.ts`. Invalid content fails with a `ContentError` that names the file and path, for example `routes.json: routes[1].between[1]: unknown place id "parris"`. Problems inside each file are listed together; checks across files (unknown place ids, duplicates, self routes) run once `destinations.json` and `routes.json` are each valid on their own, so fixing a schema error can reveal more problems on the next run.
 
 ### Documentation
 

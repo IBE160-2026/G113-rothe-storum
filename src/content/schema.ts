@@ -157,7 +157,10 @@ export const contentFilesSchema = z
       checkCrossFile(value.destinations, value.routes.routes, ctx),
     {
       // Run the cross-file checks even when config.json fails, as long as the
-      // two files they read are valid.
+      // two files they read are valid. Keep this gate in sync with
+      // checkCrossFile: every file it reads must be safeParsed here, with a
+      // null/missing-file test, or bad input crashes with a TypeError instead
+      // of a ContentError.
       when: (payload) => {
         const value = payload.value as {
           destinations?: unknown;

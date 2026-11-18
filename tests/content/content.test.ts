@@ -367,5 +367,20 @@ describe("NFR-7 AR-6 content", () => {
         problems.some((p) => p.includes('unknown place id "parris"')),
       ).toBe(true);
     });
+
+    // Known limitation (walkthrough of PR #21): the cross-file checks need valid
+    // destinations and routes, so a schema error in routes.json defers them to the
+    // next run. This test pins that behaviour so a change to it is deliberate.
+    it("defers cross-file checks while routes.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          poke(r.routes.routes[0].modes[0], "mode", "boat");
+          r.routes.routes[1].between[1] = "parris";
+        }),
+      );
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain("routes.json: routes[0].modes[0].mode");
+      expect(problems.some((p) => p.includes("parris"))).toBe(false);
+    });
   });
 });
