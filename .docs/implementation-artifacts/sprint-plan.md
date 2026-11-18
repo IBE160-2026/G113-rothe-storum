@@ -16,12 +16,14 @@
 
 | Sprint | Dates | Goal | Stories | Exit criterion |
 | --- | --- | --- | --- | --- |
-| **S0 — Plan and scaffold** | Fri 13 – Sun 15 Nov | Planning merged; project runs | Review and merge the planning PR · 1.1 · 1.2 | `npm run dev` and `npm test` work from the README |
+| **S0 — Plan and scaffold** | Fri 13 – Wed 19 Nov (extended from Sun 15 Nov) | Planning merged; project runs | Review and merge the planning PR · 1.1 · 1.2 | `npm run dev` and `npm test` work from the README |
 | **S1 — Rules core** | Mon 16 – Sun 22 Nov | All core rules done and tested, no UI dependency | 1.3 · 1.4 · 2.1 · 3.1 · 2.2 (AI drafts, review starts) · UI: 1.5 · 1.6 (static, built against the types from 1.3) | Rules tests green for FR-1, 4, 6–14, 21, 22; UJ-1 and UJ-2 pass as rules tests; start screen and a static map screen run in the browser |
 | **S2 — Playable UI** | Mon 23 – Sun 29 Nov | Full journey playable in the browser | 1.6 finished (wired to the rules) · 1.7 · 2.3 · 2.4 · 2.5 · 3.2 · 3.3 · 2.2 finished | A full journey can be played on a phone from start to summary |
 | **S3 — Verify and playtest** | Mon 30 Nov – Sun 6 Dec | CORE proven and accessible | 4.1 · 4.2 · 4.3 · 4.4 (playtest Thu 3 – Sat 5 Dec) · bug fixes | All tests green; playtest report written; Epic 1–4 retrospective |
 | **S4 — Extension (only if S3 is green)** | Mon 7 – Sun 13 Dec | One EXT item, finished | Epic 5 (Work), else spend the time on bug fixes and polish | Code freeze Sun 13 Dec |
 | **Final** | Mon 14 – Tue 15 Dec | Delivery | 4.5 (README test on a clean machine) · repo check · final logs · tag release | Submitted Tue 15 Dec |
+
+S0 extended (2026-11-17): the planning PR was merged on 16 Nov, but 1.1 (PR #19) and 1.2 were not merged by Sun 15 Nov. S0 now ends Wed 19 Nov and overlaps the first half of S1. S1 keeps its dates: rules work that needs the scaffold (1.3 onwards) starts once 1.1 is merged, and S1's exit criterion is unchanged. If S1 slips as a result, the same rule applies as below: S4 is dropped, not S3.
 
 Buffer: UI starts in S1 so S2 is not overloaded; the UI track builds the UI shell, design tokens and the first screens against the types from 1.3 while the rules are implemented. If S2 slips, S4 is dropped, not S3.
 
@@ -34,7 +36,7 @@ Buffer: UI starts in S1 so S2 is not overloaded; the UI track builds the UI shel
 
 ## Team split (agreed in review of PR #4)
 
-Agreed in Thomas Rothe's review of PR #4 (2026-11-16); closes PRD Open Question 3.
+Agreed in Thomas Rothe's review of PR #4 (2026-11-15; approved 2026-11-16); closes PRD Open Question 3.
 
 | Area | Lead | Reviewer |
 | --- | --- | --- |
