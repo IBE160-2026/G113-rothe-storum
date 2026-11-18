@@ -1,0 +1,332 @@
+/*
+ * Design tokens (AD-9). Generated from the frontmatter of
+ * .docs/planning-artifacts/ux-designs/ux-worldbound-nomad-2026-10-13/DESIGN.md
+ * (colors, spacing, rounded, typography). Names mirror DESIGN.md:
+ * --color-<role>, --space-<key>, --radius-<key>, --font-<role>-{family,size,weight,line-height}.
+ * Dark values come from the -dark pairs and follow the device setting.
+ */
+:root {
+  color-scheme: light dark;
+  --color-background: #f6eedc;
+  --color-background-wash: #fbe1bf;
+  --color-surface: #fffbf2;
+  --color-surface-row: #fffdf8;
+  --color-surface-selected: #fff7e8;
+  --color-surface-inset: #f6eedc;
+  --color-ink: #0a1826;
+  --color-ink-body: #3a372f;
+  --color-ink-muted: #5f5848;
+  --color-on-ink: #fbf4e4;
+  --color-navy-fill: #0a1826;
+  --color-on-navy: #fbf4e4;
+  --color-primary: #0a1826;
+  --color-on-primary: #fbf4e4;
+  --color-on-primary-accent: #e0a243;
+  --color-ochre: #b9761a;
+  --color-ochre-text: #7a4d0f;
+  --color-ochre-light: #e0a243;
+  --color-logo-ochre: #c8861e;
+  --color-pin: #b5462f;
+  --color-rule: #d9c9a6;
+  --color-slot-dash: #c9b183;
+  --color-slot-dash-on-navy: #5d7487;
+  --color-map-sea: #efe3c8;
+  --color-map-land: #e2cfa4;
+  --color-map-coast: #c9b183;
+  --color-unavailable: #eae0cb;
+  --color-on-unavailable: #625a4b;
+  --color-stamp-ring: #b9761a;
+  --color-stamp-ink: #0a1826;
+  --color-cover-explorer: #0a1826;
+  --color-cover-explorer-spine: #1e3346;
+  --color-cover-explorer-mode: #e0a243;
+  --color-on-cover-explorer: #fbf4e4;
+  --color-cover-nomad: #b9761a;
+  --color-cover-nomad-spine: #9a6215;
+  --color-on-cover-nomad: #0a1826;
+  --color-scrim: #0a182661;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-stack-tight: 6px;
+  --space-stack-tap: 8px;
+  --space-gutter: 20px;
+  --space-gutter-bar: 16px;
+  --space-viewport-ref: 375px;
+  --space-column-max: 480px;
+  --space-cover-breakpoint: 364px;
+  --space-min-viewport-height: 600px;
+  --space-touch-min: 44px;
+  --space-button-height: 50px;
+  --space-button-height-secondary: 48px;
+  --space-button-height-sm: 44px;
+  --space-row-min: 46px;
+  --space-row-min-choice: 50px;
+  --space-answer-row-min: 52px;
+  --space-menu-row: 60px;
+  --space-progress-dot: 28px;
+  --space-status-chip-height: 44px;
+  --space-strip-height: 38px;
+  --space-strip-hit: 46px;
+  --space-cover-height: 64px;
+  --space-cover-width: 172px;
+  --space-panel-height: 318px;
+  --space-panel-max: 45vh;
+  --space-map-min-height: 180px;
+
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-row: 15px;
+  --radius-2xl: 16px;
+  --radius-sheet: 26px;
+  --radius-cover: 8px 16px 16px 8px;
+  --radius-cover-mini: 3px 8px 8px 3px;
+  --radius-full: 9999px;
+
+  --font-wordmark-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-wordmark-size: 19px;
+  --font-wordmark-weight: 900;
+  --font-wordmark-line-height: 1;
+  --font-wordmark-letter-spacing: 0.5px;
+  --font-wordmark-xl-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-wordmark-xl-size: 38px;
+  --font-wordmark-xl-weight: 900;
+  --font-wordmark-xl-line-height: 1;
+  --font-wordmark-xl-letter-spacing: 1px;
+  --font-display-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-display-size: 32px;
+  --font-display-weight: 600;
+  --font-display-line-height: 1.05;
+  --font-headline-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-headline-size: 26px;
+  --font-headline-weight: 600;
+  --font-headline-line-height: 1.15;
+  --font-headline-sm-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-headline-sm-size: 22px;
+  --font-headline-sm-weight: 600;
+  --font-headline-sm-line-height: 1.2;
+  --font-title-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-title-size: 20px;
+  --font-title-weight: 600;
+  --font-title-line-height: 1.2;
+  --font-tagline-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-tagline-size: 19px;
+  --font-tagline-weight: 400;
+  --font-tagline-line-height: 1.35;
+  --font-question-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-question-size: 19px;
+  --font-question-weight: 400;
+  --font-question-line-height: 1.35;
+  --font-serif-md-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-serif-md-size: 19px;
+  --font-serif-md-weight: 600;
+  --font-serif-md-line-height: 1.25;
+  --font-fact-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-fact-size: 16px;
+  --font-fact-weight: 400;
+  --font-fact-line-height: 1.45;
+  --font-card-title-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-card-title-size: 16px;
+  --font-card-title-weight: 700;
+  --font-card-title-line-height: 1.2;
+  --font-figure-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-figure-size: 16.5px;
+  --font-figure-weight: 700;
+  --font-figure-line-height: 1;
+  --font-price-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-price-size: 18px;
+  --font-price-weight: 600;
+  --font-price-line-height: 1.2;
+  --font-serif-sm-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-serif-sm-size: 14.5px;
+  --font-serif-sm-weight: 600;
+  --font-serif-sm-line-height: 1.25;
+  --font-body-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body-size: 14.5px;
+  --font-body-weight: 400;
+  --font-body-line-height: 1.45;
+  --font-body-strong-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body-strong-size: 15px;
+  --font-body-strong-weight: 700;
+  --font-body-strong-line-height: 1.22;
+  --font-item-title-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-item-title-size: 14px;
+  --font-item-title-weight: 600;
+  --font-item-title-line-height: 1.25;
+  --font-label-strong-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-label-strong-size: 13.5px;
+  --font-label-strong-weight: 600;
+  --font-label-strong-line-height: 1.3;
+  --font-body-sm-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body-sm-size: 13px;
+  --font-body-sm-weight: 400;
+  --font-body-sm-line-height: 1.4;
+  --font-meta-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-meta-size: 12.5px;
+  --font-meta-weight: 400;
+  --font-meta-line-height: 1.4;
+  --font-caption-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-caption-size: 12px;
+  --font-caption-weight: 400;
+  --font-caption-line-height: 1.35;
+  --font-label-caps-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-label-caps-size: 11px;
+  --font-label-caps-weight: 400;
+  --font-label-caps-line-height: 1.2;
+  --font-label-caps-letter-spacing: 1.6px;
+  --font-chip-label-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-chip-label-size: 11px;
+  --font-chip-label-weight: 600;
+  --font-chip-label-line-height: 1;
+  --font-chip-label-letter-spacing: 0.6px;
+  --font-passport-mode-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-passport-mode-size: 11px;
+  --font-passport-mode-weight: 800;
+  --font-passport-mode-line-height: 1;
+  --font-passport-mode-letter-spacing: 0.6px;
+  --font-passport-name-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-passport-name-size: 13.5px;
+  --font-passport-name-weight: 700;
+  --font-passport-name-line-height: 1.1;
+  --font-passport-count-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-passport-count-size: 12.5px;
+  --font-passport-count-weight: 400;
+  --font-passport-count-line-height: 1;
+  --font-strip-mode-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-strip-mode-size: 11px;
+  --font-strip-mode-weight: 800;
+  --font-strip-mode-line-height: 1;
+  --font-strip-mode-letter-spacing: 1px;
+  --font-slot-numeral-family:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    serif;
+  --font-slot-numeral-size: 11px;
+  --font-slot-numeral-weight: 600;
+  --font-slot-numeral-line-height: 1;
+  --font-map-label-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-map-label-size: 11px;
+  --font-map-label-weight: 600;
+  --font-map-label-line-height: 1.1;
+  --font-stamp-code-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-stamp-code-size: 8px;
+  --font-stamp-code-weight: 800;
+  --font-stamp-code-letter-spacing: 0.6px;
+  --font-button-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-button-size: 16px;
+  --font-button-weight: 600;
+  --font-button-line-height: 1.2;
+  --font-button-letter-spacing: 0.2px;
+  --font-button-sm-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-button-sm-size: 14px;
+  --font-button-sm-weight: 600;
+  --font-button-sm-line-height: 1.2;
+  --font-input-family:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-input-size: 16px;
+  --font-input-weight: 400;
+  --font-input-line-height: 1.2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0f1b26;
+    --color-background-wash: #0f1b26;
+    --color-surface: #172634;
+    --color-surface-row: #172634;
+    --color-surface-selected: #1c2e3e;
+    --color-surface-inset: #0f1b26;
+    --color-ink: #f4efe1;
+    --color-ink-body: #d5dce1;
+    --color-ink-muted: #a9b4bc;
+    --color-on-ink: #0a1826;
+    --color-navy-fill: #0a121a;
+    --color-on-navy: #f4efe1;
+    --color-primary: #e0a243;
+    --color-on-primary: #0a1826;
+    --color-on-primary-accent: #0a1826;
+    --color-ochre: #e0a243;
+    --color-ochre-text: #e0a243;
+    --color-ochre-light: #e0a243;
+    --color-logo-ochre: #e0a243;
+    --color-pin: #f08a6c;
+    --color-rule: #2a3b4a;
+    --color-slot-dash: #56788c;
+    --color-slot-dash-on-navy: #56788c;
+    --color-map-sea: #13212e;
+    --color-map-land: #25394a;
+    --color-map-coast: #3b5868;
+    --color-unavailable: #0c151e;
+    --color-on-unavailable: #8e9aa3;
+    --color-stamp-ring: #e0a243;
+    --color-stamp-ink: #f4efe1;
+    --color-cover-explorer: #0a121a;
+    --color-cover-explorer-spine: #172634;
+    --color-cover-explorer-mode: #e0a243;
+    --color-on-cover-explorer: #f4efe1;
+    --color-cover-nomad: #e0a243;
+    --color-cover-nomad-spine: #b9761a;
+    --color-on-cover-nomad: #0a1826;
+    --color-scrim: #00000080;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-ink-body);
+  font-family: var(--font-body-family);
+  font-size: var(--font-body-size);
+  line-height: var(--font-body-line-height);
+}

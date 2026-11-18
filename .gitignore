@@ -59,3 +59,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Playwright
+blob-report/
+playwright/.cache/

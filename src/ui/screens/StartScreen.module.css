@@ -1,0 +1,23 @@
+.screen {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: var(--space-column-max);
+  margin: 0 auto;
+  padding: var(--space-gutter);
+}
+
+.title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-wordmark-xl-family);
+  font-size: var(--font-wordmark-xl-size);
+  font-weight: var(--font-wordmark-xl-weight);
+  line-height: var(--font-wordmark-xl-line-height);
+  letter-spacing: var(--font-wordmark-xl-letter-spacing);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
