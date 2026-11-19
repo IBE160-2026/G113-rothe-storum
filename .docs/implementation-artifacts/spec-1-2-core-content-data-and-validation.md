@@ -89,6 +89,9 @@ context:
 
 ## Spec Change Log
 
+- 2026-11-19 (code review pass 2, decided by the user): the cross-file check is split into three checks, each run as soon as the files it reads are valid: duplicate place ids and `iata` (destinations.json), self routes and duplicate routes or modes (routes.json), unknown place ids (both). This makes the Always constraint "names the file and every failing path" hold for duplicates even when the other file fails its schema. Unknown place ids still wait until both files are valid.
+- 2026-11-19 (code review pass 2, decided by the user): `costFactor` must have at most two decimals (`multipleOf(0.01)`), so the architecture rule AD-5 (PR #28, #26) holds from this story on.
+
 ## Review Triage Log
 
 Pass 1 (2026-11-17), reviewers: Blind Hunter (BH), Edge Case Hunter (EC), Verification Gap (VG).
@@ -115,6 +118,36 @@ Pass 1 (2026-11-17), reviewers: Blind Hunter (BH), Edge Case Hunter (EC), Verifi
 | BH-14: no per-mode trade-off invariant (plane fastest, bus cheapest) | low | balance concern outside this story's intent | reject |
 
 No intent_gap or bad_spec entries; no deferrals. All patches applied directly.
+
+Pass 2 (2026-11-19), code review of PR #21 at `f26d732`, reviewers: Blind Hunter (BH), Edge Case Hunter (EC), Verification Gap (VG), Acceptance Auditor (AA). 33 findings; 3 entries survived after grouping, 18 rejected.
+
+### Review Findings
+
+- [x] [Review][Decision] Cross-file problems hidden when one file fails its schema (AA-1, EC-1; medium) — the `when` gate skipped every cross-file check if `routes.json` or `destinations.json` failed, so duplicate ids were not reported, against the Always constraint. Decided: split the checks (option 1). Fixed in `src/content/schema.ts`; the deferral test now pins only unknown ids, and two new tests cover duplicates reported across a failing file.
+- [x] [Review][Decision] `costFactor` decimals not limited (BH-1; medium) — AD-5 in PR #28 says the schema enforces at most two decimals; the schema only checked `positive()`. Decided: enforce it now (option 1). `multipleOf(0.01)` checked first: accepts all 1,000 two-decimal values 0.01–10.00, rejects 1.005. Test row added.
+- [x] [Review][Patch] Matrix row "negative or non-integer price/days" only partly tested (VG-1, AA-4; medium) [tests/content/content.test.ts:148] — no case for zero/negative `startMoney`, `totalDays`, `baseAccommodationPrice`, `callHome.*`, or a non-integer route price. 9 rows added.
+
+Verification after the fixes: `npm test` 106/106 (45 content); `npm run lint` exit 0; `npm run build` OK; `npm run test:e2e` 1/1. Mutation checks: the old schema fails 3 of the new tests; removing `.positive()` on `baseAccommodationPrice` fails 2.
+
+**Rejected (18):**
+- BH: `build` and e2e not re-run after `bb3b92a` — false: both pass on `f26d732`.
+- BH: coordinates and `iata` never compared — false: all 9 places match EXPERIENCE → Map Data.
+- BH, AA, EC: Implementation Notes counts stale (94 vs 95) — fix edits the spec under review; current counts are recorded in this pass instead.
+- BH, AA: spec `done` vs sprint `review` — fix edits the spec under review; sprint status is set at the end of review.
+- BH: `src/content/` import rule not enforced by lint — low: current imports comply; Code Map scopes lint to `src/rules/`.
+- BH, EC: no winnability checks (`goalStamps` ≤ destinations, `callHome.days` < `totalDays`) — low: already rejected in pass 1 in favour of SM-3 (Epic 4).
+- BH, EC: duplicate destination names — low; needs a new guard.
+- BH: `ContentError.problems` are strings — low: no consumer yet; consider in #24.
+- BH, EC: paths for odd keys (`modes.Nomad `) — low: the key already gets its own error; needs a new branch.
+- BH: fixtures can drift from `valid-small` — low: each currently differs by exactly one defect.
+- BH: gate parses files twice and must be kept in sync — low: documented, and the missing-file test catches a slip.
+- BH: order of logs 991 and 993 — low: logs are history and are not rewritten.
+- AA: real-content endpoints checked only indirectly — low: `loadContent()` runs the endpoint check.
+- AA: unknown top-level key reported as `content: (root)` — not reachable through `loadContent()`.
+- AA: changes outside Story 1.2 (sprint status for 1.1, log 991) — intentional and explained in the log.
+- EC: a mode value of the wrong type skips the kebab key check — low: the path still names the key.
+- EC: reachability not checked in `parseContent` — low: covered by the real-content test; EXT only.
+- EC: no upper bounds on price or days — low; needs new limits.
 
 ## Verification
 

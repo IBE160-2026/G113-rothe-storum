@@ -1,9 +1,9 @@
 // zod schemas for the content files (AD-7). Each schema `satisfies` the matching
 // type in src/rules/types.ts, so the data and the rules agree on one shape.
 // The per-file schemas check one file each; contentFilesSchema combines them and
-// adds the cross-file checks (unknown ids, duplicates, self routes) in a
-// superRefine that runs whenever destinations and routes are valid, even if
-// config.json is not, so one parse reports every problem it can find.
+// adds the checks zod cannot express per field (duplicates, self routes, unknown
+// ids). Each of those runs as soon as the files it reads are valid, even if
+// another file is not, so one parse reports every problem it can find.
 import { z } from "zod";
 import type {
   Config,
@@ -68,7 +68,12 @@ const destinationSchema = z.strictObject({
   iata: z.string().regex(/^[A-Z]{3}$/, "must be three capital letters"),
   lat: latitude,
   lon: longitude,
-  costFactor: z.number().positive(),
+  // At most two decimals, so accommodationPrice() can convert it exactly to
+  // whole hundredths (AD-5, #26).
+  costFactor: z
+    .number()
+    .positive()
+    .multipleOf(0.01, "must have at most two decimals"),
 }) satisfies z.ZodType<Destination>;
 
 export const destinationsFileSchema = z.strictObject({
@@ -94,14 +99,15 @@ export const routesFileSchema = z.strictObject({
 type DestinationsFile = z.infer<typeof destinationsFileSchema>;
 type RoutesFile = z.infer<typeof routesFileSchema>;
 
-function checkCrossFile(
-  places: DestinationsFile,
-  routes: RoutesFile["routes"],
-  ctx: z.RefinementCtx,
-): void {
-  const issue = (path: PropertyKey[], message: string) =>
+type Issue = (path: PropertyKey[], message: string) => void;
+
+const issuer =
+  (ctx: z.RefinementCtx): Issue =>
+  (path, message) =>
     ctx.addIssue({ code: "custom", path, message });
 
+/** Duplicate place ids and iata codes. Reads only destinations.json. */
+function checkPlaces(places: DestinationsFile, issue: Issue): void {
   const ids = new Set<string>([places.home.id]);
   const codes = new Set<string>();
   places.destinations.forEach((d, i) => {
@@ -120,15 +126,14 @@ function checkCrossFile(
     }
     codes.add(d.iata);
   });
+}
 
+/** Self routes, duplicate routes and duplicate modes. Reads only routes.json. */
+function checkRoutes(routes: RoutesFile["routes"], issue: Issue): void {
   const pairs = new Set<string>();
   routes.forEach((route, i) => {
     const at = ["routes", "routes", i];
     const [a, b] = route.between;
-    route.between.forEach((id, j) => {
-      if (!ids.has(id))
-        issue([...at, "between", j], `unknown place id "${id}"`);
-    });
     if (a === b) issue([...at, "between"], `route from "${a}" to itself`);
     const pair = [a, b].sort().join("|");
     if (pairs.has(pair)) {
@@ -145,6 +150,39 @@ function checkCrossFile(
   });
 }
 
+/** Route endpoints that name no place. Reads destinations.json and routes.json. */
+function checkEndpoints(
+  places: DestinationsFile,
+  routes: RoutesFile["routes"],
+  issue: Issue,
+): void {
+  const ids = new Set<string>([
+    places.home.id,
+    ...places.destinations.map((d) => d.id),
+  ]);
+  routes.forEach((route, i) => {
+    route.between.forEach((id, j) => {
+      if (!ids.has(id)) {
+        issue(
+          ["routes", "routes", i, "between", j],
+          `unknown place id "${id}"`,
+        );
+      }
+    });
+  });
+}
+
+// Each check runs as soon as the files it reads are valid on their own, even if
+// another file fails, so one parse reports every problem it can find. Every file
+// a check reads must be safeParsed in its gate (with a null/missing-file test),
+// or bad input crashes with a TypeError instead of a ContentError.
+const filesOf = (payload: { value: unknown }) =>
+  payload.value as { destinations?: unknown; routes?: unknown } | undefined;
+const destinationsValid = (payload: { value: unknown }) =>
+  destinationsFileSchema.safeParse(filesOf(payload)?.destinations).success;
+const routesValid = (payload: { value: unknown }) =>
+  routesFileSchema.safeParse(filesOf(payload)?.routes).success;
+
 /** All three content files together, keyed like RawContent in load.ts. */
 export const contentFilesSchema = z
   .strictObject({
@@ -152,24 +190,14 @@ export const contentFilesSchema = z
     destinations: destinationsFileSchema,
     routes: routesFileSchema,
   })
+  .superRefine((value, ctx) => checkPlaces(value.destinations, issuer(ctx)), {
+    when: destinationsValid,
+  })
+  .superRefine((value, ctx) => checkRoutes(value.routes.routes, issuer(ctx)), {
+    when: routesValid,
+  })
   .superRefine(
     (value, ctx) =>
-      checkCrossFile(value.destinations, value.routes.routes, ctx),
-    {
-      // Run the cross-file checks even when config.json fails, as long as the
-      // two files they read are valid. Keep this gate in sync with
-      // checkCrossFile: every file it reads must be safeParsed here, with a
-      // null/missing-file test, or bad input crashes with a TypeError instead
-      // of a ContentError.
-      when: (payload) => {
-        const value = payload.value as {
-          destinations?: unknown;
-          routes?: unknown;
-        };
-        return (
-          destinationsFileSchema.safeParse(value?.destinations).success &&
-          routesFileSchema.safeParse(value?.routes).success
-        );
-      },
-    },
+      checkEndpoints(value.destinations, value.routes.routes, issuer(ctx)),
+    { when: (payload) => destinationsValid(payload) && routesValid(payload) },
   );

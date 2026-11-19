@@ -179,6 +179,54 @@ describe("NFR-7 AR-6 content", () => {
         "config.json",
         "modes.explorer.startMoney",
       ],
+      [
+        "non-integer price",
+        (r) => (r.routes.routes[0].modes[0].price = 60.5),
+        "routes.json",
+        "routes[0].modes[0].price",
+      ],
+      [
+        "zero start money",
+        (r) => (r.config.modes.explorer.startMoney = 0),
+        "config.json",
+        "modes.explorer.startMoney",
+      ],
+      [
+        "zero total days",
+        (r) => (r.config.modes.explorer.totalDays = 0),
+        "config.json",
+        "modes.explorer.totalDays",
+      ],
+      [
+        "negative base accommodation price",
+        (r) => (r.config.baseAccommodationPrice = -1),
+        "config.json",
+        "baseAccommodationPrice",
+      ],
+      [
+        "zero base accommodation price",
+        (r) => (r.config.baseAccommodationPrice = 0),
+        "config.json",
+        "baseAccommodationPrice",
+      ],
+      [
+        "zero call-home days",
+        (r) => (r.config.callHome.days = 0),
+        "config.json",
+        "callHome.days",
+      ],
+      [
+        "negative call-home price",
+        (r) => (r.config.callHome.price = -1),
+        "config.json",
+        "callHome.price",
+      ],
+      [
+        "negative call-home stamp penalty",
+        (r) => (r.config.callHome.stampPenalty = -1),
+        "config.json",
+        "callHome.stampPenalty",
+      ],
     ])("rejects %s", (_name, defect, file, path) => {
       expectProblem(withDefect(defect), file, path);
     });
@@ -291,6 +339,12 @@ describe("NFR-7 AR-6 content", () => {
         "destinations[0].costFactor",
       ],
       [
+        "cost factor with three decimals",
+        (r) => (r.destinations.destinations[0].costFactor = 1.005),
+        "destinations.json",
+        "destinations[0].costFactor",
+      ],
+      [
         "lowercase iata code",
         (r) => (r.destinations.destinations[0].iata = "aaa"),
         "destinations.json",
@@ -368,10 +422,47 @@ describe("NFR-7 AR-6 content", () => {
       ).toBe(true);
     });
 
-    // Known limitation (walkthrough of PR #21): the cross-file checks need valid
-    // destinations and routes, so a schema error in routes.json defers them to the
-    // next run. This test pins that behaviour so a change to it is deliberate.
-    it("defers cross-file checks while routes.json fails its own schema", () => {
+    // Each check runs once the files it reads are valid (code review of PR #21):
+    // checks inside one file are not held back by a schema error in another
+    // file, while unknown place ids wait until both files are valid.
+    it("reports duplicate place ids while routes.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          poke(r.routes.routes[0].modes[0], "mode", "boat");
+          r.destinations.destinations[1].id = "alpha";
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.includes("routes[0].modes[0].mode"))).toBe(
+        true,
+      );
+      expect(
+        problems.some((p) =>
+          p.includes('destinations[1].id: duplicate place id "alpha"'),
+        ),
+      ).toBe(true);
+    });
+
+    it("reports duplicate routes while destinations.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.destinations.destinations[0].lat = 91;
+          r.routes.routes.push({
+            between: ["home", "alpha"],
+            modes: [{ mode: "train", price: 60, days: 1 }],
+          });
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.includes("destinations[0].lat"))).toBe(
+        true,
+      );
+      expect(
+        problems.some((p) => p.includes("routes[2].between: duplicate route")),
+      ).toBe(true);
+    });
+
+    it("defers unknown place ids while routes.json fails its own schema", () => {
       const problems = problemsOf(
         withDefect((r) => {
           poke(r.routes.routes[0].modes[0], "mode", "boat");
