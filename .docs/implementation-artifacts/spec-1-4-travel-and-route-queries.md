@@ -2,7 +2,8 @@
 title: 'Story 1.4 — Travel and route queries'
 type: 'feature'
 created: '2026-11-19'
-status: 'ready-for-dev'
+status: 'done'
+baseline_commit: '0a25f9b0d99a89eb1e3fade4f6770fd678efaa1a'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
@@ -77,10 +78,10 @@ Fixture `valid-small`: home–alpha (plane €100/1, bus €40/2), alpha–beta-
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/rules/types.ts` -- action, reason codes, query types -- AD-2, AD-4
-- [ ] `src/rules/travel.ts`, `src/rules/queries.ts`, `src/rules/journey.ts` -- shared check, shortest path, travel, query; move `daysTotal` -- FR-4, FR-6, FR-9, AD-3
-- [ ] `src/rules/apply.ts` -- dispatch, guards, action creator -- FR-6, FR-7, AD-2
-- [ ] `tests/rules/travel.test.ts` -- `describe('FR-4 FR-6 FR-7 FR-9 travel')`; every matrix row; frozen inputs compared with `structuredClone`; for every option, `routesFrom` reason equals the `apply` result -- AC proof
+- [x] `src/rules/types.ts` -- action, reason codes, query types -- AD-2, AD-4
+- [x] `src/rules/travel.ts`, `src/rules/queries.ts`, `src/rules/journey.ts` -- shared check, shortest path, travel, query; move `daysTotal` -- FR-4, FR-6, FR-9, AD-3
+- [x] `src/rules/apply.ts` -- dispatch, guards, action creator -- FR-6, FR-7, AD-2
+- [x] `tests/rules/travel.test.ts` -- `describe('FR-4 FR-6 FR-7 FR-9 travel')`; every matrix row; frozen inputs compared with `structuredClone`; for every option, `routesFrom` reason equals the `apply` result -- AC proof
 
 **Acceptance Criteria:**
 - Given any state and any route option, when `routesFrom` and `apply(travel)` both run, then the query's `reason` and the apply rejection reason are identical, and an available option is accepted by `apply`.
@@ -88,9 +89,40 @@ Fixture `valid-small`: home–alpha (plane €100/1, bus €40/2), alpha–beta-
 
 ## Implementation Notes
 
+- **Deviation from epics (Q1 = A):** the epics say travel home is "recorded as ended at home" with goal evaluation in 3.1. Here arriving home already sets `outcome` to `goalReached`/`goalNotReached` (FR-11) with `failReason: null`; `Outcome` got no new value. Until 2.1 adds stamps, real play always ends `goalNotReached`.
+- `daysTotal()` moved from `journey.ts` to `queries.ts`, next to the new `daysRemaining()`.
+- `travel.ts` imports `daysTotal`/`daysRemaining` from `queries.ts`, and `queries.ts` imports `checkTravel`/`homeUnreachableAfter` from `travel.ts`. This is a module cycle, but neither module uses the other at load time (functions only), so it is safe in ESM; it follows the file placement in the Code Map.
+- `apply` handles `startJourney` first (it may replace any state), then guards `NO_JOURNEY` and `JOURNEY_ENDED` for every other action, then dispatches with an exhaustive `never` default. `checkTravel` repeats the `JOURNEY_ENDED` check so the query reports it too.
+- `homeUnreachable` is computed for every option, available or not; for an option that already fails `NOT_ENOUGH_DAYS` it is therefore true unless `to` is home.
+- `fixture()`, `deepFreeze`, `smallContent`, `applyFrozen` and `started` moved from `startJourney.test.ts` to `tests/rules/helpers.ts` so both test files share them.
+- `routeBetween()` returns the first matching route; the content schema already rejects duplicate routes (`broken-duplicate-route.json`).
+
 ## Spec Change Log
 
 ## Review Triage Log
+
+Iteration 0, 2026-11-19. Layers: blind-hunter (BH), edge-case-hunter (EC), verification-gap (VG); all three ran as independent subagents.
+
+| # | Layer | Finding | Verdict | Route | Evidence |
+|---|---|---|---|---|---|
+| 1 | VG | `shortestDaysHome` tests cannot tell fastest from first mode, or a real shortest path from the first path found | medium | patch | Pre-verified: fixture and real content list the fastest mode first and every direct route home is shortest, so `modes[0].days` or first-found BFS would pass. |
+| 2 | BH | `homeUnreachable` is true on most unavailable options, which may confuse the UI | low | patch | Real (Implementation Notes); fixed with a doc comment on `TravelOption`, no behaviour change. |
+| 3 | BH, VG | `daysUsed <= daysTotal` in the goal check can never be false | low | patch | `checkTravel` rejects `days > daysRemaining` first; kept as the FR-11 rule with a comment. |
+| 4 | BH | Epics and story 3.1 still say arriving home is "ended at home" with goal evaluation in 3.1 | medium | defer | True: Q1 = A is recorded only in this spec. The fix edits planning artifacts (`epics.md`, `epic-1-context.md`) and needs the team's approval. |
+| 5 | EC | Unknown runtime action type makes `default` return the action as `Result` | low | reject | Only reachable by bypassing the closed `Action` type; actions are built by creators, and saves (EXT) store `GameState`, not actions. Fix adds a new reason code. |
+| 6 | EC | `state.mode` missing from `content.config.modes` throws in `daysTotal` | false | reject | `state.mode` is `JourneyMode`; `startJourney` rejects unknown modes (`UNKNOWN_MODE`), and `daysTotal` behaves as in 1.3. |
+| 7 | EC | `apply` may break the "never throws" contract | false | reject | Covered by #5 and #6; no reachable throw for a typed player action. |
+| 8 | BH | Spec says `in-review`, sprint status says `in-progress` | false | reject | Build workflow syncs sprint status to `review` in the present step. |
+| 9 | BH | A stranded journey never ends (soft-lock) | — | reject | Intent excludes it: "Never: … out-of-days and stranded endings (3.1)". |
+| 10 | BH | `goalNotReached` has `failReason: null` | false | reject | Intent sets `failReason: null` on arriving home explicitly. |
+| 11 | BH | Home warning ignores money | false | reject | Intent: "shortest route home in days … ignoring money". |
+| 12 | BH | `travel.ts` ↔ `queries.ts` import cycle | low | reject | Safe in ESM (functions only), no lint rule flags it, follows the Code Map; no current harm named. |
+| 13 | BH | `shortestDaysHome` recomputed per option | low | reject | 9 places; negligible cost. |
+| 14 | BH | Unknown mode returns `NO_ROUTE`, not `UNKNOWN_MODE` | false | reject | Intent: `NO_ROUTE` when "`mode` not on it". |
+| 15 | BH | AD-3 agreement test: states built at collection, uses `apply` not `applyFrozen`, misses real-content boundaries | low | reject | States and content are deep-frozen, so mutation throws in strict mode; a collection error still fails the run. |
+| 16 | BH | Copenhagen test is tied to live content | false | reject | Required by the "Routes (real)" matrix row. |
+| 17 | BH | README and architecture not updated for the new API; other `daysTotal` importers | low | reject | grep: only `travel.ts` and `startJourney.test.ts` import `daysTotal`; spine already defines queries (AD-3); session log is written at wrap-up. |
+| 18 | BH | `routesFrom` with an unknown position, and routes with empty `modes` | false | reject | Position comes only from `apply`; schema requires `modes` `.min(1)` (`src/content/schema.ts:92`). |
 
 ## Design Notes
 

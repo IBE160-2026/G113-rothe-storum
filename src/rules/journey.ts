@@ -1,6 +1,6 @@
 // Starting a journey (FR-1). Pure: never mutates its inputs and never throws
 // for a player action (AD-1, AD-2, AD-4).
-import type { Content, GameState, JourneyMode, Result } from "./types";
+import type { Content, JourneyMode, Result } from "./types";
 
 export const DEFAULT_TRAVELLER_NAME = "Traveller";
 export const MAX_NAME_GRAPHEMES = 14;
@@ -23,11 +23,6 @@ export function normalizeName(raw: string): {
   return kept === ""
     ? { travellerName: DEFAULT_TRAVELLER_NAME, nameGiven: false }
     : { travellerName: kept, nameGiven: true };
-}
-
-/** Total days of the journey, derived from the mode's content values. */
-export function daysTotal(state: GameState, content: Content): number {
-  return content.config.modes[state.mode].totalDays;
 }
 
 /**

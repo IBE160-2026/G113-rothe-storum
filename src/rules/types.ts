@@ -110,11 +110,45 @@ export interface GameState {
   failReason: FailReason | null;
 }
 
-/** Closed action union (AD-2). Later stories add travel, spendCityDay, callHome. */
-export type Action = { type: "startJourney"; name: string; mode?: JourneyMode };
+/** Closed action union (AD-2). Later stories add spendCityDay, callHome. */
+export type Action =
+  | { type: "startJourney"; name: string; mode?: JourneyMode }
+  | { type: "travel"; to: PlaceId; mode: TransportMode };
 
-/** Closed reason union (AD-4). Later stories add NO_JOURNEY, NOT_ENOUGH_MONEY, JOURNEY_ENDED, … */
-export type ReasonCode = "UNKNOWN_MODE";
+/** Closed reason union (AD-4). The UI maps each code to copy. */
+export type ReasonCode =
+  | "UNKNOWN_MODE"
+  | "NO_JOURNEY"
+  | "JOURNEY_ENDED"
+  | "NO_ROUTE"
+  | "NOT_ENOUGH_MONEY"
+  | "NOT_ENOUGH_DAYS";
 
 export type Result =
   { ok: true; state: GameState } | { ok: false; reason: ReasonCode };
+
+/** One transport mode on a route, as the route query shows it (FR-4, FR-9). */
+export interface TravelOption {
+  mode: TransportMode;
+  /** Whole euros. */
+  price: number;
+  /** Whole days. */
+  days: number;
+  /** `daysUsed + days`: the day the player arrives. */
+  arrivalDay: number;
+  available: boolean;
+  /** Why the option is unavailable; `null` when it is available. */
+  reason: ReasonCode | null;
+  /**
+   * After this option, home can no longer be reached in time. Never blocks.
+   * Computed for every option, available or not (a NOT_ENOUGH_DAYS option
+   * usually shows true), so the UI should show it only when `available` is true.
+   */
+  homeUnreachable: boolean;
+}
+
+/** All modes from the current position to one neighbour. */
+export interface RouteView {
+  to: PlaceId;
+  options: TravelOption[];
+}

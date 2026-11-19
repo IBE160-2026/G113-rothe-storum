@@ -1,59 +1,13 @@
 // FR-1 start a journey: every rules row of the I/O matrix in
 // .docs/implementation-artifacts/spec-1-3-game-state-and-starting-a-journey.md.
 // Inputs are deep-frozen and compared with a structuredClone taken before the
-// call, so a mutation fails twice (a TypeError in strict mode, or a diff).
-import { readFileSync } from "node:fs";
+// call (see ./helpers.ts).
 import { describe, expect, it } from "vitest";
-import {
-  loadContent,
-  parseContent,
-  type RawContent,
-} from "../../src/content/load";
+import { loadContent } from "../../src/content/load";
 import { apply, startJourney } from "../../src/rules/apply";
-import { daysTotal } from "../../src/rules/journey";
-import type {
-  Action,
-  Content,
-  GameState,
-  JourneyMode,
-  Result,
-} from "../../src/rules/types";
-
-/** A freshly parsed fixture from tests/fixtures/content/ (as in content.test.ts). */
-function fixture(name: string): RawContent {
-  const url = new URL(`../fixtures/content/${name}`, import.meta.url);
-  return JSON.parse(readFileSync(url, "utf8")) as RawContent;
-}
-
-function deepFreeze<T>(value: T): T {
-  if (value !== null && typeof value === "object") {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
-}
-
-function smallContent(): Content {
-  return deepFreeze(parseContent(fixture("valid-small.json")));
-}
-
-/** Runs apply on frozen inputs and asserts that neither input changed. */
-function applyFrozen(
-  state: GameState | null,
-  action: Action,
-  content: Content,
-): Result {
-  const before = structuredClone({ state, content });
-  deepFreeze(state);
-  const result = apply(state, action, content);
-  expect({ state, content }).toEqual(before);
-  return result;
-}
-
-function started(result: Result): GameState {
-  if (!result.ok) throw new Error(`expected ok, got ${result.reason}`);
-  return result.state;
-}
+import { daysTotal } from "../../src/rules/queries";
+import type { GameState, JourneyMode } from "../../src/rules/types";
+import { applyFrozen, deepFreeze, smallContent, started } from "./helpers";
 
 function nameOf(name: string): Pick<GameState, "travellerName" | "nameGiven"> {
   const { travellerName, nameGiven } = started(
