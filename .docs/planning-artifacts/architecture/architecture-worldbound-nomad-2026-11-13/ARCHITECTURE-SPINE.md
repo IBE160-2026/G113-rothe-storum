@@ -123,9 +123,9 @@ graph TD
 | Vitest | 5.1 |
 | @testing-library/react | 16.3 |
 | Playwright (@playwright/test) | 1.65 |
-| ESLint / typescript-eslint / Prettier | 10.15 / 8.72 / 3.10 |
+| ESLint / typescript-eslint / Prettier | 10.15 / 8.73 / 3.10 |
 
-Versions were checked against the npm registry on 2026-11-13 (Node floor and ESLint rechecked 2026-11-16, Story 1.1).
+Versions were checked against the npm registry on 2026-11-13 (Node floor and ESLint rechecked 2026-11-16, Story 1.1; typescript-eslint raised to 8.73 on 2026-11-19, #18).
 
 ## Structural Seed
 
