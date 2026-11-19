@@ -93,7 +93,7 @@ Fixture `valid-small`: home–alpha (plane €100/1, bus €40/2), alpha–beta-
 - `daysTotal()` moved from `journey.ts` to `queries.ts`, next to the new `daysRemaining()`.
 - `travel.ts` imports `daysTotal`/`daysRemaining` from `queries.ts`, and `queries.ts` imports `checkTravel`/`homeUnreachableAfter` from `travel.ts`. This is a module cycle, but neither module uses the other at load time (functions only), so it is safe in ESM; it follows the file placement in the Code Map.
 - `apply` handles `startJourney` first (it may replace any state), then guards `NO_JOURNEY` and `JOURNEY_ENDED` for every other action, then dispatches with an exhaustive `never` default. `checkTravel` repeats the `JOURNEY_ENDED` check so the query reports it too.
-- `homeUnreachable` is computed for every option, available or not; for an option that already fails `NOT_ENOUGH_DAYS` it is therefore true unless `to` is home.
+- `homeUnreachable` is set only on available options (`check.ok && homeUnreachableAfter(…)`), so warning rows and unavailable rows are exclusive as in EXPERIENCE → Option row, and the UI never combines them itself (EXPERIENCE → "the UI never computes" warnings). Changed after the walkthrough (advanced elicitation, second-order thinking, 2026-11-19); before that it was computed for every option and was true on most `NOT_ENOUGH_DAYS` rows.
 - `fixture()`, `deepFreeze`, `smallContent`, `applyFrozen` and `started` moved from `startJourney.test.ts` to `tests/rules/helpers.ts` so both test files share them.
 - `routeBetween()` returns the first matching route; the content schema already rejects duplicate routes (`broken-duplicate-route.json`).
 
@@ -106,7 +106,7 @@ Iteration 0, 2026-11-19. Layers: blind-hunter (BH), edge-case-hunter (EC), verif
 | # | Layer | Finding | Verdict | Route | Evidence |
 |---|---|---|---|---|---|
 | 1 | VG | `shortestDaysHome` tests cannot tell fastest from first mode, or a real shortest path from the first path found | medium | patch | Pre-verified: fixture and real content list the fastest mode first and every direct route home is shortest, so `modes[0].days` or first-found BFS would pass. |
-| 2 | BH | `homeUnreachable` is true on most unavailable options, which may confuse the UI | low | patch | Real (Implementation Notes); fixed with a doc comment on `TravelOption`, no behaviour change. |
+| 2 | BH | `homeUnreachable` is true on most unavailable options, which may confuse the UI | low | patch | Real (Implementation Notes); fixed with a doc comment on `TravelOption`, no behaviour change. Superseded after the walkthrough: the query now returns `false` for unavailable options (see Implementation Notes). |
 | 3 | BH, VG | `daysUsed <= daysTotal` in the goal check can never be false | low | patch | `checkTravel` rejects `days > daysRemaining` first; kept as the FR-11 rule with a comment. |
 | 4 | BH | Epics and story 3.1 still say arriving home is "ended at home" with goal evaluation in 3.1 | medium | defer | True: Q1 = A is recorded only in this spec. The fix edits planning artifacts (`epics.md`, `epic-1-context.md`) and needs the team's approval. |
 | 5 | EC | Unknown runtime action type makes `default` return the action as `Result` | low | reject | Only reachable by bypassing the closed `Action` type; actions are built by creators, and saves (EXT) store `GameState`, not actions. Fix adds a new reason code. |

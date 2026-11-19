@@ -32,7 +32,9 @@ export function routesFrom(state: GameState, content: Content): RouteView[] {
         arrivalDay: state.daysUsed + days,
         available: check.ok,
         reason: check.ok ? null : check.reason,
-        homeUnreachable: homeUnreachableAfter(state, to, days, content),
+        // Warning rows and unavailable rows are exclusive (EXPERIENCE → Option row).
+        homeUnreachable:
+          check.ok && homeUnreachableAfter(state, to, days, content),
       };
     });
     views.push({ to, options });

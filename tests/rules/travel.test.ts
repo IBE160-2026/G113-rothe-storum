@@ -464,6 +464,8 @@ describe("FR-4 FR-6 FR-7 FR-9 travel", () => {
               expect(result.ok).toBe(true);
             } else {
               expect(result).toEqual({ ok: false, reason: o.reason });
+              // Warning and unavailable rows are exclusive.
+              expect(o.homeUnreachable).toBe(false);
             }
             checked++;
           }

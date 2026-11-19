@@ -141,8 +141,8 @@ export interface TravelOption {
   reason: ReasonCode | null;
   /**
    * After this option, home can no longer be reached in time. Never blocks.
-   * Computed for every option, available or not (a NOT_ENOUGH_DAYS option
-   * usually shows true), so the UI should show it only when `available` is true.
+   * Only an available option can carry it: always `false` when `available` is
+   * false, so the UI shows it as is (warning and unavailable rows are exclusive).
    */
   homeUnreachable: boolean;
 }

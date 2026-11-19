@@ -55,7 +55,8 @@ export function checkTravel(
 /**
  * Fewest days from `from` to home, using each route's fastest mode and
  * ignoring money (Dijkstra over the small content graph). `Infinity` when no
- * path exists.
+ * path exists. Money is ignored on purpose (FR-4): a player who cannot afford
+ * any route is offered Call home, which costs days but no money (FR-12).
  */
 export function shortestDaysHome(from: PlaceId, content: Content): number {
   const dist = new Map<PlaceId, number>([[from, 0]]);
