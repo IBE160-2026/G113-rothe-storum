@@ -190,7 +190,7 @@ graph LR
 ## Deferred
 
 - **Hosting:** the README run path is local (`npm run dev`), which is all NFR-3 requires. Publishing on GitHub Pages is optional and can be added in the final week.
-- **CI:** no GitHub Actions in the plan. Tests are run locally and reported in PRs. Add CI only if time allows.
+- **CI:** updated 2026-11-18 (#25): GitHub Actions (`.github/workflows/ci.yml`) runs lint, test and build on every PR and on pushes to `main`. E2e stays local until Story 4.2. Originally deferred ("add CI only if time allows"); added after the PR #21 walkthrough showed that content validation only protects `main` if `npm test` runs before every merge.
 - **[EXT] save schema migration:** v1 discards any save whose `schemaVersion` differs. Migrations wait until there is a second version.
 - **[EXT] sound file format:** chosen when FR-24 starts.
 - **AI travel assistant:** fully deferred (PRD OQ4). If it is added, it must follow NFR-3 (optional, mock in tests) and sits outside `src/rules/`.
