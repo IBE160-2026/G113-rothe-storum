@@ -1,0 +1,8 @@
+{
+  "modes": {
+    "explorer": { "startMoney": 1500, "totalDays": 30 }
+  },
+  "goalStamps": 5,
+  "baseAccommodationPrice": 50,
+  "callHome": { "days": 7, "stampPenalty": 1, "price": 0 }
+}

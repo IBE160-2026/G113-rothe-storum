@@ -1,0 +1,72 @@
+{
+  "config": {
+    "modes": {
+      "explorer": {
+        "startMoney": 500,
+        "totalDays": 10
+      }
+    },
+    "goalStamps": 2,
+    "baseAccommodationPrice": 50,
+    "callHome": {
+      "days": 3,
+      "stampPenalty": 1,
+      "price": 0
+    }
+  },
+  "destinations": {
+    "home": {
+      "id": "home",
+      "name": "Testhome",
+      "lat": 60.0,
+      "lon": 5.0
+    },
+    "destinations": [
+      {
+        "id": "alpha",
+        "name": "Alpha",
+        "iata": "AAA",
+        "lat": 50.0,
+        "lon": 10.0,
+        "costFactor": 1.0
+      },
+      {
+        "id": "beta-town",
+        "name": "Beta Town",
+        "iata": "BBB",
+        "lat": 40.0,
+        "lon": -20.0,
+        "costFactor": 1.5
+      }
+    ]
+  },
+  "routes": {
+    "routes": [
+      {
+        "between": ["home", "alpha"],
+        "modes": [
+          {
+            "mode": "plane",
+            "price": 100,
+            "days": 1
+          },
+          {
+            "mode": "bus",
+            "price": 40,
+            "days": 2
+          }
+        ]
+      },
+      {
+        "between": ["alpha", "parris"],
+        "modes": [
+          {
+            "mode": "train",
+            "price": 80,
+            "days": 1
+          }
+        ]
+      }
+    ]
+  }
+}
