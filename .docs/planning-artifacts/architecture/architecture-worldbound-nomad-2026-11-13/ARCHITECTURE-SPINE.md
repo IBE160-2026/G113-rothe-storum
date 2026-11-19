@@ -127,7 +127,7 @@ graph TD
 
 Versions were checked against the npm registry on 2026-11-13 (Node floor and ESLint rechecked 2026-11-16, Story 1.1).
 
-The stack and paradigm were proposed by the AI agent as a technical recommendation and confirmed by the team in Thomas Rothe's review of PR #4 (approved 2026-11-15): "Jeg støtter Vite 8 + React 19 + TypeScript 6.0 og den foreslåtte arkitekturen."
+The stack and paradigm were proposed by the AI agent as a technical recommendation and confirmed by the team in Thomas Rothe's review of PR #4 (changes requested 2026-11-15; approved 2026-11-16): "Jeg støtter Vite 8 + React 19 + TypeScript 6.0 og den foreslåtte arkitekturen."
 
 ## Structural Seed
 
