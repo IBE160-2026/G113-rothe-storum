@@ -146,7 +146,7 @@ describe("AR-2 AD-1 rules boundary", { timeout: 30_000 }, () => {
       ["setImmediate", "no-restricted-globals"],
       ["eval", "no-restricted-globals"],
       ["Function", "no-restricted-globals"],
-      ["new Intl.DateTimeFormat().format()", "no-restricted-globals"],
+      ["new Intl.DateTimeFormat().format()", "no-restricted-syntax"],
     ])("rejects %s", async (expr, ruleId) => {
       expect(
         await boundaryRuleIds(`export const v = ${expr};`, RULES_PROBE),
@@ -160,6 +160,32 @@ describe("AR-2 AD-1 rules boundary", { timeout: 30_000 }, () => {
           RULES_PROBE,
         ),
       ).toEqual(["no-restricted-syntax"]);
+    });
+  });
+
+  // spec-1-3 Q1: Intl.Segmenter is the only allowed use of Intl in src/rules.
+  describe("Intl", () => {
+    it("allows new Intl.Segmenter", async () => {
+      expect(
+        await boundaryRuleIds(
+          'export const s = new Intl.Segmenter("en", { granularity: "grapheme" });',
+          RULES_PROBE,
+        ),
+      ).toEqual([]);
+    });
+
+    it.each([
+      ["export const v = Intl.DateTimeFormat;"],
+      ["export const v = new Intl.NumberFormat();"],
+      ['export const v = Intl["DateTimeFormat"];'],
+      ['export const v = Intl["Segmenter"];'],
+      ["export const I = Intl;"],
+      ["export const { DateTimeFormat } = Intl;"],
+      ["export type S = Intl.SegmentData;"],
+    ])("rejects %s", async (code) => {
+      expect(await boundaryRuleIds(code, RULES_PROBE)).toEqual([
+        "no-restricted-syntax",
+      ]);
     });
   });
 

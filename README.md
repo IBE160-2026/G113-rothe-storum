@@ -17,6 +17,7 @@ WORLDBOUND: NOMAD is a mobile-first browser travel game built with Vite, React a
 
 - Node.js `^22.22.2 || ^24.15.0 || >=26` (tested with 26.8.1)
 - npm (bundled with Node.js; tested with 11.19.0)
+- To play: a current browser (Chrome ≥ 107, Safari ≥ 16, Firefox ≥ 125). The floor comes from `Intl.Segmenter` (counts the traveller name in graphemes; Firefox ≥ 125) and Vite's default build target (baseline-widely-available; Chrome ≥ 107, Safari ≥ 16).
 
 ### Install
 
