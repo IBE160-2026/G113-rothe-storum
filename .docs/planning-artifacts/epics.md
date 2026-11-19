@@ -60,6 +60,7 @@ From the architecture spine (AD-1 – AD-10):
 - AR-7 Single storage adapter with fallback (AD-8).
 - AR-8 Copy in `copy.ts`, tokens in `tokens.css` (AD-9).
 - AR-9 Tests named by FR id; story and FR ids in every PR (AD-10).
+- AR-10 Top-level React error boundary with a fallback screen; content loaded inside the component tree so a `ContentError` is caught (Conventions → Errors; #17, #24).
 
 From PRD §6 (process):
 - PR-1 Every change reaches `main` through a pull request reviewed by the other team member.
@@ -163,7 +164,7 @@ As a player,
 I want a new journey to start with the right money, days and position,
 So that every journey begins on equal terms.
 
-**Covers:** FR-1, FR-9 (base), AR-3, AR-5
+**Covers:** FR-1, FR-9 (base), AR-3, AR-5, AR-10
 
 **Acceptance Criteria:**
 
@@ -178,6 +179,10 @@ So that every journey begins on equal terms.
 **Given** any rejected action
 **When** `apply` returns
 **Then** it returns `{ ok: false, reason }` with a `ReasonCode` and the input state is unchanged
+
+**Given** content that fails validation, or any other error thrown during render
+**When** the app starts
+**Then** a top-level error boundary shows a fallback screen with copy from `src/ui/copy.ts` (never a blank page), `loadContent()` is called inside the component tree under the boundary (not at module scope), and `ContentError.problems` is logged to the console (#17, #24)
 
 ### Story 1.4: Travel and route queries (rules)
 
