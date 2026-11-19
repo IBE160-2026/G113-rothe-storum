@@ -2,7 +2,9 @@
 // imports nothing outside itself and never touches time, randomness, the DOM,
 // storage or other globals. The rejected cases are listed in the I/O matrix of
 // .docs/implementation-artifacts/spec-1-1-project-scaffold-and-tooling.md and
-// proven by tests/rules/boundary.test.ts.
+// proven by tests/rules/boundary.test.ts. The one exception, `Intl.Segmenter`
+// for counting name graphemes, is decided in Q1 of
+// .docs/implementation-artifacts/spec-1-3-game-state-and-starting-a-journey.md.
 import js from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -76,6 +78,12 @@ export default defineConfig(
           selector: "Identifier[name='Date']",
           message: "AD-1: no clock access in src/rules; pass time in as data.",
         },
+        {
+          // Intl is locale- and runtime-dependent; only `Intl.Segmenter` (non-computed) is allowed (spec-1-3 Q1).
+          selector:
+            "Identifier[name='Intl']:not(MemberExpression[computed=false][property.name='Segmenter'] > .object)",
+          message: "AD-1: only Intl.Segmenter is allowed in src/rules.",
+        },
       ],
       "no-restricted-globals": [
         "error",
@@ -103,7 +111,6 @@ export default defineConfig(
           "setImmediate",
           "eval",
           "Function",
-          "Intl",
         ].map((name) => ({
           name,
           message: `AD-1: \`${name}\` is not allowed in src/rules.`,

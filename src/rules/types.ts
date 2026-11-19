@@ -1,7 +1,7 @@
 // Shared types for the rules core (AD-1: imports nothing outside src/rules).
 // Content types are defined here so the rules can take a `Content` argument
-// without importing src/content/ (AD-7). Story 1.3 adds GameState, actions and
-// ReasonCode to this file.
+// without importing src/content/ (AD-7). Story 1.3 added GameState, Action,
+// ReasonCode and Result (AR-3, AD-2, AD-4).
 
 /** Lowercase kebab id; `home` is Bergen. */
 export type PlaceId = string;
@@ -66,4 +66,89 @@ export interface Content {
   home: Home;
   destinations: Destination[];
   routes: Route[];
+}
+
+/** Journey mode. `nomad` is [EXT] and not in content yet. */
+export type JourneyMode = "explorer" | "nomad";
+
+/** EXPERIENCE State Model; set by Stories 1.4 and 3.1. */
+export type Outcome = "goalReached" | "goalNotReached" | "failed";
+
+export type FailReason = "outOfDays" | "stranded";
+
+/** Stamps are ordered; the last one is the most recent. */
+export interface Stamp {
+  id: PlaceId;
+  day: number;
+}
+
+/** `id` is a sight id. */
+export interface AlbumEntry {
+  id: string;
+  day: number;
+}
+
+/**
+ * The whole game state (AR-3). Immutable: only apply() produces a new one.
+ * The total number of days is derived from content, never stored.
+ */
+export interface GameState {
+  mode: JourneyMode;
+  travellerName: string;
+  /** False when the player left the name empty and "Traveller" was used. */
+  nameGiven: boolean;
+  position: PlaceId;
+  /** Whole euros. */
+  money: number;
+  /** Whole days. */
+  daysUsed: number;
+  stamps: Stamp[];
+  album: AlbumEntry[];
+  cityDays: Record<PlaceId, number>;
+  calledHome: boolean;
+  outcome: Outcome | null;
+  failReason: FailReason | null;
+}
+
+/** Closed action union (AD-2). Later stories add spendCityDay, callHome. */
+export type Action =
+  | { type: "startJourney"; name: string; mode?: JourneyMode }
+  | { type: "travel"; to: PlaceId; mode: TransportMode };
+
+/** Closed reason union (AD-4). The UI maps each code to copy. */
+export type ReasonCode =
+  | "UNKNOWN_MODE"
+  | "NO_JOURNEY"
+  | "JOURNEY_ENDED"
+  | "NO_ROUTE"
+  | "NOT_ENOUGH_MONEY"
+  | "NOT_ENOUGH_DAYS";
+
+export type Result =
+  { ok: true; state: GameState } | { ok: false; reason: ReasonCode };
+
+/** One transport mode on a route, as the route query shows it (FR-4, FR-9). */
+export interface TravelOption {
+  mode: TransportMode;
+  /** Whole euros. */
+  price: number;
+  /** Whole days. */
+  days: number;
+  /** `daysUsed + days`: the day the player arrives. */
+  arrivalDay: number;
+  available: boolean;
+  /** Why the option is unavailable; `null` when it is available. */
+  reason: ReasonCode | null;
+  /**
+   * After this option, home can no longer be reached in time. Never blocks.
+   * Only an available option can carry it: always `false` when `available` is
+   * false, so the UI shows it as is (warning and unavailable rows are exclusive).
+   */
+  homeUnreachable: boolean;
+}
+
+/** All modes from the current position to one neighbour. */
+export interface RouteView {
+  to: PlaceId;
+  options: TravelOption[];
 }
