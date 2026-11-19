@@ -17,9 +17,25 @@ Vocabulary is anchored in the Glossary (§3); every requirement uses those terms
 
 WORLDBOUND: NOMAD is a browser-based travel and decision game. The player leaves Bergen with €1,500 and 30 days, travels between world destinations, and has to collect at least five passport stamps and make it home before time runs out. Every choice trades time against money: the plane is fast and expensive, the bus is cheap and slow, London drains the budget faster than Istanbul, every sight is a choice between a memory and the next ticket, and a day spent working is a day not spent travelling.
 
-The game is short, replayable, and played on the phone the player already carries — no install, no account. A journey takes one or two sittings. Losing is possible but rarely brutal: running out of money is a crisis, not game over. In the core, the way out is to call home, at a price; the MVP extension adds work and budget accommodation.
+The game is short, replayable, and played on the phone the player already carries — no install, no account. A journey takes one sitting: in the core, a journey is not saved, so closing the tab ends it (save and resume is [EXT], FR-20; §9.7, Decision L). Losing is possible but rarely brutal: running out of money is a crisis, not game over. In the core, the way out is to call home, at a price; the MVP extension adds work and budget accommodation.
 
 NOMAD is also the vehicle for a research goal: examining how AI agents perform across a full development cycle under human control. That goal shapes how the game is built — small, deterministic, testable rules; content as reviewable data; traceable Git history — but never at the expense of the game being a real game.
+
+### 1.1 Inspiration, Not a Copy
+
+NOMAD is inspired by the Swedish Backpacker series (PC 1995–2006; mobile by Qiiwi Games, 2017). Several ideas come from that tradition: earning travel money by answering questions at work, a passport stamp per city, a daily cost of staying somewhere, starting and ending the journey at home, and calling home when the money runs out. NOMAD's own design, and all its code, art, text and content, are independent (addendum: Inspiration vs. copying). The Backpacker name is used only in planning documents to make the comparison traceable; the game and the README say "inspired by classic travel games" and never use another game's name, logo, art, questions or text.
+
+| | Backpacker | NOMAD |
+|---|---|---|
+| Goal | Circle the world in the shortest time, or collect job certificates (PC) | Collect 5 stamps and be home in Bergen within a fixed 30 days |
+| Clock | A race: the faster, the better | A fixed budget of days: what can you make of them? |
+| Out of money | Call home: the family may send money, or you are sent home and lose (PC 1995); sleep in the street with less energy (mobile) | Call home always works: it costs 7 days and one stamp, no money, and the goal can still be reached |
+| Work | Jobs tied to quiz questions; more correct answers pay more | [EXT] A shift costs 1 day; each destination has a finite, non-repeating sequence of 15 questions |
+| Places | 70–100 destinations (PC), 69 cities (mobile) | 8 destinations: Europe as a plane/train/bus hub, three far goals by plane |
+| Rewards | Job certificates (PC); stamps, mementos, minigames (mobile) | Stamps and a photo album of chosen sights |
+| Business model | Mobile: ads, coin purchases, paid subscription to skip waiting | None: no ads, purchases or accounts (§8) |
+
+The finite question sequence also answers the most common complaint about the mobile Backpacker: that questions repeat. Sources and confidence: competitive research 2026-11-16, sections 1 and 4 (`.docs/planning-artifacts/research/competitive-travel-game-benchmarks-2026-11-16/research.md`).
 
 ## 2. Target User
 
@@ -441,6 +457,10 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 - **I. Content ownership.** Three steps per item: an AI content agent drafts fact cards, sight facts, illustration photos and (EXT) trivia; a second AI agent fact-checks and logs its corrections; Christian Storum does the final check, including photo licences, before merge (NFR-8). The final check (Christian) and the independent review (the other team member, on the pull request) are two separate steps and are recorded separately. Closes the content half of Open Question 3.
 - **J. Time measured in the playtest.** SM-2b is added with a lever decided in advance (§9.3). Adopted from the instructor's suggestion §4.1.
 - **K. FR-4 is rule logic.** FR-4 joins NFR-2 and SM-1 (instructor §4.5).
+
+### 9.7 Decisions After Competitive Research (2026-11-16)
+
+- **L. Saving stays in the extension.** The group decided to keep FR-20 (save and resume) in [EXT], in its planned place in §9.2, because saving can be added in the extension without changing the core: the architecture already plans the saved journey for [EXT] (AD-8). The core therefore does not save a journey, and §1 promises one sitting. **Rejected:** the AI agent's recommendation to move a minimal autosave into the core (competitive research, recommendation 1; brainstorming 2026-11-16). **Given up:** a journey that survives a closed tab or a reload in the core. **Revisit:** if the playtest shows that journeys do not fit in one sitting.
 
 ## 10. Success Metrics
 
