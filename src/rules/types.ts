@@ -1,7 +1,7 @@
 // Shared types for the rules core (AD-1: imports nothing outside src/rules).
 // Content types are defined here so the rules can take a `Content` argument
-// without importing src/content/ (AD-7). Story 1.3 adds GameState, actions and
-// ReasonCode to this file.
+// without importing src/content/ (AD-7). Story 1.3 added GameState, Action,
+// ReasonCode and Result (AR-3, AD-2, AD-4).
 
 /** Lowercase kebab id; `home` is Bergen. */
 export type PlaceId = string;
@@ -67,3 +67,54 @@ export interface Content {
   destinations: Destination[];
   routes: Route[];
 }
+
+/** Journey mode. `nomad` is [EXT] and not in content yet. */
+export type JourneyMode = "explorer" | "nomad";
+
+/** EXPERIENCE State Model; set by Stories 1.4 and 3.1. */
+export type Outcome = "goalReached" | "goalNotReached" | "failed";
+
+export type FailReason = "outOfDays" | "stranded";
+
+/** Stamps are ordered; the last one is the most recent. */
+export interface Stamp {
+  id: PlaceId;
+  day: number;
+}
+
+/** `id` is a sight id. */
+export interface AlbumEntry {
+  id: string;
+  day: number;
+}
+
+/**
+ * The whole game state (AR-3). Immutable: only apply() produces a new one.
+ * The total number of days is derived from content, never stored.
+ */
+export interface GameState {
+  mode: JourneyMode;
+  travellerName: string;
+  /** False when the player left the name empty and "Traveller" was used. */
+  nameGiven: boolean;
+  position: PlaceId;
+  /** Whole euros. */
+  money: number;
+  /** Whole days. */
+  daysUsed: number;
+  stamps: Stamp[];
+  album: AlbumEntry[];
+  cityDays: Record<PlaceId, number>;
+  calledHome: boolean;
+  outcome: Outcome | null;
+  failReason: FailReason | null;
+}
+
+/** Closed action union (AD-2). Later stories add travel, spendCityDay, callHome. */
+export type Action = { type: "startJourney"; name: string; mode?: JourneyMode };
+
+/** Closed reason union (AD-4). Later stories add NO_JOURNEY, NOT_ENOUGH_MONEY, JOURNEY_ENDED, … */
+export type ReasonCode = "UNKNOWN_MODE";
+
+export type Result =
+  { ok: true; state: GameState } | { ok: false; reason: ReasonCode };

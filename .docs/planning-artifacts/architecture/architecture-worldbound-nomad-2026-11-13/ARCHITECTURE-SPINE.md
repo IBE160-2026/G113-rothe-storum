@@ -7,7 +7,7 @@ paradigm: 'functional core, imperative shell (pure rules engine + thin React UI)
 scope: 'The whole MVP (core + extension): rules engine, content data, UI shell, storage, tests'
 status: final
 created: '2026-11-13'
-updated: '2026-11-13'
+updated: '2026-11-19'
 binds: [FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-8, FR-9, FR-10, FR-11, FR-12, FR-13, FR-14, FR-15, FR-16, FR-17, FR-18, FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, NFR-1, NFR-2, NFR-3, NFR-4, NFR-5, NFR-6, NFR-7, NFR-8, NFR-9]
 sources:
   - ../../prds/prd-worldbound-nomad-2026-10-12/prd.md
@@ -52,6 +52,7 @@ graph TD
 - **Binds:** NFR-1, NFR-2, all rule FRs (FR-1, FR-4, FR-6 – FR-18, FR-21 – FR-23)
 - **Prevents:** rule logic leaking into components, or rules that cannot run without a browser
 - **Rule:** `src/rules/` imports nothing from React, the DOM, `window`, storage, `src/app/` or `src/ui/`. It never calls `Date.now()`, `Math.random()` or reads globals. An ESLint `no-restricted-imports` rule on `src/rules/**` enforces this.
+- **Note (Story 1.3, Q1):** the one exception is `Intl.Segmenter`: the `no-restricted-syntax` lint selector allows non-computed `Intl.Segmenter` access and rejects every other use of `Intl` (see spec-1-3). The code uses it only as `new Intl.Segmenter("en", { granularity: "grapheme" })`, to count the traveller name in graphemes (FR-1).
 
 ### AD-2 — One mutation path: `apply`
 - **Binds:** all committed actions (EXPERIENCE → State Model, commit table)
@@ -71,7 +72,7 @@ graph TD
 ### AD-5 — Money and days are integers; one pricing function
 - **Binds:** FR-6, FR-8, FR-17, FR-21, Decision E (halves round up)
 - **Prevents:** float drift and two different roundings of accommodation prices
-- **Rule:** money is whole euros and days are whole days, both `number` integers. The accommodation price is computed only by `accommodationPrice()` in `src/rules/money.ts` (`Math.floor(x + 0.5)` on the product). No other module multiplies a cost factor.
+- **Rule:** money is whole euros and days are whole days, both `number` integers. The accommodation price is computed only by `accommodationPrice()` in `src/rules/money.ts`, in integer arithmetic: the cost factor and [EXT] the tier multiplier are converted once to whole hundredths (`Math.round(f * 100)`), multiplied as integers with the base price, and halves are rounded up with integer division (`Math.floor((n + 5000) / 10000)`, where `n` is base × factor × multiplier in hundredths and the core multiplier is 100). Never round a floating-point product: `50 × 1.7 × 0.7` gives `59.49999999999999`, so Sydney budget would be €59 instead of €60 (#26). Cost factors and multipliers have at most two decimals, enforced by `src/content/schema.ts`, so the conversion is exact. No other module multiplies a cost factor.
 
 ### AD-6 — The city day is one atomic action in a fixed order
 - **Binds:** FR-8, FR-10, FR-21, FR-22, FR-23, Decisions F and G
@@ -108,7 +109,7 @@ graph TD
 | Days | State stores `daysUsed`. "Day X of N" is derived (X = daysUsed + 1, capped). `daysRemaining = modeDays − daysUsed`. |
 | Ordering | Stamps and album entries are ordered arrays of `{ id, day }`. "Most recently earned stamp" = last element (FR-12). |
 | Formatting | Prettier defaults; ESLint recommended + typescript-eslint; `strict: true` in tsconfig. |
-| Errors | Rules never throw for player actions. A thrown error means a bug or invalid content and is caught by a top-level React error boundary. |
+| Errors | Rules never throw for player actions. A thrown error means a bug or invalid content and is caught by a top-level React error boundary in `src/ui/`, which shows a fallback screen with copy from `src/ui/copy.ts` (never a blank page). A boundary only catches errors thrown during render, so `loadContent()` is called inside the component tree under the boundary (for example a lazy initialiser in the app provider), never at module scope, where a `ContentError` would throw before `createRoot().render()`. `ContentError.problems` is logged to the console for developers. Owned by Story 1.3 (#17, #24). |
 
 ## Stack
 
@@ -126,6 +127,8 @@ graph TD
 | ESLint / typescript-eslint / Prettier | 10.15 / 8.73 / 3.10 |
 
 Versions were checked against the npm registry on 2026-11-13 (Node floor and ESLint rechecked 2026-11-16, Story 1.1; typescript-eslint raised to 8.73 on 2026-11-19, #18).
+
+The stack and paradigm were proposed by the AI agent as a technical recommendation and confirmed by the team in Thomas Rothe's review of PR #4 (approved 2026-11-15): "Jeg støtter Vite 8 + React 19 + TypeScript 6.0 og den foreslåtte arkitekturen."
 
 ## Structural Seed
 
