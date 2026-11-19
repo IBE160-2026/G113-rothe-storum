@@ -52,6 +52,8 @@ tests/           rules, content, balance, ui, e2e and fixtures
 
 `npm run test:e2e` builds the app first and serves it on port 4173, so stop any running `npm run preview` before you start it.
 
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `npm run lint`, `npm test` and `npm run build` on every pull request and on pushes to `main`. Run `npm run test:e2e` locally; it is not part of CI yet.
+
 ### Documentation
 
 - [Product requirements (PRD)](.docs/planning-artifacts/prds/prd-worldbound-nomad-2026-10-12/prd.md)
