@@ -17,6 +17,7 @@ Sprint-statusen viste at seks PR-er venter på Thomas' review, og at sprinten sl
   - Spørsmål til Thomas: rekker han Story 1.5 denne sprinten?
 - Sjekket med `git fetch`: arbeidsmappa er ren, og alle lokale brancher er i sync med `origin`. Den andre terminalen (spec for Story 1.4, `07e8bcf` og `df4638b`) var ferdig og kunne avsluttes med `/exit` uten tap. Forslaget `bmad build …` i input-feltet ble ikke sendt.
 - Loggnummer 986 finnes nå to ganger (`986-…-typescript-eslint-8-73.md` og `986-…-story-1-4-spec.md`), fordi to terminaler logget parallelt. Det gir ingen git-konflikt, siden filnavnene er ulike.
+- Etterpå: sprint-statusen viste at Thomas har godkjent PR #21, men at den ikke er flettet. Brukeren valgte å vente til Thomas er ajour, så flettingen kan skje i rekkefølge. `last_updated` i `sprint-status.yaml` lå igjen fram i tid (`11-19-2026 13:00`, skrevet av den andre terminalen) og ble på brukerens ønske rettet til `11-19-2026 11:05`. Valideringen er OK. Commit `e07d752`, pushet til `story-1-4-travel`.
 
 ### Åpne punkter
 - Venter på Thomas' review av #27, #28, #21, #31, #30 og #16, og på svar om Story 1.5.
