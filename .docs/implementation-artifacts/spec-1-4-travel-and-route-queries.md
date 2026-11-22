@@ -87,6 +87,36 @@ Fixture `valid-small`: home–alpha (plane €100/1, bus €40/2), alpha–beta-
 - Given any state and any route option, when `routesFrom` and `apply(travel)` both run, then the query's `reason` and the apply rejection reason are identical, and an available option is accepted by `apply`.
 - Given the change, when `npm test`, `npm run lint` and `npm run build` run, then all exit 0.
 
+### Review Findings
+
+Code review 2026-11-22 (bmad-code-review, full mode). Diff `origin/main...story-1-4-travel` (HEAD `acdfb7d`), which also contains Story 1.3 and the architecture fixes (#31, #28 not merged yet). Layers: blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor, run as independent subagents.
+
+- [x] [Review][Patch] `arrivalDay` doc comment does not match the "Day X" convention [src/rules/types.ts:138] — the value is days used after arrival; the UI label is `arrivalDay + 1` (spine: X = daysUsed + 1). Resolved from a decision: user chose to fix the comment only (option 1), with no change in behaviour.
+- [x] [Review][Patch] No test arrives home with `goalStamps − 1` stamps [tests/rules/travel.test.ts:380]
+- [x] [Review][Patch] The ErrorBoundary Reload button and `onReload` are never tested [tests/ui/ErrorBoundary.test.tsx]
+- [x] [Review][Patch] `applyFrozen` freezes `state` only, not `content` [tests/rules/helpers.ts:30]
+- [x] [Review][Patch] Hard-coded `font-weight: 600` instead of a token [src/ui/components/ErrorBoundary.module.css:40]
+- [x] [Review][Defer] Planning docs do not reflect Q1 = A, and the FR-11 coverage table omits 1.4 [.docs/planning-artifacts/epics.md:215] — deferred: edits planning artifacts; needs the team's approval (#32)
+- [x] [Review][Defer] PR #33 bundles Story 1.3 and the architecture fixes — deferred: merge #28 and #31 first, then update #33 from `main`
+- [x] [Review][Defer] No test checks that `main.tsx` wraps `App` in `ErrorBoundary` [src/main.tsx] — deferred: already in deferred-work (Story 1.5)
+- [x] [Review][Defer] The new rules API is not described in the architecture spine — deferred: edits the architecture document
+
+**Rejected:**
+- The home warning is limited to available options without a Spec Change Log entry — the fix edits the spec under review; the change is explained in Implementation Notes.
+- The spec says `done` but sprint status says `review` — the fix edits the spec; status is synced at the end of this review.
+- The `never` default returns the action as a `Result` — false: the `Action` union is closed and actions come from action creators (as in triage #5).
+- `state.mode` missing from content makes `daysTotal` throw — false: `startJourney` rejects unknown modes (as in triage #6).
+- `arrivalDay` beyond `daysTotal` on unavailable rows — low: the row's `NOT_ENOUGH_DAYS` reason explains it.
+- `Intl.Segmenter` created at module load (Story 1.3) — low: an approved decision (spec-1-3 Q1), and every supported browser has it.
+- `travel.ts` ↔ `queries.ts` import cycle — low: safe in ESM, documented above.
+- "Other end of the route" logic repeated in `routesFrom` and `shortestDaysHome` — low: no divergence shown.
+- Names made only of invisible characters count as given (Story 1.3) — low: rare, and the fix adds Unicode filtering.
+- The AD-3 grid includes impossible `daysUsed` values for the fixture — low: extra cases, no lost coverage.
+- Log 980 links to a missing file — false: the file is on `architecture-fixes` (#28) and appears when #28 merges.
+- Two logs share the number 986 — low: past session logs are not renamed.
+- FR-11 missing from the test `describe` name — low, and covered by the planning-doc deferral.
+- Duplicate copies of the epic-context and status findings from several layers — merged into the entries above.
+
 ## Implementation Notes
 
 - **Deviation from epics (Q1 = A):** the epics say travel home is "recorded as ended at home" with goal evaluation in 3.1. Here arriving home already sets `outcome` to `goalReached`/`goalNotReached` (FR-11) with `failReason: null`; `Outcome` got no new value. Until 2.1 adds stamps, real play always ends `goalNotReached`.

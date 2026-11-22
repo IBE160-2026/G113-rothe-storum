@@ -414,6 +414,25 @@ describe("FR-4 FR-6 FR-7 FR-9 travel", () => {
       });
     });
 
+    it("ends the journey with goalNotReached one stamp short of the goal", () => {
+      const content = smallContent();
+      const state = stateWith(content, {
+        position: "alpha",
+        daysUsed: 8,
+        stamps: [{ id: "alpha", day: 2 }],
+      });
+      expect(content.config.goalStamps).toBe(2);
+      const next = started(
+        applyFrozen(state, travel({ to: "home", mode: "bus" }), content),
+      );
+      expect(next).toMatchObject({
+        position: "home",
+        daysUsed: 10,
+        outcome: "goalNotReached",
+        failReason: null,
+      });
+    });
+
     it("rejects further travel after arriving home", () => {
       const content = smallContent();
       const home = started(

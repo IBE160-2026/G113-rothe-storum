@@ -134,7 +134,10 @@ export interface TravelOption {
   price: number;
   /** Whole days. */
   days: number;
-  /** `daysUsed + days`: the day the player arrives. */
+  /**
+   * `daysUsed + days`: days used once the player has arrived. The "Day X"
+   * label after arrival is `arrivalDay + 1` (spine Conventions → Days).
+   */
   arrivalDay: number;
   available: boolean;
   /** Why the option is unavailable; `null` when it is available. */

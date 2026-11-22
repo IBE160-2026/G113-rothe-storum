@@ -33,6 +33,7 @@ export function applyFrozen(
 ): Result {
   const before = structuredClone({ state, content });
   deepFreeze(state);
+  deepFreeze(content);
   const result = apply(state, action, content);
   expect({ state, content }).toEqual(before);
   return result;
