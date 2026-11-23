@@ -6,8 +6,8 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 
 ## Medlemmer
 
-- Thomas Rothe
-- Christian Storum
+- Thomas Rothe (GitHub: ThomasRothe88)
+- Christian Storum (GitHub: Albion812)
 
 ## Getting started
 
