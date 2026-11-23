@@ -78,5 +78,33 @@
         ]
       }
     ]
+  },
+  "sights": {
+    "sights": [
+      {
+        "id": "alpha-one",
+        "destId": "alpha",
+        "name": "Alpha One",
+        "price": 10
+      },
+      {
+        "id": "alpha-two",
+        "destId": "alpha",
+        "name": "Alpha Two",
+        "price": 15
+      },
+      {
+        "id": "beta-town-one",
+        "destId": "beta-town",
+        "name": "Beta Town One",
+        "price": 8
+      },
+      {
+        "id": "beta-town-two",
+        "destId": "beta-town",
+        "name": "Beta Town Two",
+        "price": 12
+      }
+    ]
   }
 }

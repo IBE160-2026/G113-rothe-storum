@@ -16,6 +16,7 @@ import type {
   Destination,
   Home,
   Route,
+  Sight,
 } from "../../src/rules/types";
 
 /** The shape of valid-small.json, so defects stay type-checked. */
@@ -23,6 +24,7 @@ interface Draft {
   config: Config;
   destinations: { home: Home; destinations: Destination[] };
   routes: { routes: Route[] };
+  sights: { sights: Sight[] };
 }
 
 /** A freshly parsed fixture from tests/fixtures/content/. */
@@ -118,6 +120,20 @@ describe("NFR-7 AR-6 content", () => {
       );
     });
 
+    it("has 2 sights for each destination, priced as in PRD addendum §3", () => {
+      expect(content.sights).toHaveLength(16);
+      for (const d of content.destinations) {
+        expect(content.sights.filter((s) => s.destId === d.id)).toHaveLength(2);
+      }
+      expect(
+        content.sights.find((s) => s.id === "paris-eiffel-tower"),
+      ).toMatchObject({ destId: "paris", name: "Eiffel Tower", price: 20 });
+      expect(content.sights.find((s) => s.id === "paris-louvre")?.price).toBe(
+        17,
+      );
+      expect(new Set(content.sights.map((s) => s.id)).size).toBe(16);
+    });
+
     it("has the Explorer core values", () => {
       expect(content.config.modes.explorer).toEqual({
         startMoney: 1500,
@@ -131,6 +147,89 @@ describe("NFR-7 AR-6 content", () => {
       const content = parseContent(fixture("valid-small.json"));
       expect(content.destinations).toHaveLength(2);
       expect(content.routes).toHaveLength(2);
+      expect(content.sights.map((s) => s.id)).toEqual([
+        "alpha-one",
+        "alpha-two",
+        "beta-town-one",
+        "beta-town-two",
+      ]);
+    });
+  });
+
+  describe("FR-10 FR-21 sights", () => {
+    it.each([8, 20])("accepts a price of %i", (price) => {
+      const raw = withDefect((r) => (r.sights.sights[0].price = price));
+      expect(parseContent(raw).sights[0].price).toBe(price);
+    });
+
+    it.each<[string, (raw: Draft) => void, string, string]>([
+      [
+        "an unknown destId",
+        (r) => (r.sights.sights[1].destId = "gamma"),
+        "sights[1].destId",
+        'unknown destination id "gamma"',
+      ],
+      [
+        "home as destId",
+        (r) => (r.sights.sights[0].destId = "home"),
+        "sights[0].destId",
+        'unknown destination id "home"',
+      ],
+      [
+        "a price of 7",
+        (r) => (r.sights.sights[0].price = 7),
+        "sights[0].price",
+        "",
+      ],
+      [
+        "a price of 21",
+        (r) => (r.sights.sights[0].price = 21),
+        "sights[0].price",
+        "",
+      ],
+      [
+        "a price of 8.5",
+        (r) => (r.sights.sights[0].price = 8.5),
+        "sights[0].price",
+        "whole number of euros",
+      ],
+      [
+        "a duplicate sight id",
+        (r) => (r.sights.sights[3].id = "alpha-one"),
+        "sights[3].id",
+        'duplicate sight id "alpha-one"',
+      ],
+      [
+        "a sight id that is not a kebab id",
+        (r) => (r.sights.sights[0].id = "Alpha One"),
+        "sights[0].id",
+        "kebab",
+      ],
+      [
+        "sights.json that is null",
+        (r) => poke(r, "sights", null),
+        "(root)",
+        "",
+      ],
+      [
+        "a missing sights.json",
+        (r) => poke(r, "sights", undefined),
+        "(root)",
+        "",
+      ],
+    ])("rejects %s", (_name, defect, path, text) => {
+      expectProblem(withDefect(defect), "sights.json", path, text);
+    });
+
+    it("defers the destId check while destinations.json is invalid", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.destinations.destinations[0].lat = 91;
+          r.sights.sights[0].destId = "gamma";
+        }),
+      );
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain("destinations.json");
     });
   });
 
@@ -430,6 +529,8 @@ describe("NFR-7 AR-6 content", () => {
         withDefect((r) => {
           poke(r.routes.routes[0].modes[0], "mode", "boat");
           r.destinations.destinations[1].id = "alpha";
+          // beta-town no longer exists, so drop its sights (Story 2.1).
+          r.sights.sights = r.sights.sights.slice(0, 2);
         }),
       );
       expect(problems).toHaveLength(2);
@@ -472,6 +573,36 @@ describe("NFR-7 AR-6 content", () => {
       expect(problems).toHaveLength(1);
       expect(problems[0]).toContain("routes.json: routes[0].modes[0].mode");
       expect(problems.some((p) => p.includes("parris"))).toBe(false);
+    });
+
+    it("reports duplicate sight ids while destinations.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.destinations.destinations[0].lat = 91;
+          r.sights.sights[3].id = "alpha-one";
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.includes("destinations.json"))).toBe(true);
+      expect(
+        problems.some(
+          (p) =>
+            p.startsWith("sights.json:") &&
+            p.includes('duplicate sight id "alpha-one"'),
+        ),
+      ).toBe(true);
+    });
+
+    it("defers unknown sight destIds while sights.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.sights.sights[0].price = 7;
+          r.sights.sights[1].destId = "gamma";
+        }),
+      );
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain("sights.json: sights[0].price");
+      expect(problems.some((p) => p.includes("gamma"))).toBe(false);
     });
   });
 });

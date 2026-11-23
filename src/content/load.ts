@@ -1,23 +1,26 @@
 // Content loader (AD-7). parseContent() is the single validation path: it
-// parses all three files with contentFilesSchema (per-file schemas plus the
+// parses all four files with contentFilesSchema (per-file schemas plus the
 // cross-file checks) and throws one ContentError listing every problem as
 // "<file>: <path>: <message>".
 import type { Content } from "../rules/types";
 import configJson from "../../content/config.json";
 import destinationsJson from "../../content/destinations.json";
 import routesJson from "../../content/routes.json";
+import sightsJson from "../../content/sights.json";
 import { contentFilesSchema } from "./schema";
 
 export const CONTENT_FILES = {
   config: "config.json",
   destinations: "destinations.json",
   routes: "routes.json",
+  sights: "sights.json",
 } as const;
 
 export interface RawContent {
   config: unknown;
   destinations: unknown;
   routes: unknown;
+  sights: unknown;
 }
 
 export class ContentError extends Error {
@@ -55,12 +58,13 @@ export function parseContent(raw: RawContent): Content {
       }),
     );
   }
-  const { config, destinations, routes } = result.data;
+  const { config, destinations, routes, sights } = result.data;
   return {
     config,
     home: destinations.home,
     destinations: destinations.destinations,
     routes: routes.routes,
+    sights: sights.sights,
   };
 }
 
@@ -70,5 +74,6 @@ export function loadContent(): Content {
     config: configJson,
     destinations: destinationsJson,
     routes: routesJson,
+    sights: sightsJson,
   });
 }

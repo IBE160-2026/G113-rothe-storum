@@ -11,6 +11,7 @@ import type {
   Home,
   ModeOption,
   Route,
+  Sight,
 } from "../rules/types";
 
 const KEBAB_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -96,8 +97,23 @@ export const routesFileSchema = z.strictObject({
   routes: z.array(routeSchema),
 });
 
+// Story 2.1 fields only; Story 2.2 adds fact, image, imageAlt, source, author,
+// licence and the "exactly 2 per destination" rule. Prices are game values
+// from PRD addendum §3, whole euros 8–20.
+const sightSchema = z.strictObject({
+  id: placeId,
+  destId: placeId,
+  name,
+  price: wholeEuros.min(8).max(20),
+}) satisfies z.ZodType<Sight>;
+
+export const sightsFileSchema = z.strictObject({
+  sights: z.array(sightSchema),
+});
+
 type DestinationsFile = z.infer<typeof destinationsFileSchema>;
 type RoutesFile = z.infer<typeof routesFileSchema>;
+type SightsFile = z.infer<typeof sightsFileSchema>;
 
 type Issue = (path: PropertyKey[], message: string) => void;
 
@@ -172,23 +188,58 @@ function checkEndpoints(
   });
 }
 
+/** Duplicate sight ids. Reads only sights.json. */
+function checkSightIds(sights: SightsFile["sights"], issue: Issue): void {
+  const ids = new Set<string>();
+  sights.forEach((sight, i) => {
+    if (ids.has(sight.id)) {
+      issue(["sights", "sights", i, "id"], `duplicate sight id "${sight.id}"`);
+    }
+    ids.add(sight.id);
+  });
+}
+
+/**
+ * Sights whose destId names no destination (home has no sights). Reads
+ * destinations.json and sights.json.
+ */
+function checkSightDestinations(
+  places: DestinationsFile,
+  sights: SightsFile["sights"],
+  issue: Issue,
+): void {
+  const ids = new Set(places.destinations.map((d) => d.id));
+  sights.forEach((sight, i) => {
+    if (!ids.has(sight.destId)) {
+      issue(
+        ["sights", "sights", i, "destId"],
+        `unknown destination id "${sight.destId}"`,
+      );
+    }
+  });
+}
+
 // Each check runs as soon as the files it reads are valid on their own, even if
 // another file fails, so one parse reports every problem it can find. Every file
 // a check reads must be safeParsed in its gate (with a null/missing-file test),
 // or bad input crashes with a TypeError instead of a ContentError.
 const filesOf = (payload: { value: unknown }) =>
-  payload.value as { destinations?: unknown; routes?: unknown } | undefined;
+  payload.value as
+    { destinations?: unknown; routes?: unknown; sights?: unknown } | undefined;
 const destinationsValid = (payload: { value: unknown }) =>
   destinationsFileSchema.safeParse(filesOf(payload)?.destinations).success;
 const routesValid = (payload: { value: unknown }) =>
   routesFileSchema.safeParse(filesOf(payload)?.routes).success;
+const sightsValid = (payload: { value: unknown }) =>
+  sightsFileSchema.safeParse(filesOf(payload)?.sights).success;
 
-/** All three content files together, keyed like RawContent in load.ts. */
+/** All four content files together, keyed like RawContent in load.ts. */
 export const contentFilesSchema = z
   .strictObject({
     config: configSchema,
     destinations: destinationsFileSchema,
     routes: routesFileSchema,
+    sights: sightsFileSchema,
   })
   .superRefine((value, ctx) => checkPlaces(value.destinations, issuer(ctx)), {
     when: destinationsValid,
@@ -200,4 +251,19 @@ export const contentFilesSchema = z
     (value, ctx) =>
       checkEndpoints(value.destinations, value.routes.routes, issuer(ctx)),
     { when: (payload) => destinationsValid(payload) && routesValid(payload) },
+  )
+  .superRefine(
+    (value, ctx) => checkSightIds(value.sights.sights, issuer(ctx)),
+    {
+      when: sightsValid,
+    },
+  )
+  .superRefine(
+    (value, ctx) =>
+      checkSightDestinations(
+        value.destinations,
+        value.sights.sights,
+        issuer(ctx),
+      ),
+    { when: (payload) => destinationsValid(payload) && sightsValid(payload) },
   );

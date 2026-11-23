@@ -6,8 +6,8 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 
 ## Medlemmer
 
-- Thomas Rothe
-- Christian Storum
+- Thomas Rothe (GitHub: ThomasRothe88)
+- Christian Storum (GitHub: Albion812)
 
 ## Getting started
 
@@ -42,7 +42,7 @@ npx playwright install chromium   # one-time browser download for the end-to-end
 Folders that only contain `.gitkeep` are placeholders that later stories fill in.
 
 ```text
-content/         game data as JSON (places, routes, values)
+content/         game data as JSON (places, routes, sights, values)
 public/assets/   images and icons
 src/rules/       pure game rules; imports nothing outside itself (enforced by ESLint)
 src/content/     content schema and loader
@@ -57,7 +57,7 @@ GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `np
 
 ### Editing game content
 
-Places, routes and core values live in `content/config.json`, `content/destinations.json` and `content/routes.json`. These files are the source of truth for game values. Edit them, then run `npm test`: the content test validates them against the schemas in `src/content/schema.ts`. Invalid content fails with a `ContentError` that names the file and path, for example `routes.json: routes[1].between[1]: unknown place id "parris"`. All problems are listed together in one error. The checks for duplicates and self routes run as soon as the file they read is valid. The check for unknown place ids in routes needs both `destinations.json` and `routes.json` to be valid, so fixing a schema error in one of them can reveal an unknown id on the next run.
+Places, routes, sights and core values live in `content/config.json`, `content/destinations.json`, `content/routes.json` and `content/sights.json`. These files are the source of truth for game values. Edit them, then run `npm test`: the content test validates them against the schemas in `src/content/schema.ts`. Invalid content fails with a `ContentError` that names the file and path, for example `routes.json: routes[1].between[1]: unknown place id "parris"`. All problems are listed together in one error. The checks for duplicates and self routes run as soon as the file they read is valid. The check for unknown place ids in routes needs both `destinations.json` and `routes.json` to be valid, so fixing a schema error in one of them can reveal an unknown id on the next run. The same holds for a sight's `destId`, which needs both `destinations.json` and `sights.json` to be valid.
 
 ### Documentation
 
