@@ -2,7 +2,7 @@
 title: 'Story 2.1 — City day, stamps and sights (rules)'
 type: 'feature'
 created: '2026-11-23'
-status: 'draft'
+status: 'ready-for-dev'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
