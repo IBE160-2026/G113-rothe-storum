@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 11-13-2026 15:53
-last_updated: 11-23-2026 18:25
+last_updated: 11-23-2026 18:29
 project: Worldbound Nomad
 project_key: NOKEY
 tracking_system: file-system
@@ -38,8 +38,8 @@ development_status:
   epic-1: in-progress
   1-1-project-scaffold-and-tooling: done
   1-2-core-content-data-and-validation: done
-  1-3-game-state-and-starting-a-journey-rules: review
-  1-4-travel-and-route-queries-rules: review
+  1-3-game-state-and-starting-a-journey-rules: done
+  1-4-travel-and-route-queries-rules: done
   1-5-start-screen-and-first-time-intro-ui: backlog
   1-6-map-screen-and-route-sheet-ui: backlog
   1-7-travel-and-travel-home-ui: backlog
@@ -47,7 +47,7 @@ development_status:
 
   epic-2: in-progress
   2-1-city-day-stamps-and-sights-rules: review
-  2-2-fact-cards-and-sight-content-content: ready-for-dev
+  2-2-fact-cards-and-sight-content-content: in-progress
   2-3-arrival-fact-card-ui: backlog
   2-4-city-day-screen-and-day-complete-ui: backlog
   2-5-passport-stamps-and-photo-album-ui: backlog
