@@ -1,0 +1,164 @@
+/* DESIGN.md → Components → Start → Intro. */
+
+.screen {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: var(--space-column-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-gutter) var(--space-6);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--space-touch-min);
+}
+
+.caption,
+.goalCaption {
+  margin: 0;
+  font-family: var(--font-label-caps-family);
+  font-size: var(--font-label-caps-size);
+  font-weight: var(--font-label-caps-weight);
+  line-height: var(--font-label-caps-line-height);
+  letter-spacing: var(--font-label-caps-letter-spacing);
+  text-transform: uppercase;
+}
+
+.caption {
+  color: var(--color-ink-muted);
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-headline-family);
+  font-size: var(--font-headline-size);
+  font-weight: var(--font-headline-weight);
+  line-height: var(--font-headline-line-height);
+}
+
+.heading:focus {
+  outline: none;
+}
+
+.goalBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-2xl);
+  background: var(--color-navy-fill);
+  color: var(--color-on-navy);
+}
+
+.goalCaption {
+  color: var(--color-ochre-light);
+}
+
+.goal {
+  margin: 0;
+  font-family: var(--font-serif-md-family);
+  font-size: var(--font-serif-md-size);
+  font-weight: var(--font-serif-md-weight);
+  line-height: var(--font-serif-md-line-height);
+}
+
+.slots {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1.5px dashed var(--color-slot-dash-on-navy);
+  border-radius: var(--radius-full);
+  color: var(--color-slot-dash-on-navy);
+  font-size: var(--font-caption-size);
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.chipLabel {
+  color: var(--color-ink-muted);
+  font-size: var(--font-caption-size);
+}
+
+.chipValue {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-label-strong-family);
+  font-size: var(--font-label-strong-size);
+  font-weight: var(--font-label-strong-weight);
+  font-variant-numeric: tabular-nums;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.stepDisc {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background: var(--color-ochre);
+  color: var(--color-on-navy);
+  font-weight: var(--font-button-weight);
+}
+
+.stepTitle {
+  display: block;
+  color: var(--color-ink);
+}
+
+.stepBody {
+  display: block;
+  color: var(--color-ink-body);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--font-meta-size);
+  text-align: center;
+}
