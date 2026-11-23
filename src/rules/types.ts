@@ -61,11 +61,26 @@ export interface Config {
   };
 }
 
+/**
+ * A sight at a destination (FR-10, FR-21). Story 2.1 has the fields the rules
+ * need; Story 2.2 adds the fact, image and licence fields.
+ */
+export interface Sight {
+  /** Lowercase kebab id, `{destId}-{slug}` (AD-7), e.g. `paris-louvre`. */
+  id: string;
+  /** The destination the sight belongs to; never `home`. */
+  destId: PlaceId;
+  name: string;
+  /** Whole euros. */
+  price: number;
+}
+
 export interface Content {
   config: Config;
   home: Home;
   destinations: Destination[];
   routes: Route[];
+  sights: Sight[];
 }
 
 /** Journey mode. `nomad` is [EXT] and not in content yet. */
@@ -110,10 +125,11 @@ export interface GameState {
   failReason: FailReason | null;
 }
 
-/** Closed action union (AD-2). Later stories add spendCityDay, callHome. */
+/** Closed action union (AD-2). Later stories add callHome. */
 export type Action =
   | { type: "startJourney"; name: string; mode?: JourneyMode }
-  | { type: "travel"; to: PlaceId; mode: TransportMode };
+  | { type: "travel"; to: PlaceId; mode: TransportMode }
+  | { type: "spendCityDay"; sightIds: string[] };
 
 /** Closed reason union (AD-4). The UI maps each code to copy. */
 export type ReasonCode =
@@ -122,7 +138,10 @@ export type ReasonCode =
   | "JOURNEY_ENDED"
   | "NO_ROUTE"
   | "NOT_ENOUGH_MONEY"
-  | "NOT_ENOUGH_DAYS";
+  | "NOT_ENOUGH_DAYS"
+  | "AT_HOME"
+  | "INVALID_SIGHTS"
+  | "ALREADY_IN_ALBUM";
 
 export type Result =
   { ok: true; state: GameState } | { ok: false; reason: ReasonCode };
@@ -154,4 +173,46 @@ export interface TravelOption {
 export interface RouteView {
   to: PlaceId;
   options: TravelOption[];
+}
+
+/** Whether a city day can be spent here at all (FR-8): the draft is empty. */
+export interface CityDayStatus {
+  available: boolean;
+  /** Why the city day is unavailable; `null` when it is available. */
+  reason: ReasonCode | null;
+  /**
+   * Whole euros for the stay, also when the city day is unavailable, so the
+   * player sees what it would cost. `null` at home (no cost factor).
+   */
+  stayPrice: number | null;
+}
+
+/** One sight of the current destination in a city-day draft (FR-10, FR-21). */
+export interface SightPlanView {
+  id: string;
+  inAlbum: boolean;
+  selected: boolean;
+  /** `checkCityDay` with the other valid selected sights plus this one (AD-3). */
+  available: boolean;
+  reason: ReasonCode | null;
+  /**
+   * `money − stay − Σ(other selected sights)`, for copy only ("you'd have
+   * €N"); may be negative and never decides availability.
+   */
+  moneyLeft: number;
+}
+
+/** A whole city-day draft, as the City day screen shows it (FR-8, FR-10). */
+export interface CityDayPlan {
+  /** Exactly what `apply(spendCityDay({ sightIds }))` would decide. */
+  ok: boolean;
+  reason: ReasonCode | null;
+  /** The next three are `null` only at home. */
+  stay: number | null;
+  /** Stay + the distinct valid selected sights not in the album. */
+  total: number | null;
+  /** `money − total`; negative only when `ok` is false. */
+  moneyAfter: number | null;
+  /** This destination's sights in content order; empty at home. */
+  sights: SightPlanView[];
 }

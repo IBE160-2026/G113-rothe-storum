@@ -2,9 +2,10 @@
 title: 'Story 2.1 — City day, stamps and sights (rules)'
 type: 'feature'
 created: '2026-11-23'
-status: 'ready-for-dev'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
+baseline_commit: '4c0389fa37ec9bdfcfb8002470756c1e964d67a5'
 context:
   - '{project-root}/.docs/implementation-artifacts/epic-2-context.md'
 ---
@@ -70,17 +71,17 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay €50) has `alpha-one` �
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/rules/types.ts` -- types and reason codes above -- closed unions (AD-2, AD-4)
-- [ ] `src/rules/money.ts` -- `accommodationPrice` -- AD-5
-- [ ] `src/rules/cityDay.ts` -- check + apply in the fixed order -- AD-6
-- [ ] `src/rules/apply.ts` -- dispatch + action creator -- single mutation path
-- [ ] `src/rules/queries.ts` -- city-day queries -- AD-3
-- [ ] `content/sights.json`, `src/content/schema.ts`, `src/content/load.ts`, fixtures -- minimal sight content (Q1 = A)
-- [ ] `tests/rules/money.test.ts`, `tests/rules/cityDay.test.ts` -- `describe` names start with FR ids; every `spendCityDay` test runs through `applyFrozen`:
+- [x] `src/rules/types.ts` -- types and reason codes above -- closed unions (AD-2, AD-4)
+- [x] `src/rules/money.ts` -- `accommodationPrice` -- AD-5
+- [x] `src/rules/cityDay.ts` -- check + apply in the fixed order -- AD-6
+- [x] `src/rules/apply.ts` -- dispatch + action creator -- single mutation path
+- [x] `src/rules/queries.ts` -- city-day queries -- AD-3
+- [x] `content/sights.json`, `src/content/schema.ts`, `src/content/load.ts`, fixtures -- minimal sight content (Q1 = A)
+- [x] `tests/rules/money.test.ts`, `tests/rules/cityDay.test.ts` -- `describe` names start with FR ids; every `spendCityDay` test runs through `applyFrozen`:
   - every matrix row;
   - a query-and-apply agreement grid as in `travel.test.ts`, over both `valid-small` and the real content: every position including home × money (0, stay − 1, stay, stay + cheapest sight, stay + both sights, 1500) × `daysUsed` total − 1 and total × `outcome` null and `goalNotReached` × album empty and holding one sight of the position × `sightIds` `[]`, one, both, foreign, repeated, three ids and a bad type (at home only money 0 and 1500 and an empty album, since home has no stay or sights); in every cell, when the draft is valid and the city day is available, `ok` is true if and only if every selected sight is `available` (kept as a safety net even though per-sight availability uses the same check);
   - a journey test where 2 city days + home in the fixture gives `goalReached`.
-- [ ] `tests/content/content.test.ts` -- sight schema cases: real file valid, unknown/home `destId`, price boundaries (7 and 21 fail, 8 and 20 pass), non-whole price (8.5) fails, duplicate id, `sights` missing or `null` gives a ContentError naming `sights.json` (not a TypeError)
+- [x] `tests/content/content.test.ts` -- sight schema cases: real file valid, unknown/home `destId`, price boundaries (7 and 21 fail, 8 and 20 pass), non-whole price (8.5) fails, duplicate id, `sights` missing or `null` gives a ContentError naming `sights.json` (not a TypeError)
 
 **Acceptance Criteria:**
 - Given every state and draft in the agreement grid (see Tasks), when the city-day queries and `apply` run, then `cityDayStatus`'s `available`/`reason` equal the result of `apply(spendCityDay({ sightIds: [] }))`, and `cityDayPlan`'s `ok`/`reason` equal the result of `apply(spendCityDay({ sightIds }))`.
@@ -120,6 +121,28 @@ Frozen-section changes (all approved): the matrix rows and fixture above, the `I
 2026-11-23 — #38 resolved before build: `daysTotal`/`daysRemaining` moved to the leaf module `src/rules/days.ts` (re-exported by `queries.ts`). Code Map and Implementation Notes updated. No change to the frozen section.
 
 ## Review Triage Log
+
+Review round 1 (2026-11-23), three layers: blind hunter (BH), edge case hunter (EC), verification gap (VG). Triage proposed by Claude and approved by the user before any patch.
+
+| # | Finding | Verdict | Route | Evidence |
+|---|---|---|---|---|
+| VG1 | No test pins `ALREADY_IN_ALBUM` before the sights `NOT_ENOUGH_MONEY` | medium | patch | Every album test has money for stay + sight; the agreement grid cannot catch a reorder because both sides call `checkCityDay`. Row added: alpha, €55, `alpha-one` in album. |
+| VG2 + BH7 | Sight gates tested in one direction only | low | patch | Only "destId waits while destinations.json is invalid" exists; the route checks have both directions. Two tests added. |
+| BH6 | `INVALID_SIGHTS` table has two identical rows | low | patch | The album patch applied to every row, so "a repeated id" with an empty album was never run in that table. |
+| BH5 | Home cells of the grid: `foreign` equals `anySight` | low | patch | At home both are `content.sights[0]`, so the draft held a repeat, not a foreign sight. |
+| EC7 | `%d` in the `money.test.ts` title prints 1.01 as 1 | low | patch | Cosmetic; failing rows would be misnamed. |
+| BH1 | sprint-status `in-progress` vs spec `in-review` | false | reject | Step 5 of the build workflow sets the story to `review`. |
+| BH2 | Album sights count toward the 2-sight limit, unlike epics.md | low | reject | Deviation recorded in Implementation Notes; with exactly 2 sights per destination the outcome is identical. |
+| BH3 | Only 2 of 16 sight prices pinned in tests | low | reject | Prices are `[ASSUMPTION]`s for the balance test (SM-3); pinning all 16 would make a balance change need a test change. |
+| BH4 + EC5 | `{destId}-` id prefix not enforced | false | reject | Rejected by the user in E1-P9 (Spec Change Log). |
+| BH8 | Sight price sum computed in three places | low | reject | All three sum the same resolved set from `checkCityDay`; no caller diverges today. |
+| BH9 | `spendCityDay` takes `string[]`, `cityDayPlan` `readonly string[]` | low | reject | No UI caller exists yet (2.4); `Action` type is as the Code Map specifies. |
+| BH10 | `cityDayPlan` totals silently drop invalid ids | false | reject | Specified in Design Notes → Queries; `reason` is `INVALID_SIGHTS` in that case. |
+| EC1 | No home-unreachable warning for a city day | false | reject | Deferred to 2.4 (#39, Notes for later stories). |
+| EC2 | Stay can round to €0 for a tiny cost factor or base | low | reject | `costFactor` ≥ 0.01 gives a stay ≥ €1 at base 50; needs a content change no one makes; fix adds a cross-file check. |
+| EC3 | `cityDays["constructor"]` hits `Object.prototype` | low | reject | Needs a destination id like `constructor`; no such content; a guard for undemonstrated state. |
+| EC4 | Stamp driven by `cityDays`, not stamp presence | false | reject | The spec fixes `cityDays` as the driver (Design Notes → Check order); a stamp penalty is 3.1's concern. |
+| EC6 | With more than 2 sights per destination an unselected sight shows `INVALID_SIGHTS` | low | reject | Content and fixture have exactly 2; 2.2 enforces the count. |
 
 ## Design Notes
 

@@ -1,6 +1,7 @@
 // The single mutation path (AD-2): apply(state, action, content) returns a new
 // state or a reason code, never mutates its inputs and never throws for a
 // player action (AD-4).
+import { applySpendCityDay } from "./cityDay";
 import { applyStartJourney } from "./journey";
 import { applyTravel } from "./travel";
 import type {
@@ -28,6 +29,14 @@ export function travel(payload: { to: PlaceId; mode: TransportMode }): Action {
   return { type: "travel", to: payload.to, mode: payload.mode };
 }
 
+/**
+ * Action creator for spending a city day at the current destination with 0–2
+ * sights (FR-8, FR-10). AD-6's `ending` field is [EXT] and left out in core.
+ */
+export function spendCityDay(payload: { sightIds: string[] }): Action {
+  return { type: "spendCityDay", sightIds: payload.sightIds };
+}
+
 /** `state` is null when no journey has started. */
 export function apply(
   state: GameState | null,
@@ -43,6 +52,8 @@ export function apply(
   switch (action.type) {
     case "travel":
       return applyTravel(state, action.to, action.mode, content);
+    case "spendCityDay":
+      return applySpendCityDay(state, action.sightIds, content);
     default: {
       const unhandled: never = action;
       return unhandled;

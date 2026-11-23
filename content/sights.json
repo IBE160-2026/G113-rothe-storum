@@ -1,0 +1,100 @@
+{
+  "sights": [
+    {
+      "id": "copenhagen-tivoli",
+      "destId": "copenhagen",
+      "name": "Tivoli Gardens",
+      "price": 20
+    },
+    {
+      "id": "copenhagen-nyhavn",
+      "destId": "copenhagen",
+      "name": "Nyhavn canal tour",
+      "price": 12
+    },
+    {
+      "id": "paris-eiffel-tower",
+      "destId": "paris",
+      "name": "Eiffel Tower",
+      "price": 20
+    },
+    {
+      "id": "paris-louvre",
+      "destId": "paris",
+      "name": "Louvre",
+      "price": 17
+    },
+    {
+      "id": "london-tower-of-london",
+      "destId": "london",
+      "name": "Tower of London",
+      "price": 20
+    },
+    {
+      "id": "london-british-museum",
+      "destId": "london",
+      "name": "British Museum",
+      "price": 8
+    },
+    {
+      "id": "rome-colosseum",
+      "destId": "rome",
+      "name": "Colosseum",
+      "price": 18
+    },
+    {
+      "id": "rome-vatican-museums",
+      "destId": "rome",
+      "name": "Vatican Museums",
+      "price": 20
+    },
+    {
+      "id": "istanbul-topkapi-palace",
+      "destId": "istanbul",
+      "name": "Topkapı Palace",
+      "price": 18
+    },
+    {
+      "id": "istanbul-galata-tower",
+      "destId": "istanbul",
+      "name": "Galata Tower",
+      "price": 10
+    },
+    {
+      "id": "new-york-statue-of-liberty",
+      "destId": "new-york",
+      "name": "Statue of Liberty",
+      "price": 20
+    },
+    {
+      "id": "new-york-empire-state-building",
+      "destId": "new-york",
+      "name": "Empire State Building",
+      "price": 20
+    },
+    {
+      "id": "tokyo-senso-ji",
+      "destId": "tokyo",
+      "name": "Senso-ji",
+      "price": 8
+    },
+    {
+      "id": "tokyo-skytree",
+      "destId": "tokyo",
+      "name": "Tokyo Skytree",
+      "price": 15
+    },
+    {
+      "id": "sydney-opera-house",
+      "destId": "sydney",
+      "name": "Sydney Opera House",
+      "price": 20
+    },
+    {
+      "id": "sydney-harbour-bridge",
+      "destId": "sydney",
+      "name": "Harbour Bridge",
+      "price": 15
+    }
+  ]
+}
