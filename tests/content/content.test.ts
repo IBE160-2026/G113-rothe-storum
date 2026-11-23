@@ -1,8 +1,9 @@
 // Content validation (NFR-7, AR-6, AD-7). Proves that the real content in
 // /content is valid with the expected counts, and that every rejecting row of
-// the I/O matrix in spec-1-2-core-content-data-and-validation.md fails with a
-// ContentError naming the file and the path.
-import { readFileSync } from "node:fs";
+// the I/O matrices in spec-1-2-core-content-data-and-validation.md and
+// spec-2-2-fact-cards-and-sight-content.md fails with a ContentError naming the
+// file and the path.
+import { readdirSync, readFileSync } from "node:fs";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
   ContentError,
@@ -16,6 +17,7 @@ import type {
   Destination,
   Home,
   Route,
+  Sight,
 } from "../../src/rules/types";
 
 /** The shape of valid-small.json, so defects stay type-checked. */
@@ -23,6 +25,7 @@ interface Draft {
   config: Config;
   destinations: { home: Home; destinations: Destination[] };
   routes: { routes: Route[] };
+  sights: { sights: Sight[] };
 }
 
 /** A freshly parsed fixture from tests/fixtures/content/. */
@@ -56,6 +59,15 @@ function problemsOf(raw: RawContent): string[] {
   }
   throw new Error("expected parseContent to throw a ContentError");
 }
+
+/** Same rule as the schema (spec 2.2, Design Notes). */
+const sentences = (text: string) =>
+  text.match(/[.!?]["')]?(?=\s|$)/g)?.length ?? 0;
+
+const SIGHTS_DIR = new URL("../../public/assets/sights/", import.meta.url);
+const SVG_THEME =
+  "<style>:root{color:#0a1826}@media (prefers-color-scheme:dark){:root{color:#f4efe1}}</style>";
+const TOKENS_CSS = new URL("../../src/ui/styles/tokens.css", import.meta.url);
 
 function expectProblem(raw: RawContent, ...parts: string[]): void {
   const problems = problemsOf(raw);
@@ -118,6 +130,94 @@ describe("NFR-7 AR-6 content", () => {
       );
     });
 
+    it("has 2 sights for each destination, priced as in PRD addendum §3", () => {
+      expect(content.sights).toHaveLength(16);
+      for (const d of content.destinations) {
+        expect(content.sights.filter((s) => s.destId === d.id)).toHaveLength(2);
+      }
+      expect(
+        content.sights.find((s) => s.id === "paris-eiffel-tower"),
+      ).toMatchObject({ destId: "paris", name: "Eiffel Tower", price: 20 });
+      expect(content.sights.find((s) => s.id === "paris-louvre")?.price).toBe(
+        17,
+      );
+      expect(new Set(content.sights.map((s) => s.id)).size).toBe(16);
+    });
+
+    it("FR-5 NFR-6 gives every destination a 2–3 sentence fact", () => {
+      for (const d of content.destinations) {
+        const count = sentences(d.fact);
+        expect(count, d.id).toBeGreaterThanOrEqual(2);
+        expect(count, d.id).toBeLessThanOrEqual(3);
+      }
+    });
+
+    it("FR-21 NFR-8 gives every sight a fact, image and licence record", () => {
+      for (const s of content.sights) {
+        expect(s.image, s.id).toMatch(
+          /^assets\/sights\/[a-z0-9-]+\.(svg|webp)$/,
+        );
+        expect(sentences(s.fact), s.id).toBeGreaterThanOrEqual(1);
+        expect(sentences(s.fact), s.id).toBeLessThanOrEqual(2);
+        for (const field of [
+          "imageAlt",
+          "source",
+          "author",
+          "licence",
+        ] as const) {
+          expect(s[field].trim(), `${s.id}.${field}`).not.toBe("");
+        }
+        expect(s.imageAlt.startsWith("Line drawing of "), s.id).toBe(true);
+      }
+    });
+
+    // Exact names catch case mismatches that macOS hides, and orphan files.
+    it("NFR-7 has exactly one image file per sight, named as in sights.json", () => {
+      const files = readdirSync(SIGHTS_DIR).filter((f) => !f.startsWith("."));
+      expect(new Set(files)).toEqual(
+        new Set(
+          content.sights.map((s) => s.image.replace("assets/sights/", "")),
+        ),
+      );
+      expect(files).toHaveLength(16);
+    });
+
+    it("NFR-7 has 4:3 themed SVG line drawings with no text, script or remote reference", () => {
+      for (const s of content.sights.filter((x) => x.image.endsWith(".svg"))) {
+        const svg = readFileSync(
+          new URL(s.image.replace("assets/sights/", ""), SIGHTS_DIR),
+          "utf8",
+        );
+        expect(svg, s.id).toContain('viewBox="0 0 800 600"');
+        // The theme block must be the first child of the root <svg>.
+        const rootEnd = svg.indexOf(">", svg.indexOf("<svg")) + 1;
+        expect(svg.slice(rootEnd).trimStart().startsWith(SVG_THEME), s.id).toBe(
+          true,
+        );
+        expect(svg, s.id).toContain("currentColor");
+        expect(svg, s.id).not.toMatch(
+          /<(text|script|image|foreignObject|use)\b/i,
+        );
+        expect(svg, s.id).not.toMatch(/@import/i);
+        expect(svg, s.id).not.toMatch(/href\s*=\s*["']\s*(https?:|\/\/)/i);
+        expect(svg, s.id).not.toMatch(/url\(\s*["']?\s*(https?:|\/\/)/i);
+      }
+    });
+
+    it("NFR-7 themes the SVGs with the current --color-ink tokens", () => {
+      // The SVG theme block copies --color-ink (light, dark) as hex, because an
+      // SVG in <img> cannot read CSS variables. A token change must update the
+      // 16 files in public/assets/sights/ and SVG_THEME together.
+      const css = readFileSync(TOKENS_CSS, "utf8");
+      const [light, dark] = [
+        ...css.matchAll(/--color-ink:\s*(#[0-9a-f]{6});/gi),
+      ].map((m) => m[1]?.toLowerCase());
+      expect(SVG_THEME).toContain(`:root{color:${light}}`);
+      expect(SVG_THEME).toContain(
+        `@media (prefers-color-scheme:dark){:root{color:${dark}}}`,
+      );
+    });
+
     it("has the Explorer core values", () => {
       expect(content.config.modes.explorer).toEqual({
         startMoney: 1500,
@@ -131,6 +231,368 @@ describe("NFR-7 AR-6 content", () => {
       const content = parseContent(fixture("valid-small.json"));
       expect(content.destinations).toHaveLength(2);
       expect(content.routes).toHaveLength(2);
+      expect(content.sights.map((s) => s.id)).toEqual([
+        "alpha-one",
+        "alpha-two",
+        "beta-town-one",
+        "beta-town-two",
+      ]);
+    });
+  });
+
+  describe("FR-10 FR-21 sights", () => {
+    it.each([8, 20])("accepts a price of %i", (price) => {
+      const raw = withDefect((r) => (r.sights.sights[0].price = price));
+      expect(parseContent(raw).sights[0].price).toBe(price);
+    });
+
+    it.each<[string, (raw: Draft) => void, string, string]>([
+      [
+        "an unknown destId",
+        (r) => (r.sights.sights[1].destId = "gamma"),
+        "sights[1].destId",
+        'unknown destination id "gamma"',
+      ],
+      [
+        "home as destId",
+        (r) => (r.sights.sights[0].destId = "home"),
+        "sights[0].destId",
+        'unknown destination id "home"',
+      ],
+      [
+        "a price of 7",
+        (r) => (r.sights.sights[0].price = 7),
+        "sights[0].price",
+        "",
+      ],
+      [
+        "a price of 21",
+        (r) => (r.sights.sights[0].price = 21),
+        "sights[0].price",
+        "",
+      ],
+      [
+        "a price of 8.5",
+        (r) => (r.sights.sights[0].price = 8.5),
+        "sights[0].price",
+        "whole number of euros",
+      ],
+      [
+        "a duplicate sight id",
+        (r) => {
+          r.sights.sights[3].id = "alpha-one";
+          r.sights.sights[3].image = "assets/sights/alpha-one.svg";
+        },
+        "sights[3].id",
+        'duplicate sight id "alpha-one"',
+      ],
+      [
+        "a sight id that is not a kebab id",
+        (r) => (r.sights.sights[0].id = "Alpha One"),
+        "sights[0].id",
+        "kebab",
+      ],
+      [
+        "sights.json that is null",
+        (r) => poke(r, "sights", null),
+        "(root)",
+        "",
+      ],
+      [
+        "a missing sights.json",
+        (r) => poke(r, "sights", undefined),
+        "(root)",
+        "",
+      ],
+    ])("rejects %s", (_name, defect, path, text) => {
+      expectProblem(withDefect(defect), "sights.json", path, text);
+    });
+
+    it("defers the destId check while destinations.json is invalid", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.destinations.destinations[0].lat = 91;
+          r.sights.sights[0].destId = "gamma";
+        }),
+      );
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain("destinations.json");
+    });
+  });
+
+  describe("FR-5 FR-21 NFR-8 fact cards and sight content", () => {
+    /** A valid 2-sentence fact of exactly `length` characters. */
+    const factOf = (length: number) =>
+      `It opened in 1900. ${"a".repeat(length - 20)}.`;
+
+    it.each<[string, string]>([
+      ["a decimal number", "It is 1.5 km long. It opened in 1900."],
+      ["a closing quote", 'It was called "the museum." It opened in 1900.'],
+      ["a closing bracket", "It opened in 1900 (in May.) It is still open!"],
+      [
+        "a final closing quote",
+        'It opened in 1932. It is nicknamed "the Coathanger."',
+      ],
+    ])("counts %s as 2 sentences", (_name, text) => {
+      expect(sentences(text)).toBe(2);
+      // 2 is the only count both a destination (2–3) and a sight (1–2) accept.
+      const content = parseContent(
+        withDefect((r) => {
+          r.destinations.destinations[0].fact = text;
+          r.sights.sights[0].fact = text;
+        }),
+      );
+      expect(content.destinations[0].fact).toBe(text);
+      expect(content.sights[0].fact).toBe(text);
+    });
+
+    it("accepts a 320-character destination fact and a 200-character sight fact", () => {
+      const content = parseContent(
+        withDefect((r) => {
+          r.destinations.destinations[0].fact = factOf(320);
+          r.sights.sights[0].fact = factOf(200);
+        }),
+      );
+      expect(content.destinations[0].fact).toHaveLength(320);
+      expect(content.sights[0].fact).toHaveLength(200);
+    });
+
+    it("accepts a .webp image", () => {
+      const raw = withDefect(
+        (r) => (r.sights.sights[0].image = "assets/sights/alpha-one.webp"),
+      );
+      expect(parseContent(raw).sights[0].image).toBe(
+        "assets/sights/alpha-one.webp",
+      );
+    });
+
+    it.each<[string, (raw: Draft) => void, string, string, string]>([
+      [
+        "a destination fact with curly quotes",
+        (r) =>
+          (r.destinations.destinations[0].fact = "He said “hi.” Then he left."),
+        "destinations.json",
+        "destinations[0].fact",
+        "must use straight quotes",
+      ],
+      [
+        "a destination fact with an ellipsis",
+        (r) =>
+          (r.destinations.destinations[0].fact = "Wait... it opened. Yes."),
+        "destinations.json",
+        "destinations[0].fact",
+        "no ellipses",
+      ],
+      [
+        "a sight fact with an em dash",
+        (r) => (r.sights.sights[0].fact = "It opened in 1900 — in May."),
+        "sights.json",
+        "sights[0].fact",
+        "no ellipses or long dashes",
+      ],
+      [
+        'a destination fact with "St."',
+        (r) =>
+          (r.destinations.destinations[0].fact =
+            "St. Peter is big. It is old."),
+        "destinations.json",
+        "destinations[0].fact",
+        "abbreviations with a dot",
+      ],
+      [
+        'a sight fact with "U.S."',
+        (r) => (r.sights.sights[0].fact = "It is in the U.S. today."),
+        "sights.json",
+        "sights[0].fact",
+        "abbreviations with a dot",
+      ],
+      [
+        'a sight fact with "c."',
+        (r) => (r.sights.sights[0].fact = "Built c. 1850."),
+        "sights.json",
+        "sights[0].fact",
+        "abbreviations with a dot",
+      ],
+      [
+        "a destination fact with 1 sentence",
+        (r) => (r.destinations.destinations[0].fact = "One sentence only."),
+        "destinations.json",
+        "destinations[0].fact",
+        "must have 2–3 sentences",
+      ],
+      [
+        "a destination fact with 4 sentences",
+        (r) => (r.destinations.destinations[0].fact = "One. Two. Three. Four."),
+        "destinations.json",
+        "destinations[0].fact",
+        "must have 2–3 sentences",
+      ],
+      [
+        "a destination fact over 320 characters",
+        (r) => (r.destinations.destinations[0].fact = factOf(321)),
+        "destinations.json",
+        "destinations[0].fact",
+        "must be at most 320 characters",
+      ],
+      [
+        "a destination fact without final punctuation",
+        (r) => (r.destinations.destinations[0].fact = "It opened. It is open"),
+        "destinations.json",
+        "destinations[0].fact",
+        "must end in . ! or ?",
+      ],
+      [
+        "a missing destination fact",
+        (r) => poke(r.destinations.destinations[1], "fact", undefined),
+        "destinations.json",
+        "destinations[1].fact",
+        "",
+      ],
+      [
+        "a sight fact with 0 sentences",
+        (r) => (r.sights.sights[0].fact = "Opened in 1843"),
+        "sights.json",
+        "sights[0].fact",
+        "must have 1–2 sentences",
+      ],
+      [
+        "a sight fact with 3 sentences",
+        (r) => (r.sights.sights[0].fact = "One. Two. Three."),
+        "sights.json",
+        "sights[0].fact",
+        "must have 1–2 sentences",
+      ],
+      [
+        "a sight fact over 200 characters",
+        (r) => (r.sights.sights[0].fact = factOf(201)),
+        "sights.json",
+        "sights[0].fact",
+        "must be at most 200 characters",
+      ],
+      [
+        "a sight fact without a final full stop",
+        (r) => (r.sights.sights[0].fact = "It opened in 1843"),
+        "sights.json",
+        "sights[0].fact",
+        "must end in . ! or ?",
+      ],
+      [
+        "a blank sight fact",
+        (r) => (r.sights.sights[0].fact = "   "),
+        "sights.json",
+        "sights[0].fact",
+        "must not be empty",
+      ],
+      [
+        "an imageAlt over 120 characters",
+        (r) => (r.sights.sights[0].imageAlt = "x".repeat(121)),
+        "sights.json",
+        "sights[0].imageAlt",
+        "must be at most 120 characters",
+      ],
+      [
+        "a missing imageAlt",
+        (r) => poke(r.sights.sights[0], "imageAlt", undefined),
+        "sights.json",
+        "sights[0].imageAlt",
+        "",
+      ],
+      [
+        "a missing licence",
+        (r) => poke(r.sights.sights[1], "licence", undefined),
+        "sights.json",
+        "sights[1].licence",
+        "",
+      ],
+      [
+        "a missing author",
+        (r) => poke(r.sights.sights[2], "author", undefined),
+        "sights.json",
+        "sights[2].author",
+        "",
+      ],
+      [
+        "a blank source",
+        (r) => (r.sights.sights[0].source = " "),
+        "sights.json",
+        "sights[0].source",
+        "must not be empty",
+      ],
+      [
+        "a hotlinked image",
+        (r) =>
+          (r.sights.sights[0].image =
+            "https://upload.wikimedia.org/alpha-one.svg"),
+        "sights.json",
+        "sights[0].image",
+        "must be assets/sights/<id>.svg or .webp",
+      ],
+      [
+        "a .png image",
+        (r) => (r.sights.sights[0].image = "assets/sights/alpha-one.png"),
+        "sights.json",
+        "sights[0].image",
+        "must be assets/sights/<id>.svg or .webp",
+      ],
+      [
+        "another sight's image",
+        (r) => (r.sights.sights[0].image = "assets/sights/alpha-two.svg"),
+        "sights.json",
+        "sights[0].image",
+        "must be assets/sights/<id>.svg or .webp",
+      ],
+    ])("rejects %s", (_name, defect, file, path, text) => {
+      expectProblem(withDefect(defect), file, path, text);
+    });
+
+    it.each<[string, (raw: Draft) => void, number]>([
+      ["0 sights", (r) => (r.sights.sights = r.sights.sights.slice(2)), 0],
+      ["1 sight", (r) => r.sights.sights.splice(1, 1), 1],
+      [
+        "3 sights",
+        (r) =>
+          r.sights.sights.push({
+            ...r.sights.sights[0],
+            id: "alpha-three",
+            image: "assets/sights/alpha-three.svg",
+          }),
+        3,
+      ],
+    ])("rejects a destination with %s", (_name, defect, count) => {
+      const problems = problemsOf(withDefect(defect));
+      expect(problems).toEqual([
+        `sights.json: sights: destination "alpha" has ${count} sights (needs exactly 2)`,
+      ]);
+    });
+
+    it("defers the sight count while destinations.json is invalid", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          poke(r.destinations, "destinations", null);
+          r.sights.sights = r.sights.sights.slice(2);
+          r.sights.sights[0].price = 7;
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.startsWith("destinations.json:"))).toBe(
+        true,
+      );
+      expect(problems.some((p) => p.includes("sights[0].price"))).toBe(true);
+      expect(problems.some((p) => p.includes("needs exactly 2"))).toBe(false);
+    });
+
+    it("defers the sight count while sights.json is invalid", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.sights.sights = r.sights.sights.slice(2);
+          r.sights.sights[0].price = 7;
+          r.destinations.destinations[1].iata = "AAA";
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.includes("sights[0].price"))).toBe(true);
+      expect(problems.some((p) => p.includes("duplicate code"))).toBe(true);
+      expect(problems.some((p) => p.includes("needs exactly 2"))).toBe(false);
     });
   });
 
@@ -430,6 +892,8 @@ describe("NFR-7 AR-6 content", () => {
         withDefect((r) => {
           poke(r.routes.routes[0].modes[0], "mode", "boat");
           r.destinations.destinations[1].id = "alpha";
+          // beta-town no longer exists, so drop its sights (Story 2.1).
+          r.sights.sights = r.sights.sights.slice(0, 2);
         }),
       );
       expect(problems).toHaveLength(2);
@@ -462,6 +926,22 @@ describe("NFR-7 AR-6 content", () => {
       ).toBe(true);
     });
 
+    it("reports the sight count while routes.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          poke(r.routes.routes[0].modes[0], "mode", "boat");
+          r.sights.sights.splice(1, 1);
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.includes("routes[0].modes[0].mode"))).toBe(
+        true,
+      );
+      expect(problems).toContain(
+        'sights.json: sights: destination "alpha" has 1 sights (needs exactly 2)',
+      );
+    });
+
     it("defers unknown place ids while routes.json fails its own schema", () => {
       const problems = problemsOf(
         withDefect((r) => {
@@ -472,6 +952,37 @@ describe("NFR-7 AR-6 content", () => {
       expect(problems).toHaveLength(1);
       expect(problems[0]).toContain("routes.json: routes[0].modes[0].mode");
       expect(problems.some((p) => p.includes("parris"))).toBe(false);
+    });
+
+    it("reports duplicate sight ids while destinations.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.destinations.destinations[0].lat = 91;
+          r.sights.sights[3].id = "alpha-one";
+          r.sights.sights[3].image = "assets/sights/alpha-one.svg";
+        }),
+      );
+      expect(problems).toHaveLength(2);
+      expect(problems.some((p) => p.includes("destinations.json"))).toBe(true);
+      expect(
+        problems.some(
+          (p) =>
+            p.startsWith("sights.json:") &&
+            p.includes('duplicate sight id "alpha-one"'),
+        ),
+      ).toBe(true);
+    });
+
+    it("defers unknown sight destIds while sights.json fails its own schema", () => {
+      const problems = problemsOf(
+        withDefect((r) => {
+          r.sights.sights[0].price = 7;
+          r.sights.sights[1].destId = "gamma";
+        }),
+      );
+      expect(problems).toHaveLength(1);
+      expect(problems[0]).toContain("sights.json: sights[0].price");
+      expect(problems.some((p) => p.includes("gamma"))).toBe(false);
     });
   });
 });
