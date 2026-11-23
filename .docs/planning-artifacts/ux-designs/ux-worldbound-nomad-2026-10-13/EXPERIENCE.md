@@ -522,7 +522,7 @@ All assets are content data, separate from code (NFR-7). Placeholders are allowe
 
 | Asset | Count | Format and master | Shown at | Path | Theming and alt | Tag |
 |---|---|---|---|---|---|---|
-| Sight image | 16 (+4) | WebP photo or SVG line drawing, 4:3, master 800 × 600 | 82 px card, 44 × 36 thumb, 62–86 px polaroid, 118 px summary, full-width sheet | `assets/sights/{destId}-{sightId}.webp\|svg` | Drawings stroke in `currentColor`. Short `imageAlt` on sight cards; `alt=""` on polaroids (title adjacent). | [CORE] / [EXT] |
+| Sight image | 16 (+4) | WebP photo or SVG line drawing, 4:3, master 800 × 600 | 82 px card, 44 × 36 thumb, 62–86 px polaroid, 118 px summary, full-width sheet | `assets/sights/{sightId}.webp\|svg` (the sight id already starts with the destination id, e.g. `copenhagen-tivoli.webp`; #40) | Drawings stroke in `currentColor`. Short `imageAlt` on sight cards; `alt=""` on polaroids (title adjacent). | [CORE] / [EXT] |
 | Street drawing | 8 (+2) | SVG line art, 375 × 520 safe area, transparent | Arrival fact card background | `assets/streets/{destId}.svg` | `currentColor` strokes (`ink` / `ink-dark`). Decorative, `alt=""`. No people, no landmark clichés. | [CORE] / [EXT] |
 | World map | 1 | SVG in projection degree units (Map Data) | Map, loupe, Zoomed region | `assets/map/world.svg` | Filled with map tokens at runtime; `aria-hidden`. | [CORE] |
 | Logo | 1 | SVG (stand-in until the vector redraw) | Top bar, Start | `assets/brand/logo.svg` | `currentColor` + `logo-ochre`; named "Worldbound". | [CORE] |

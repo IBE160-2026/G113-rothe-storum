@@ -112,6 +112,8 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay €50) has `alpha-one` �
 
 Frozen-section changes (all approved): the matrix rows and fixture above, the `INVALID_SIGHTS` definition, the "Never" line, the `moneyLeft` field in Q2 = A, the Q1/Q2 rationale and the size note.
 
+2026-11-23 — #40 resolved by the user: sight ids keep the `{destId}-` prefix (AD-7) and image files are named `{sightId}.webp|svg` (EXPERIENCE.md and epic context updated). Design Notes → Content states the id format. No change to the frozen section.
+
 ## Review Triage Log
 
 ## Design Notes
@@ -154,6 +156,8 @@ A stamp's and album entry's `day` is the day the city day was spent: before it t
 **Content**
 
 Sight names and prices come from PRD addendum §3, where every value is an `[ASSUMPTION]` to be confirmed by the balance test (SM-3). They live only in `content/sights.json`, so a balance change needs no code change.
+
+Sight ids follow AD-7: `{destId}-{slug}` in lowercase kebab, e.g. `copenhagen-tivoli` and `paris-louvre`, so they are unique across destinations (the album stores only the sight id). The schema does not enforce the prefix (E1-P9 rejected). Image files are named after the sight id alone, `assets/sights/{sightId}.webp|svg` (#40, decided by the user 2026-11-23).
 
 ## Verification
 
