@@ -39,6 +39,14 @@ test("first visit shows the intro, then later visits skip it and keep the name",
   await expect(page.getByRole("button", { name: "Menu" })).toBeVisible();
   await expect(intro).toHaveCount(0);
 
+  // Focus must return to the menu button in a real browser, where the Map is
+  // inert while the menu is open (jsdom does not implement inert).
+  const menuButton = page.getByRole("button", { name: "Menu" });
+  await menuButton.click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(menuButton).toBeFocused();
+
   await page.getByRole("button", { name: "Menu" }).click();
   await page.getByRole("button", { name: "How to play" }).click();
   await expect(intro).toBeVisible();

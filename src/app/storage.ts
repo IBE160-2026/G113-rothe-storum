@@ -45,22 +45,25 @@ function usableLocalStorage(): Storage | null {
 export function createDeviceStorage(
   backend: Storage | null = usableLocalStorage(),
 ): DeviceStorage {
-  const memory = new Map<Key, string>();
+  // What this page load last wrote, with null for a removal. It wins over the
+  // backend, so a write that throws (for example a full quota) still holds for
+  // the rest of the page load instead of reading back the old stored value.
+  const memory = new Map<Key, string | null>();
 
   const read = (key: Key): string | null => {
+    if (memory.has(key)) return memory.get(key) ?? null;
     if (backend) {
       try {
         return backend.getItem(key);
       } catch {
-        // Fall through to memory.
+        // Unreadable storage: treat the value as missing.
       }
     }
-    return memory.get(key) ?? null;
+    return null;
   };
 
   const write = (key: Key, value: string | null): void => {
-    if (value === null) memory.delete(key);
-    else memory.set(key, value);
+    memory.set(key, value);
     if (!backend) return;
     try {
       if (value === null) backend.removeItem(key);

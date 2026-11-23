@@ -84,6 +84,33 @@ describe("AD-8 device storage (FR-1, FR-2)", () => {
     expect(storage.lastName()).toBe("Ingrid");
   });
 
+  it("keeps a write that fails after the probe for the rest of the page load", () => {
+    // Usable at start, then full: reads succeed, writes throw (QuotaExceeded).
+    window.localStorage.setItem("worldbound.lastName", "Ola");
+    const full: Storage = {
+      ...window.localStorage,
+      length: window.localStorage.length,
+      clear: () => window.localStorage.clear(),
+      getItem: (key) => window.localStorage.getItem(key),
+      key: (i) => window.localStorage.key(i),
+      removeItem: () => {
+        throw new DOMException("full", "QuotaExceededError");
+      },
+      setItem: () => {
+        throw new DOMException("full", "QuotaExceededError");
+      },
+    };
+    const storage = createDeviceStorage(full);
+
+    storage.markIntroSeen();
+    storage.setLastName("Kari");
+    expect(storage.introSeen()).toBe(true);
+    expect(storage.lastName()).toBe("Kari");
+
+    storage.setLastName("");
+    expect(storage.lastName()).toBe("");
+  });
+
   it("detects blocked browser storage by default", () => {
     const original = Object.getOwnPropertyDescriptor(window, "localStorage");
     Object.defineProperty(window, "localStorage", {

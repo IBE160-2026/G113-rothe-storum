@@ -41,11 +41,32 @@ describe("AD-2 journey store", () => {
       travel({ to: "copenhagen", mode: "bus" }),
       content,
     );
-    expect(next).toEqual({ game: null, rejection: "NO_JOURNEY" });
+    expect(next).toEqual({
+      game: null,
+      rejection: { reason: "NO_JOURNEY", seq: 1 },
+    });
+  });
+
+  it("gives a repeated rejection a new object and a higher seq", () => {
+    const first = journeyReducer(
+      initialJourneyState,
+      travel({ to: "copenhagen", mode: "bus" }),
+      content,
+    );
+    const second = journeyReducer(
+      first,
+      travel({ to: "copenhagen", mode: "bus" }),
+      content,
+    );
+    expect(second.rejection).toEqual({ reason: "NO_JOURNEY", seq: 2 });
+    expect(second.rejection).not.toBe(first.rejection);
   });
 
   it("clears the reason after an accepted action", () => {
-    const rejected = { game: null, rejection: "NO_JOURNEY" as const };
+    const rejected = {
+      game: null,
+      rejection: { reason: "NO_JOURNEY" as const, seq: 1 },
+    };
     const next = journeyReducer(rejected, startJourney({ name: "" }), content);
     expect(next.rejection).toBeNull();
     expect(next.game?.travellerName).toBe("Traveller");
@@ -68,6 +89,26 @@ describe("AD-2 journey store", () => {
 
     act(() => api?.dispatch(startJourney({ name: "Ada" })));
     expect(screen.getByText("Ada")).toBeInTheDocument();
+  });
+
+  it("keeps the context value stable across re-renders without a change", () => {
+    const seen: ReturnType<typeof useJourney>[] = [];
+    function Probe() {
+      seen.push(useJourney());
+      return null;
+    }
+    // A fresh element each time, so React really re-renders the providers.
+    const tree = () => (
+      <ContentProvider>
+        <JourneyProvider>
+          <Probe />
+        </JourneyProvider>
+      </ContentProvider>
+    );
+    const { rerender } = render(tree());
+    rerender(tree());
+    expect(seen.length).toBeGreaterThanOrEqual(2);
+    expect(seen.at(-1)).toBe(seen[0]);
   });
 
   it("throws a clear error outside JourneyProvider", () => {

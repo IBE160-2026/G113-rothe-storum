@@ -7,6 +7,7 @@
 // The journey itself is never saved (PRD §9.7, Decision L); only the intro
 // flag and the last name are kept on the device (AD-8).
 import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { ContentProvider } from "../app/content";
 import { createDeviceStorage, type DeviceStorage } from "../app/storage";
 import { JourneyProvider, useJourney } from "../app/store";
@@ -49,7 +50,9 @@ function Screens({ storage }: { storage: DeviceStorage }) {
   }
 
   function closeMenu() {
-    setMenuOpen(false);
+    // Commit the close first: until then the Map is still `inert`, and the
+    // browser ignores focus() on an inert element (focus would land on body).
+    flushSync(() => setMenuOpen(false));
     menuButtonRef.current?.focus();
   }
 

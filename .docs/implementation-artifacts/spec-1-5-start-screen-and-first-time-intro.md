@@ -104,3 +104,12 @@ Implemented by Claude Code (Opus 5.5) on Thomas Rothe's instruction, with the sc
 - #29 (test that `main.tsx` wraps `App` in `ErrorBoundary`) was a candidate for this story but would change the entry structure; left open.
 - Logo and start art: `assets/brand/logo.svg` and `start.svg` are still to come from the vector redraw (DESIGN.md → Logo); the stand-in is type plus an inline compass.
 - Store ownership: confirm in the PR review (Decisions).
+
+## Spec Change Log
+
+- 2026-11-23, PR review (Christian Storum, with Claude Code `bmad-walkthrough`): four changes, made on Christian's instruction on the PR branch. Intent, ACs and the "Never" list are unchanged; the store still holds only `game` + `rejection`.
+  1. **Focus after closing the menu.** `closeMenu` set `menuOpen` to false and called `focus()` in the same event, while the Map was still `inert`; the browser ignores `focus()` on an inert element, so focus fell to `body` (seen in Chromium, not in jsdom, which has no `inert`). Fix: `flushSync` the close before `focus()` (`src/ui/App.tsx`). New e2e check in `first-visit.spec.ts` that the menu button has focus after Esc; it fails without the fix.
+  2. **Rejection shape.** `rejection` was a bare `ReasonCode`, so two identical rejections in a row looked unchanged to the UI. It is now `{ reason, seq } | null`: a new object per rejection, `seq` counts rejections in a row. The UI decides when an old rejection is stale (`src/app/store.ts`).
+  3. **Stable context value.** `JourneyProvider` wraps `{ state, dispatch }` in `useMemo`, so consumers re-render only when the journey changes. New store test; it fails without the fix.
+  4. **Storage after a failed write.** `read` preferred the browser value over memory, so a write that threw after the probe (for example a full quota) read back the old value. Memory now holds what this page load last wrote (null for a removal) and wins over the backend (`src/app/storage.ts`). New storage test; it fails without the fix.
+  Verification after the changes: `npm test` 200/200, `npm run lint` and `npm run build` ok, `npm run test:e2e` 2/2 in Chromium (Playwright's own Chromium, macOS 26).

@@ -7,6 +7,7 @@ import {
   createContext,
   createElement,
   useContext,
+  useMemo,
   useReducer,
   type Dispatch,
   type ReactNode,
@@ -15,11 +16,25 @@ import { apply } from "../rules/apply";
 import type { Action, Content, GameState, ReasonCode } from "../rules/types";
 import { useContent } from "./content";
 
+/**
+ * The last rejected action. Every rejection is a new object, and `seq` counts
+ * rejections in a row, so the UI can show feedback again when the same reason
+ * repeats (for example two INSUFFICIENT_FUNDS in a row).
+ */
+export interface Rejection {
+  reason: ReasonCode;
+  /** 1 for the first rejection after an accepted action, then 2, 3, … */
+  seq: number;
+}
+
 export interface JourneyState {
   /** `null` until a journey has started. */
   game: GameState | null;
-  /** Reason of the last rejected action; cleared by the next accepted one. */
-  rejection: ReasonCode | null;
+  /**
+   * The last rejected action; cleared by the next accepted one. It is not
+   * cleared on screen changes: the UI decides when an old rejection is stale.
+   */
+  rejection: Rejection | null;
 }
 
 export const initialJourneyState: JourneyState = {
@@ -36,7 +51,13 @@ export function journeyReducer(
   const result = apply(state.game, action, content);
   return result.ok
     ? { game: result.state, rejection: null }
-    : { game: state.game, rejection: result.reason };
+    : {
+        game: state.game,
+        rejection: {
+          reason: result.reason,
+          seq: (state.rejection?.seq ?? 0) + 1,
+        },
+      };
 }
 
 interface JourneyContextValue {
@@ -54,11 +75,9 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
       journeyReducer(current, action, content),
     initialJourneyState,
   );
-  return createElement(
-    JourneyContext.Provider,
-    { value: { state, dispatch } },
-    children,
-  );
+  // A stable value, so consumers re-render only when the journey changes.
+  const value = useMemo(() => ({ state, dispatch }), [state]);
+  return createElement(JourneyContext.Provider, { value }, children);
 }
 
 /** The journey state and dispatch. Must be used inside JourneyProvider. */
