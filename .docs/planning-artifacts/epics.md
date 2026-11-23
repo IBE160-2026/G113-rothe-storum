@@ -608,3 +608,5 @@ Outline.
 ## Epic 7: If time allows [EXT]
 
 Outline, in PRD §9.2 order: accommodation tiers (FR-17) → night departures (FR-23, decide Open Question 7) → Madrid and Cape Town (FR-19) → sound effects (FR-24).
+
+Note for FR-19 (added 2026-11-23, Story 2.2 walkthrough): the content schema is strict, so each new destination needs a fact, exactly 2 sights with images and licence fields, and a route in the same change. The checklist is in README → Editing game content → Adding a destination.

@@ -24,6 +24,36 @@ const wholeDays = z.number().int("must be a whole number of days");
 const latitude = z.number().min(-90).max(90);
 const longitude = z.number().min(-180).max(180);
 const name = z.string().trim().min(1, "must not be empty");
+const text = name;
+
+// A sentence ends in . ! or ?, optionally followed by a closing quote or
+// bracket, then whitespace or the end. Facts avoid abbreviations with a dot and
+// ellipses, so this simple count stays exact (spec 2.2, Design Notes).
+const SENTENCE_END = /[.!?]["')]?(?=\s|$)/g;
+const FINAL_PUNCTUATION = /[.!?]["')]?$/;
+// What the simple count cannot handle, rejected loudly instead of miscounted:
+// curly quotes, ellipses, en/em dashes and common abbreviations with a dot.
+const TYPOGRAPHY = /[‘’“”…–—]|\.\.\./;
+const DOTTED_ABBREVIATION =
+  /\b(?:St|Dr|Mr|Mrs|Ms|No|vs|c)\.(?=\s)|\b(?:U\.S|U\.K|e\.g|i\.e)\./;
+
+/** An English fact with min–max sentences and at most maxChars characters. */
+const fact = (min: number, max: number, maxChars: number) =>
+  text
+    .max(maxChars, `must be at most ${maxChars} characters`)
+    .refine(
+      (value) => !TYPOGRAPHY.test(value),
+      "must use straight quotes and no ellipses or long dashes",
+    )
+    .refine(
+      (value) => !DOTTED_ABBREVIATION.test(value),
+      'must not use abbreviations with a dot (write "Saint", "US", "circa")',
+    )
+    .refine((value) => FINAL_PUNCTUATION.test(value), "must end in . ! or ?")
+    .refine((value) => {
+      const count = value.match(SENTENCE_END)?.length ?? 0;
+      return count >= min && count <= max;
+    }, `must have ${min}–${max} sentences (avoid abbreviations like "St.")`);
 
 const modeValues = z.strictObject({
   startMoney: wholeEuros.positive(),
@@ -75,6 +105,7 @@ const destinationSchema = z.strictObject({
     .number()
     .positive()
     .multipleOf(0.01, "must have at most two decimals"),
+  fact: fact(2, 3, 320),
 }) satisfies z.ZodType<Destination>;
 
 export const destinationsFileSchema = z.strictObject({
@@ -97,15 +128,33 @@ export const routesFileSchema = z.strictObject({
   routes: z.array(routeSchema),
 });
 
-// Story 2.1 fields only; Story 2.2 adds fact, image, imageAlt, source, author,
-// licence and the "exactly 2 per destination" rule. Prices are game values
-// from PRD addendum §3, whole euros 8–20.
-const sightSchema = z.strictObject({
-  id: placeId,
-  destId: placeId,
-  name,
-  price: wholeEuros.min(8).max(20),
-}) satisfies z.ZodType<Sight>;
+// Prices are game values from PRD addendum §3, whole euros 8–20. The image is a
+// repo file named after the sight id (never a URL); the "exactly 2 per
+// destination" rule is the cross-file checkSightCount() below.
+const sightSchema = z
+  .strictObject({
+    id: placeId,
+    destId: placeId,
+    name,
+    price: wholeEuros.min(8).max(20),
+    fact: fact(1, 2, 200),
+    image: text,
+    imageAlt: text.max(120, "must be at most 120 characters"),
+    source: text,
+    author: text,
+    licence: text,
+  })
+  .superRefine((sight, ctx) => {
+    if (typeof sight.id !== "string") return;
+    const base = `assets/sights/${sight.id}`;
+    if (sight.image !== `${base}.svg` && sight.image !== `${base}.webp`) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["image"],
+        message: "must be assets/sights/<id>.svg or .webp",
+      });
+    }
+  }) satisfies z.ZodType<Sight>;
 
 export const sightsFileSchema = z.strictObject({
   sights: z.array(sightSchema),
@@ -219,6 +268,27 @@ function checkSightDestinations(
   });
 }
 
+/**
+ * Every destination needs exactly 2 sights (FR-21). Loops over destinations,
+ * so a destination with no sights is caught too. Reads destinations.json and
+ * sights.json.
+ */
+function checkSightCount(
+  places: DestinationsFile,
+  sights: SightsFile["sights"],
+  issue: Issue,
+): void {
+  for (const d of places.destinations) {
+    const count = sights.filter((s) => s.destId === d.id).length;
+    if (count !== 2) {
+      issue(
+        ["sights", "sights"],
+        `destination "${d.id}" has ${count} sights (needs exactly 2)`,
+      );
+    }
+  }
+}
+
 // Each check runs as soon as the files it reads are valid on their own, even if
 // another file fails, so one parse reports every problem it can find. Every file
 // a check reads must be safeParsed in its gate (with a null/missing-file test),
@@ -265,5 +335,10 @@ export const contentFilesSchema = z
         value.sights.sights,
         issuer(ctx),
       ),
+    { when: (payload) => destinationsValid(payload) && sightsValid(payload) },
+  )
+  .superRefine(
+    (value, ctx) =>
+      checkSightCount(value.destinations, value.sights.sights, issuer(ctx)),
     { when: (payload) => destinationsValid(payload) && sightsValid(payload) },
   );

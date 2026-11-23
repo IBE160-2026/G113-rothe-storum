@@ -4,97 +4,193 @@
       "id": "copenhagen-tivoli",
       "destId": "copenhagen",
       "name": "Tivoli Gardens",
-      "price": 20
+      "price": 20,
+      "fact": "Opened in 1843, Tivoli is often called the world's second-oldest amusement park still running. The oldest, Bakken from 1583, lies about 10 km to the north.",
+      "image": "assets/sights/copenhagen-tivoli.svg",
+      "imageAlt": "Line drawing of a tiered pagoda tower beside a wavy roller coaster track on tall supports, standing on a ground line.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "copenhagen-nyhavn",
       "destId": "copenhagen",
       "name": "Nyhavn canal tour",
-      "price": 12
+      "price": 12,
+      "fact": "Nyhavn was dug in the 1670s as a canal linking the harbour to the city centre. Hans Christian Andersen lived in three of its houses.",
+      "image": "assets/sights/copenhagen-nyhavn.svg",
+      "imageAlt": "Line drawing of narrow gabled townhouses along a canal, with a sailing boat mast and rippling water lines.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "paris-eiffel-tower",
       "destId": "paris",
       "name": "Eiffel Tower",
-      "price": 20
+      "price": 20,
+      "fact": "The Eiffel Tower was built for the 1889 World's Fair. It was the tallest structure in the world until 1930.",
+      "image": "assets/sights/paris-eiffel-tower.svg",
+      "imageAlt": "Line drawing of a lattice tower with curved legs, a wide arch, three platforms and a spire, on a ground line.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "paris-louvre",
       "destId": "paris",
       "name": "Louvre",
-      "price": 17
+      "price": 17,
+      "fact": "The Louvre was a royal palace before it opened as a public museum in 1793. Its glass pyramid entrance was completed in 1989.",
+      "image": "assets/sights/paris-louvre.svg",
+      "imageAlt": "Line drawing of a gridded glass pyramid in front of a long palace wing with rows of windows and a ground line.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "london-tower-of-london",
       "destId": "london",
       "name": "Tower of London",
-      "price": 20
+      "price": 20,
+      "fact": "The Tower of London was founded after the Norman Conquest of 1066. Today it holds the Crown Jewels of the United Kingdom.",
+      "image": "assets/sights/london-tower-of-london.svg",
+      "imageAlt": "Line drawing of a square keep with two domed corner turrets and battlements, behind a low crenellated wall with a gate.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "london-british-museum",
       "destId": "london",
       "name": "British Museum",
-      "price": 8
+      "price": 8,
+      "fact": "Founded in 1753, the British Museum opened to the public in 1759. It is home to the Rosetta Stone.",
+      "image": "assets/sights/london-british-museum.svg",
+      "imageAlt": "Line drawing of a classical temple front with a triangular pediment, a row of columns and wide steps.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "rome-colosseum",
       "destId": "rome",
       "name": "Colosseum",
-      "price": 18
+      "price": 18,
+      "fact": "The Colosseum was completed in AD 80 under Emperor Titus. It could hold an estimated 50,000 spectators.",
+      "image": "assets/sights/rome-colosseum.svg",
+      "imageAlt": "Line drawing of a curved amphitheatre wall with three tiers of arches and a broken, uneven top on one side.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "rome-vatican-museums",
       "destId": "rome",
       "name": "Vatican Museums",
-      "price": 20
+      "price": 20,
+      "fact": "The Vatican Museums trace their origins to Pope Julius II in the early 1500s. Their route includes the Sistine Chapel, whose ceiling Michelangelo painted from 1508 to 1512.",
+      "image": "assets/sights/rome-vatican-museums.svg",
+      "imageAlt": "Line drawing of a high wall with an arched gateway, with a large ribbed dome and lantern rising behind it.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "istanbul-topkapi-palace",
       "destId": "istanbul",
       "name": "Topkapı Palace",
-      "price": 18
+      "price": 18,
+      "fact": "Topkapı Palace was the main residence of the Ottoman sultans for nearly 400 years. It became a museum in 1924.",
+      "image": "assets/sights/istanbul-topkapi-palace.svg",
+      "imageAlt": "Line drawing of an arched palace gate flanked by two towers with pointed conical roofs, on a crenellated wall.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "istanbul-galata-tower",
       "destId": "istanbul",
       "name": "Galata Tower",
-      "price": 10
+      "price": 10,
+      "fact": "The Galata Tower was built in 1348 as part of the walls of the Genoese colony of Galata.",
+      "image": "assets/sights/istanbul-galata-tower.svg",
+      "imageAlt": "Line drawing of a round stone tower with arched windows, a top gallery and a tall conical roof, on a ground line.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "new-york-statue-of-liberty",
       "destId": "new-york",
       "name": "Statue of Liberty",
-      "price": 20
+      "price": 20,
+      "fact": "The Statue of Liberty was a gift from France and was dedicated in 1886. Its copper skin turned green over time as a patina formed.",
+      "image": "assets/sights/new-york-statue-of-liberty.svg",
+      "imageAlt": "Line drawing of a robed statue with a spiked crown and raised torch, standing on a tall stepped pedestal.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "new-york-empire-state-building",
       "destId": "new-york",
       "name": "Empire State Building",
-      "price": 20
+      "price": 20,
+      "fact": "The Empire State Building opened in 1931 after just over 13 months of construction. It was the tallest building in the world until 1970.",
+      "image": "assets/sights/new-york-empire-state-building.svg",
+      "imageAlt": "Line drawing of a stepped skyscraper with several setbacks, vertical window bands and a slender spire on top.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "tokyo-senso-ji",
       "destId": "tokyo",
       "name": "Senso-ji",
-      "price": 8
+      "price": 8,
+      "fact": "Senso-ji is Tokyo's oldest temple, traditionally dated to 628. Visitors enter through the Kaminarimon, or Thunder Gate.",
+      "image": "assets/sights/tokyo-senso-ji.svg",
+      "imageAlt": "Line drawing of a temple gate with a wide curved roof, four pillars and a large paper lantern hanging in the middle.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "tokyo-skytree",
       "destId": "tokyo",
       "name": "Tokyo Skytree",
-      "price": 15
+      "price": 15,
+      "fact": "Tokyo Skytree is 634 metres tall and opened in 2012. It is the tallest tower in Japan.",
+      "image": "assets/sights/tokyo-skytree.svg",
+      "imageAlt": "Line drawing of a tall tapering lattice tower with two box-shaped observation decks and an antenna on top.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "sydney-opera-house",
       "destId": "sydney",
       "name": "Sydney Opera House",
-      "price": 20
+      "price": 20,
+      "fact": "The Sydney Opera House, designed by Danish architect Jørn Utzon, opened in 1973. It became a UNESCO World Heritage Site in 2007.",
+      "image": "assets/sights/sydney-opera-house.svg",
+      "imageAlt": "Line drawing of overlapping curved shell roofs on a wide stepped platform, with water lines below.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     },
     {
       "id": "sydney-harbour-bridge",
       "destId": "sydney",
       "name": "Harbour Bridge",
-      "price": 15
+      "price": 15,
+      "fact": "The Sydney Harbour Bridge opened in 1932. Its steel arch spans 503 metres, and it is nicknamed 'the Coathanger'.",
+      "image": "assets/sights/sydney-harbour-bridge.svg",
+      "imageAlt": "Line drawing of a steel arch bridge with vertical hangers, a flat deck and stone pylons at each end, over water.",
+      "source": "AI-drawn SVG (Claude, Anthropic), this repository",
+      "author": "Claude (AI), for the Worldbound team",
+      "licence": "CC0 1.0 (AI-generated, no copyright claimed)"
     }
   ]
 }
