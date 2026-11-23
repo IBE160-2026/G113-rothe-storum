@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { App } from "./ui/App";
+import { ErrorBoundary } from "./ui/components/ErrorBoundary";
 import { copy } from "./ui/copy";
-import { StartScreen } from "./ui/screens/StartScreen";
 import "./ui/styles/tokens.css";
 
 document.title = copy.start.title;
@@ -13,6 +14,8 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <StartScreen />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 );

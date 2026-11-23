@@ -52,6 +52,7 @@ graph TD
 - **Binds:** NFR-1, NFR-2, all rule FRs (FR-1, FR-4, FR-6 – FR-18, FR-21 – FR-23)
 - **Prevents:** rule logic leaking into components, or rules that cannot run without a browser
 - **Rule:** `src/rules/` imports nothing from React, the DOM, `window`, storage, `src/app/` or `src/ui/`. It never calls `Date.now()`, `Math.random()` or reads globals. An ESLint `no-restricted-imports` rule on `src/rules/**` enforces this.
+- **Note (Story 1.3, Q1):** the one exception is `Intl.Segmenter`: the `no-restricted-syntax` lint selector allows non-computed `Intl.Segmenter` access and rejects every other use of `Intl` (see spec-1-3). The code uses it only as `new Intl.Segmenter("en", { granularity: "grapheme" })`, to count the traveller name in graphemes (FR-1).
 
 ### AD-2 — One mutation path: `apply`
 - **Binds:** all committed actions (EXPERIENCE → State Model, commit table)
