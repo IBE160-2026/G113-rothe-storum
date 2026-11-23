@@ -31,7 +31,7 @@ The player opens WORLDBOUND: NOMAD, starts a journey from Bergen (`home`) and tr
 ## Technical Decisions
 
 - **Paradigm:** functional core, imperative shell. Pure TypeScript rules over an immutable `GameState`; thin React UI.
-- **Layers:** `content/*.json` → `src/content/` (zod schema + loader) → `src/rules/` (imports nothing outside itself) → `src/app/` (store, storage adapter) → `src/ui/` (React). `src/rules/` must not import React, the DOM, `src/app/` or `src/ui/`, and must not use `Date.now()`, `Math.random()` or globals; an ESLint `no-restricted-imports` rule on `src/rules/**` enforces it.
+- **Layers:** `content/*.json` → `src/content/` (zod schema + loader) → `src/rules/` (imports nothing outside itself) → `src/app/` (store, storage adapter) → `src/ui/` (React). `src/rules/` must not import React, the DOM, `src/app/` or `src/ui/`, and must not use `Date.now()`, `Math.random()` or globals; an ESLint `no-restricted-imports` rule on `src/rules/**` enforces it. The only allowed global is `Intl.Segmenter` (grapheme counting of the traveller name); a `no-restricted-syntax` lint selector rejects every other use of `Intl`.
 - **Single mutation path:** `apply(state, action, content)` → `{ ok: true, state } | { ok: false, reason }`. Closed action union (`startJourney`, `travel`, `spendCityDay`, `callHome`). End rules are evaluated inside `apply`; after an outcome, every action except `startJourney` is rejected with `JOURNEY_ENDED`.
 - **Queries:** the UI reads availability, reasons and warnings from `src/rules/queries.ts`; query and `apply` share the same check function.
 - **Reasons:** closed `ReasonCode` union in `src/rules/types.ts`; UI maps codes to copy; tests assert codes, never strings.

@@ -37,6 +37,6 @@
   background: var(--color-primary);
   color: var(--color-on-primary);
   font: inherit;
-  font-weight: 600;
+  font-weight: var(--font-button-weight);
   cursor: pointer;
 }

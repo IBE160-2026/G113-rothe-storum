@@ -2,7 +2,7 @@
 // AR-10, #17, #24: invalid content or a render error shows the fallback screen
 // (never an empty #root) and logs to the console; valid content renders the
 // Start screen with nothing logged.
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import {
   afterEach,
   beforeEach,
@@ -91,6 +91,18 @@ describe("AR-10 error boundary", () => {
       "Invalid content:",
       expect.anything(),
     );
+  });
+
+  it("calls onReload when Reload is pressed", () => {
+    const onReload = vi.fn();
+    render(
+      <ErrorBoundary onReload={onReload}>
+        <Thrower />
+      </ErrorBoundary>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: copy.error.reload }));
+    expect(onReload).toHaveBeenCalledTimes(1);
   });
 
   it("renders the Start screen with valid content and logs nothing", () => {
