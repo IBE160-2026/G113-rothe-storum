@@ -28,7 +28,8 @@
         "iata": "AAA",
         "lat": 50.0,
         "lon": 10.0,
-        "costFactor": 1.0
+        "costFactor": 1.0,
+        "fact": "Alpha is a test destination. It has two test sights."
       },
       {
         "id": "beta-town",
@@ -36,7 +37,8 @@
         "iata": "BBB",
         "lat": 40.0,
         "lon": -20.0,
-        "costFactor": 1.5
+        "costFactor": 1.5,
+        "fact": "Beta Town is a test destination. It has two test sights."
       }
     ]
   },
@@ -85,25 +87,49 @@
         "id": "alpha-one",
         "destId": "alpha",
         "name": "Alpha One",
-        "price": 10
+        "price": 10,
+        "fact": "Alpha One is a test sight.",
+        "image": "assets/sights/alpha-one.svg",
+        "imageAlt": "Line drawing of Alpha One",
+        "source": "Test fixture",
+        "author": "Worldbound tests",
+        "licence": "CC0 1.0"
       },
       {
         "id": "alpha-two",
         "destId": "alpha",
         "name": "Alpha Two",
-        "price": 15
+        "price": 15,
+        "fact": "Alpha Two is a test sight.",
+        "image": "assets/sights/alpha-two.svg",
+        "imageAlt": "Line drawing of Alpha Two",
+        "source": "Test fixture",
+        "author": "Worldbound tests",
+        "licence": "CC0 1.0"
       },
       {
         "id": "beta-town-one",
         "destId": "beta-town",
         "name": "Beta Town One",
-        "price": 8
+        "price": 8,
+        "fact": "Beta Town One is a test sight.",
+        "image": "assets/sights/beta-town-one.svg",
+        "imageAlt": "Line drawing of Beta Town One",
+        "source": "Test fixture",
+        "author": "Worldbound tests",
+        "licence": "CC0 1.0"
       },
       {
         "id": "beta-town-two",
         "destId": "beta-town",
         "name": "Beta Town Two",
-        "price": 12
+        "price": 12,
+        "fact": "Beta Town Two is a test sight.",
+        "image": "assets/sights/beta-town-two.svg",
+        "imageAlt": "Line drawing of Beta Town Two",
+        "source": "Test fixture",
+        "author": "Worldbound tests",
+        "licence": "CC0 1.0"
       }
     ]
   }

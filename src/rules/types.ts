@@ -25,6 +25,11 @@ export interface Destination extends Place {
   iata: string;
   /** Multiplier on the base accommodation price for a city day. */
   costFactor: number;
+  /**
+   * The fact card shown on arrival (FR-5): 2–3 English sentences, at most 320
+   * characters (AD-7, NFR-6). Fact-checked per NFR-8.
+   */
+  fact: string;
 }
 
 export interface ModeOption {
@@ -62,8 +67,8 @@ export interface Config {
 }
 
 /**
- * A sight at a destination (FR-10, FR-21). Story 2.1 has the fields the rules
- * need; Story 2.2 adds the fact, image and licence fields.
+ * A sight at a destination (FR-10, FR-21). The rules read only `id`, `destId`
+ * and `price`; Story 2.2 added the fact, image and licence fields for the UI.
  */
 export interface Sight {
   /** Lowercase kebab id, `{destId}-{slug}` (AD-7), e.g. `paris-louvre`. */
@@ -73,6 +78,27 @@ export interface Sight {
   name: string;
   /** Whole euros. */
   price: number;
+  /** 1–2 English sentences, at most 200 characters (AD-7, NFR-6, NFR-8). */
+  fact: string;
+  /**
+   * `assets/sights/{id}.svg` or `.webp`, relative to the site root (never a
+   * URL). The UI uses it as given and never rebuilds it from `id`, so the file
+   * can be replaced at the same path with no code change (NFR-7, AD-7).
+   * Load it through `<img>` (or CSS), never inline it: the SVG's `:root` theme
+   * rule would restyle the page.
+   */
+  image: string;
+  /** Short alt text for the sight card, at most 120 characters. */
+  imageAlt: string;
+  /** The image's source page URL, or a short note for AI-made images (NFR-8). */
+  source: string;
+  /**
+   * Who made the image; for a photo, the photographer as credited at the
+   * source.
+   */
+  author: string;
+  /** Licence name, e.g. "CC BY-SA 4.0" or "CC0 1.0". */
+  licence: string;
 }
 
 export interface Content {
