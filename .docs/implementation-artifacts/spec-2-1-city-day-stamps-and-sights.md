@@ -59,9 +59,9 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay €50) has `alpha-one` �
 
 - `src/rules/types.ts` -- add `{ type: "spendCityDay"; sightIds: string[] }` to `Action`; `AT_HOME`, `ALREADY_IN_ALBUM`, `INVALID_SIGHTS` to `ReasonCode`; `Sight` and `Content.sights`; the query result types. Keep no imports.
 - `src/rules/money.ts` -- new: `accommodationPrice()`.
-- `src/rules/cityDay.ts` -- new: `checkCityDay()`, `applySpendCityDay()`. Follow `travel.ts` (`TravelCheck` pattern, doc comments).
+- `src/rules/cityDay.ts` -- new: `checkCityDay()`, `applySpendCityDay()`. Follow `travel.ts` (`TravelCheck` pattern, doc comments). Import `daysRemaining` from `./days`, never from `./queries` (#38).
 - `src/rules/apply.ts` -- `case "spendCityDay"` and action creator `spendCityDay({ sightIds })`; the existing `NO_JOURNEY`/`JOURNEY_ENDED` guard already runs first.
-- `src/rules/queries.ts` -- `cityDayStatus`, `cityDayPlan`, built on `checkCityDay`. Reuse `daysRemaining()`.
+- `src/rules/queries.ts` -- `cityDayStatus`, `cityDayPlan`, built on `checkCityDay`. Reuse `daysRemaining()` from `src/rules/days.ts` (re-exported by `queries.ts`).
 - `src/content/schema.ts`, `src/content/load.ts`, `content/sights.json` -- sight schema in its own per-file schema plus a gated cross-file check for `destId`; add `sights` to `RawContent`/`CONTENT_FILES`. Follow the per-file schema + gated `superRefine` pattern; every gated file must be `safeParse`d in its `when`.
 - `tests/fixtures/content/*.json` -- add sights to `valid-small.json` and a valid `sights` key to every broken fixture, so each still fails for its one reason.
 - `tests/rules/helpers.ts` -- reuse `smallContent`, `applyFrozen`, `started`, `deepFreeze`.
@@ -91,7 +91,7 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay €50) has `alpha-one` �
 - Known interim state: a city day may use the last day away from home. The state then has `daysUsed` = total and `outcome: null`, and travel is rejected with `NOT_ENOUGH_DAYS`. This is accepted until 3.1 adds the out-of-days ending.
 - The "more than 2" part of `INVALID_SIGHTS` counts every id, including sights already in the album. PRD §4.5 says album sights do not count toward the 0–2 limit, but they are rejected anyway. With exactly 2 sights per destination, 3 ids always contain a repeat or a foreign id, so the outcome is the same.
 
-- `queries.ts` and `travel.ts` already import each other (`checkTravel` / `daysRemaining`), and `cityDay.ts` adds a second cycle. Follow the `travel.ts` pattern: only function declarations, and no top-level code that calls an import. Breaking the cycle (e.g. moving `daysTotal`/`daysRemaining` to a leaf module) is out of scope for 2.1.
+- Rule modules import day arithmetic from the leaf module `src/rules/days.ts`, never from `queries.ts`, so no import cycle exists (#38, resolved before build). Only `queries.ts` imports the rule modules.
 
 **Notes for later stories (not 2.1 work):**
 
@@ -116,6 +116,8 @@ Frozen-section changes (all approved): the matrix rows and fixture above, the `I
 2026-11-23 — #40 resolved by the user: sight ids keep the `{destId}-` prefix (AD-7) and image files are named `{sightId}.webp|svg` (EXPERIENCE.md and epic context updated). Design Notes → Content states the id format. No change to the frozen section.
 
 2026-11-23 — #39 resolved by the user: the city-day home-unreachable warning goes into 2.4 (PRD Decision M). Only a note under "Notes for later stories"; no change to 2.1's scope or the frozen section.
+
+2026-11-23 — #38 resolved before build: `daysTotal`/`daysRemaining` moved to the leaf module `src/rules/days.ts` (re-exported by `queries.ts`). Code Map and Implementation Notes updated. No change to the frozen section.
 
 ## Review Triage Log
 

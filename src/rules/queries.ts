@@ -3,15 +3,8 @@
 import { checkTravel, homeUnreachableAfter } from "./travel";
 import type { Content, GameState, RouteView, TravelOption } from "./types";
 
-/** Total days of the journey, derived from the mode's content values. */
-export function daysTotal(state: GameState, content: Content): number {
-  return content.config.modes[state.mode].totalDays;
-}
-
-/** `daysTotal − daysUsed`. */
-export function daysRemaining(state: GameState, content: Content): number {
-  return daysTotal(state, content) - state.daysUsed;
-}
+// Re-exported so callers keep one entry point for queries (#38).
+export { daysRemaining, daysTotal } from "./days";
 
 /**
  * Every route from the current position, in content order, with each mode's

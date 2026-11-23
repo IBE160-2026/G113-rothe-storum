@@ -1,7 +1,7 @@
 // Travelling between places (FR-6, FR-7). `checkTravel` is the one check that
 // both `apply` and the route query use, so they can never disagree (AD-3).
 // Pure: never mutates its inputs and never throws for a player action (AD-4).
-import { daysRemaining, daysTotal } from "./queries";
+import { daysRemaining, daysTotal } from "./days";
 import type {
   Content,
   GameState,
