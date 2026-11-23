@@ -147,6 +147,7 @@ Variables are in `{braces}`. Values come from the rules layer or content data; t
 | cityday.repeat | "Back in {city}" · "no new stamp this time" · "{sight} — in your album" | |
 | cityday.sightUnavailable | "Not enough left after your stay — you'd have {moneyAfterStay}" · [EXT] "Too much with your sights — remove one" | Money after is measured from the selected end-of-day cost. |
 | cityday.tight | "Money's tight: you'll have {moneyAfter} after your stay." | [ASSUMPTION] Shown when money after today's total is below the cheapest fare out of this city (rules layer). |
+| cityday.warning | "Heads up: after today you can't get home in time." | [ASSUMPTION] copy. FR-8 (PRD Decision M, #39); never blocks. Same rule as `route.warning` (rules layer). |
 | **Day complete** | | |
 | dc.first | eyebrow "{city} stamp added to your passport" · "{city}, stamped." · lede "A full day, well spent. That's {n} of 5 in your passport. {toGoWord} to go." | |
 | dc.fifth | lede "A full day, well spent. That's 5 of 5 — now get home to Bergen." | [ASSUMPTION] |
@@ -295,6 +296,7 @@ Behavioural. Visual specs are in DESIGN.md → Components, under the same names,
 | Destination unaffordable | Resting panel | [CORE] | Short chip "{shortfall} short"; the Route sheet repeats the reason per row. |
 | Option unaffordable or too long | Route sheet, City day | [CORE] | Unavailable row with block icon and reason (FR-4, FR-9, FR-21). |
 | Home unreachable after option | Route sheet | [CORE] | Warning row, never blocked (FR-4). |
+| Home unreachable after city day | City day | [CORE] | Warning line, never blocked (FR-8, PRD Decision M). |
 | City day unavailable | City-day card, Arrival fact card | [CORE] | "Plan the day" becomes a Button unavailable with its FR-8 reason (Copy templates → map.card.unavailable). |
 | Low money | City day | [CORE] | "Money's tight" line. Sights above the remaining money are unavailable (CD1b). |
 | Repeat visit | Arrival, City-day card, City day, Day complete | [CORE] | No new stamp and no stamp moment; each surface uses its repeat copy (Copy templates → arrival.repeat, map.card.repeat, cityday.repeat, dc.repeat). |

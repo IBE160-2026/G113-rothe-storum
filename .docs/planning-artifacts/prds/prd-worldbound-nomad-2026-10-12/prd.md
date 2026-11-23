@@ -187,6 +187,7 @@ The player can spend a city day at the current destination.
 - A city day deducts the accommodation price (base accommodation price × cost factor, rounded to whole euros, halves up) and adds 1 day to days used.
 - A city day is unavailable when money is below the accommodation price or days remaining is 0.
 - A city day is not possible at home (arriving home ends the journey).
+- If, after the city day, home can no longer be reached within the days remaining (shortest route home in days, ignoring money; the same rule as FR-4), the city day shows a warning; it is not blocked (§9.8, Decision M).
 - A city day is one rules action applied in a fixed order (§9.6, Decision F): (1) the accommodation price is deducted, 1 day is added to days used, and the stamp is awarded if this is the first city day at the destination (FR-10); (2) the chosen 0–2 sights are paid from the money left (FR-21); (3) the city day is over — the player travels on, calls home if offered, or spends another city day. No sight can be bought for a city day after it is over.
 - The UI may let the player pick sights before confirming the day (nothing is charged until "End the day", EXPERIENCE.md → City day); the rules apply the order above when the day is confirmed. [EXT] When the city day ends with a night departure (FR-23), step 1 charges no accommodation.
 
@@ -462,6 +463,10 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 
 - **L. Saving stays in the extension.** The group decided to keep FR-20 (save and resume) in [EXT], in its planned place in §9.2, because saving can be added in the extension without changing the core: the architecture already plans the saved journey for [EXT] (AD-8). The core therefore does not save a journey, and §1 promises one sitting. **Rejected:** the AI agent's recommendation to move a minimal autosave into the core (competitive research, recommendation 1; brainstorming 2026-11-16). **Given up:** a journey that survives a closed tab or a reload in the core. **Revisit:** if the playtest shows that journeys do not fit in one sitting.
 
+### 9.8 Decisions During Implementation (2026-11-23)
+
+- **M. City day warns when home becomes unreachable.** A city day uses a day just like travel, so it can make home unreachable in time without the player noticing. The City day screen therefore shows the same kind of warning as the route sheet (FR-4), and the city day is never blocked (FR-8). The rules query is added in Story 2.4, next to "Money's tight", and reuses the FR-4 rule. Decided by Christian Storum (issue #39), found in the elicitation of the Story 2.1 spec. **Rejected:** adding the flag in Story 2.1 (it would reopen an approved spec) and keeping FR-4's scope (the player would only see the warning after the day was spent).
+
 ## 10. Success Metrics
 
 **Primary**
@@ -507,5 +512,6 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 - **2026-11-16 — §1.1 Inspiration, Not a Copy added** (issue #14), based on the competitive research of the same day. Names the Backpacker series, what NOMAD shares with it and what is its own; the name is kept to planning documents (team choice). Not changed: rules and values.
 - **2026-11-16 — saving stays in the extension** (issue #13, Decision L). Decided by the group. Changed: §1 "one or two sittings" → "one sitting"; §9.7 added with Decision L. Not changed: FR-20 and its place in §9.2, the architecture and the epics (they already keep saving in [EXT]), rules and values.
 - **2026-11-17 — follow-up to Thomas Rothe's approval of PR #4.** Changed: §9.6 intro dates his review to 2026-11-15 (approved 2026-11-16). Not changed: all rules and addendum values.
+- **2026-11-23 — city-day home-unreachable warning** (issue #39, Decision M). Changed: FR-8 gains a warning consequence; §9.8 added. Not changed: FR-4, addendum values, the Story 2.1 spec.
 
 **FR index:** FR-1 §4.1 · FR-2 §4.1 · FR-3 §4.2 · FR-4 §4.2 · FR-5 §4.2 · FR-6 §4.3 · FR-7 §4.3 · FR-8 §4.4 · FR-9 §4.4 · FR-10 §4.6 · FR-11 §4.6 · FR-12 §4.7 · FR-13 §4.8 · FR-14 §4.8 · FR-15 §4.9 · FR-16 §4.9 · FR-17 §4.10 · FR-18 §4.12 · FR-19 §4.13 · FR-20 §4.14 · FR-21 §4.5 · FR-22 §4.5 · FR-23 §4.11 · FR-24 §4.15

@@ -380,6 +380,10 @@ So that I can weigh sights against my next ticket.
 **When** the player toggles up to 2 sights
 **Then** the running total ("End the day — €X") updates from rules queries, unaffordable sights show their reason, and nothing is charged before "End the day"
 
+**Given** a city day after which home can no longer be reached in time
+**When** the city day screen is shown
+**Then** it shows the home-unreachable warning (`cityday.warning`) from a rules query that reuses the FR-4 rule, and "End the day" stays available (FR-8, PRD Decision M, #39)
+
 **Given** "Back to map" before ending the day
 **When** it is tapped
 **Then** no money or days change

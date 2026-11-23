@@ -95,6 +95,7 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay €50) has `alpha-one` �
 
 **Notes for later stories (not 2.1 work):**
 
+- 2.4 adds the city-day home-unreachable warning (PRD Decision M, #39), e.g. `homeUnreachableAfter(state, state.position, 1, content)` next to "Money's tight". 2.1 adds no such flag.
 - 2.2 makes `fact`, `image`, `imageAlt`, `source`, `author` and `licence` required, so it must add them to the sights in all 7 content fixtures (`valid-small` and the 6 broken ones). Count this in 2.2's estimate.
 - 3.1's out-of-days rule (FR-13: "no affordable city day") must reuse `checkCityDay`/`cityDayStatus`, not a check of its own, so the ending and the City day screen never disagree.
 
@@ -113,6 +114,8 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay €50) has `alpha-one` �
 Frozen-section changes (all approved): the matrix rows and fixture above, the `INVALID_SIGHTS` definition, the "Never" line, the `moneyLeft` field in Q2 = A, the Q1/Q2 rationale and the size note.
 
 2026-11-23 — #40 resolved by the user: sight ids keep the `{destId}-` prefix (AD-7) and image files are named `{sightId}.webp|svg` (EXPERIENCE.md and epic context updated). Design Notes → Content states the id format. No change to the frozen section.
+
+2026-11-23 — #39 resolved by the user: the city-day home-unreachable warning goes into 2.4 (PRD Decision M). Only a note under "Notes for later stories"; no change to 2.1's scope or the frozen section.
 
 ## Review Triage Log
 
