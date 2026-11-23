@@ -1,0 +1,15 @@
+.screen {
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: var(--space-column-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-gutter);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--space-touch-min);
+}

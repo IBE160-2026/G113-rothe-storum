@@ -1,0 +1,64 @@
+/* DESIGN.md → Components → Modal sheet and Menu sheet (rows of
+   --space-menu-row). */
+
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--color-scrim);
+}
+
+.sheet {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--space-column-max);
+  padding: var(--space-3) var(--space-gutter) var(--space-6);
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background: var(--color-surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-headline-sm-family);
+  font-size: var(--font-headline-sm-size);
+  font-weight: var(--font-headline-sm-weight);
+  line-height: var(--font-headline-sm-line-height);
+}
+
+.title:focus {
+  outline: none;
+}
+
+.row {
+  composes: focusRing from "../styles/controls.module.css";
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--space-menu-row);
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-rule);
+  background: none;
+  color: var(--color-ink);
+  font-family: var(--font-item-title-family);
+  font-size: var(--font-item-title-size);
+  font-weight: var(--font-item-title-weight);
+  text-align: left;
+  cursor: pointer;
+}

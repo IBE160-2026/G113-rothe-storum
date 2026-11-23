@@ -1,0 +1,31 @@
+.small,
+.large {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.small {
+  font-family: var(--font-wordmark-family);
+  font-size: var(--font-wordmark-size);
+  font-weight: var(--font-wordmark-weight);
+  line-height: var(--font-wordmark-line-height);
+  letter-spacing: var(--font-wordmark-letter-spacing);
+}
+
+.large {
+  font-family: var(--font-wordmark-xl-family);
+  /* Steps down on very narrow screens so the wordmark never scrolls (NFR-4). */
+  font-size: min(var(--font-wordmark-xl-size), 9.5vw);
+  font-weight: var(--font-wordmark-xl-weight);
+  line-height: var(--font-wordmark-xl-line-height);
+  letter-spacing: var(--font-wordmark-xl-letter-spacing);
+}
+
+/* 16 px at the 19 px size and 32 px at the 38 px size (DESIGN.md → Logo). */
+.compass {
+  width: 0.84em;
+  height: 0.84em;
+  margin: 0 0.04em;
+}
