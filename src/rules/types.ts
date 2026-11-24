@@ -115,6 +115,7 @@ export type JourneyMode = "explorer" | "nomad";
 /** EXPERIENCE State Model; set by Stories 1.4 and 3.1. */
 export type Outcome = "goalReached" | "goalNotReached" | "failed";
 
+/** Why a journey ended `failed`; `null` for every other outcome. */
 export type FailReason = "outOfDays" | "stranded";
 
 /** Stamps are ordered; the last one is the most recent. */
@@ -151,11 +152,12 @@ export interface GameState {
   failReason: FailReason | null;
 }
 
-/** Closed action union (AD-2). Later stories add callHome. */
+/** Closed action union (AD-2). Story 3.1 added callHome. */
 export type Action =
   | { type: "startJourney"; name: string; mode?: JourneyMode }
   | { type: "travel"; to: PlaceId; mode: TransportMode }
-  | { type: "spendCityDay"; sightIds: string[] };
+  | { type: "spendCityDay"; sightIds: string[] }
+  | { type: "callHome" };
 
 /** Closed reason union (AD-4). The UI maps each code to copy. */
 export type ReasonCode =
@@ -167,7 +169,8 @@ export type ReasonCode =
   | "NOT_ENOUGH_DAYS"
   | "AT_HOME"
   | "INVALID_SIGHTS"
-  | "ALREADY_IN_ALBUM";
+  | "ALREADY_IN_ALBUM"
+  | "CALL_HOME_NOT_OFFERED";
 
 export type Result =
   { ok: true; state: GameState } | { ok: false; reason: ReasonCode };
@@ -241,4 +244,36 @@ export interface CityDayPlan {
   moneyAfter: number | null;
   /** This destination's sights in content order; empty at home. */
   sights: SightPlanView[];
+}
+
+/**
+ * Call home as the UI shows it before the player confirms (FR-12). The same
+ * check as `apply(callHome())` (AD-3). The cost fields are given also when call
+ * home is not offered, so the UI never computes them.
+ */
+export interface CallHomeStatus {
+  /**
+   * At a destination with money below the cheapest mode on every route from
+   * it (a destination with no routes counts). Always `false` once the journey
+   * has ended.
+   */
+  offered: boolean;
+  /**
+   * `callHome.days ≤ daysRemaining`. Offered but not fitting is stranded.
+   * Only meaningful while `offered` is true; it is also computed at home and
+   * after the end.
+   */
+  fits: boolean;
+  /** Exactly what `apply(callHome())` accepts. */
+  available: boolean;
+  /** Why call home is unavailable; `null` when it is available. */
+  reason: ReasonCode | null;
+  /** Whole days call home costs (`callHome.days`). */
+  days: number;
+  /** Stamps it would remove: `min(stampPenalty, stamps)`, so 0 with no stamps. */
+  stampsLost: number;
+  /** Whole euros (`callHome.price`). */
+  price: number;
+  /** `daysUsed + days`: days used once home. */
+  daysUsedAfter: number;
 }

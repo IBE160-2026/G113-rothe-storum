@@ -1,8 +1,15 @@
 // Read-only queries for the UI (AD-3). They share their checks with `apply`,
 // so what the UI shows as available is exactly what `apply` accepts.
+import {
+  callHomeFits,
+  callHomeOffered,
+  callHomeStampsLost,
+  checkCallHome,
+} from "./callHome";
 import { checkCityDay, destinationAt, stayPrice } from "./cityDay";
 import { checkTravel, homeUnreachableAfter } from "./travel";
 import type {
+  CallHomeStatus,
   CityDayPlan,
   CityDayStatus,
   Content,
@@ -122,4 +129,27 @@ export function cityDayPlan(
     };
   });
   return { ok, reason, stay, total, moneyAfter: state.money - total, sights };
+}
+
+/**
+ * Whether call home is offered, whether it fits, and what it costs, so the UI
+ * can show the cost before the player confirms (FR-12). `available` and
+ * `reason` are the same check as `apply(callHome())` (AD-3).
+ */
+export function callHomeStatus(
+  state: GameState,
+  content: Content,
+): CallHomeStatus {
+  const check = checkCallHome(state, content);
+  const { days, price } = content.config.callHome;
+  return {
+    offered: state.outcome === null && callHomeOffered(state, content),
+    fits: callHomeFits(state, content),
+    available: check.ok,
+    reason: check.ok ? null : check.reason,
+    days,
+    stampsLost: callHomeStampsLost(state, content),
+    price,
+    daysUsedAfter: state.daysUsed + days,
+  };
 }

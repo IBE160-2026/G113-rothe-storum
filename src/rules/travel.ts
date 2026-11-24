@@ -1,7 +1,7 @@
 // Travelling between places (FR-6, FR-7). `checkTravel` is the one check that
 // both `apply` and the route query use, so they can never disagree (AD-3).
 // Pure: never mutates its inputs and never throws for a player action (AD-4).
-import { daysRemaining, daysTotal } from "./days";
+import { daysRemaining } from "./days";
 import type {
   Content,
   GameState,
@@ -100,8 +100,9 @@ export function homeUnreachableAfter(
 
 /**
  * Travels to `to` by `mode`: money falls by the price, days used rise by the
- * days, and position becomes `to`. Arriving home ends the journey and
- * evaluates the goal (spec-1-4 Q1 = A, FR-11).
+ * days, and position becomes `to`. Only moves: arriving home ends the journey
+ * through `evaluateEnd` in end.ts, which `apply` runs afterwards (FR-11).
+ * This module must not import end.ts (import cycle, #38).
  */
 export function applyTravel(
   state: GameState,
@@ -111,23 +112,13 @@ export function applyTravel(
 ): Result {
   const check = checkTravel(state, to, mode, content);
   if (!check.ok) return check;
-  const moved: GameState = {
-    ...state,
-    position: to,
-    money: state.money - check.option.price,
-    daysUsed: state.daysUsed + check.option.days,
-  };
-  if (to !== content.home.id) return { ok: true, state: moved };
-  // Mirrors the FR-11 goal rule; the day limit is already guaranteed by checkTravel.
-  const goalReached =
-    moved.stamps.length >= content.config.goalStamps &&
-    moved.daysUsed <= daysTotal(moved, content);
   return {
     ok: true,
     state: {
-      ...moved,
-      outcome: goalReached ? "goalReached" : "goalNotReached",
-      failReason: null,
+      ...state,
+      position: to,
+      money: state.money - check.option.price,
+      daysUsed: state.daysUsed + check.option.days,
     },
   };
 }

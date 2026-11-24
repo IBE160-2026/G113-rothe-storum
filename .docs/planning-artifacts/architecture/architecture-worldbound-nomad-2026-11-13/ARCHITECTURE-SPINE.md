@@ -71,21 +71,23 @@ graph TD
 
 ### Rules API — what the UI may call (reference for AD-2 – AD-4)
 
-Added 2026-11-24 (#35) so UI Stories 1.6 and 1.7 build against one listing; source of truth is the code in `src/rules/`. Planned members (`callHome`, end rules, [EXT]) are not listed until their stories add them.
+Added 2026-11-24 (#35) so UI Stories 1.6 and 1.7 build against one listing; source of truth is the code in `src/rules/`. Story 3.1 added `callHome`, `callHomeStatus` and the end rules; [EXT] members are added by their stories.
 
 | Kind | Name | Module | Notes |
 | --- | --- | --- | --- |
-| Mutation | `apply(state \| null, action, content): Result` | `apply.ts` | The only mutation path (AD-2). The UI calls it only through `dispatch` in `src/app/store.ts`; a rejection lands in `rejection: { reason, seq }`. |
-| Action creators | `startJourney({ name, mode? })`, `travel({ to, mode })`, `spendCityDay({ sightIds })` | `apply.ts` | Mode defaults to Explorer. `spendCityDay` has no `ending` field in core (AD-6's `ending` is [EXT]). |
+| Mutation | `apply(state \| null, action, content): Result` | `apply.ts` | The only mutation path (AD-2). The UI calls it only through `dispatch` in `src/app/store.ts`; a rejection lands in `rejection: { reason, seq }`. After every successful action except `startJourney`, `apply` runs the end rules (`evaluateEnd` in `end.ts`: home → goal, stranded, out of days), so the result already carries `outcome` and `failReason`; the UI never decides that a journey has ended. |
+| Action creators | `startJourney({ name, mode? })`, `travel({ to, mode })`, `spendCityDay({ sightIds })`, `callHome()` | `apply.ts` | Mode defaults to Explorer. `spendCityDay` has no `ending` field in core (AD-6's `ending` is [EXT]). `callHome` takes no payload. |
 | Queries | `routesFrom(state, content): RouteView[]` | `queries.ts` | Every route from the current position in content order; one `TravelOption` per mode. |
 | | `cityDayStatus(state, content): CityDayStatus` | `queries.ts` | Same check as `spendCityDay` with no sights; `stayPrice` is shown even when unavailable, `null` at home. |
 | | `cityDayPlan(state, sightIds, content): CityDayPlan` | `queries.ts` | The whole draft; `ok`/`reason` are exactly what `apply` would decide. |
+| | `callHomeStatus(state, content): CallHomeStatus` | `queries.ts` | `{ offered, fits, available, reason, days, stampsLost, price, daysUsedAfter }`; same check as `apply(callHome())`. The cost is given also when not offered; `stampsLost` is 0 with no stamps; `offered` is `false` once the journey has ended. |
 | | `daysTotal(state, content)`, `daysRemaining(state, content)` | `queries.ts` (re-exported from `days.ts`) | Import from `queries.ts`. |
 | Input helpers | `normalizeName`, `MAX_NAME_GRAPHEMES`, `DEFAULT_TRAVELLER_NAME` | `journey.ts` | For the name field only; `apply` normalises again. |
 
 - **`TravelOption`:** `{ mode, price, days, arrivalDay, available, reason, homeUnreachable }`. `arrivalDay` is **days used after arrival** (`daysUsed + days`), not a day label: the "Day X" label after arrival is `arrivalDay + 1` (Conventions → Days). `homeUnreachable` is a warning only, never blocks, and is always `false` when `available` is `false`.
-- **`ReasonCode`** (closed union in `types.ts`, AD-4): `UNKNOWN_MODE`, `NO_JOURNEY`, `JOURNEY_ENDED`, `NO_ROUTE`, `NOT_ENOUGH_MONEY`, `NOT_ENOUGH_DAYS`, `AT_HOME`, `INVALID_SIGHTS`, `ALREADY_IN_ALBUM`. Every member needs copy in `src/ui/copy.ts`; adding a member is a change to this listing.
-- The UI imports types and the members above; it does not import the internal checks (`checkTravel`, `checkCityDay`, `homeUnreachableAfter`, `accommodationPrice`), so the "available" it shows cannot drift from `apply` (AD-3).
+- **`ReasonCode`** (closed union in `types.ts`, AD-4): `UNKNOWN_MODE`, `NO_JOURNEY`, `JOURNEY_ENDED`, `NO_ROUTE`, `NOT_ENOUGH_MONEY`, `NOT_ENOUGH_DAYS`, `AT_HOME`, `INVALID_SIGHTS`, `ALREADY_IN_ALBUM`, `CALL_HOME_NOT_OFFERED`. Every member needs copy in `src/ui/copy.ts`; adding a member is a change to this listing.
+- The journey end is read from state (`outcome`, `failReason`, `calledHome`); there is no separate "journey ended" query.
+- The UI imports types and the members above; it does not import the internal checks (`checkTravel`, `checkCityDay`, `checkCallHome`, `evaluateEnd`, `homeUnreachableAfter`, `accommodationPrice`), so the "available" it shows cannot drift from `apply` (AD-3).
 
 ### AD-5 — Money and days are integers; one pricing function
 - **Binds:** FR-6, FR-8, FR-17, FR-21, Decision E (halves round up)

@@ -89,12 +89,14 @@ describe("FR-8 FR-9 FR-10 FR-21 FR-22 city day", () => {
       expect(started(spend(state, [], content)).money).toBe(0);
     });
 
-    it("allows the last day, and no end rule fires", () => {
+    // Until Story 3.1 this asserted outcome null (spec-2-1 "known interim
+    // state"). The 3.1 end rules now end the journey out of days here.
+    it("allows the last day, and the end rules then end it out of days", () => {
       const { content, state } = atAlpha({ daysUsed: 9 });
       const next = started(spend(state, [], content));
       expect(next.daysUsed).toBe(daysTotal(next, content));
-      expect(next.outcome).toBeNull();
-      expect(next.failReason).toBeNull();
+      expect(next.outcome).toBe("failed");
+      expect(next.failReason).toBe("outOfDays");
     });
 
     it("gives no new stamp on a repeat city day", () => {

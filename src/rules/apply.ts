@@ -1,7 +1,9 @@
 // The single mutation path (AD-2): apply(state, action, content) returns a new
 // state or a reason code, never mutates its inputs and never throws for a
 // player action (AD-4).
+import { applyCallHome } from "./callHome";
 import { applySpendCityDay } from "./cityDay";
+import { evaluateEnd } from "./end";
 import { applyStartJourney } from "./journey";
 import { applyTravel } from "./travel";
 import type {
@@ -37,7 +39,25 @@ export function spendCityDay(payload: { sightIds: string[] }): Action {
   return { type: "spendCityDay", sightIds: payload.sightIds };
 }
 
-/** `state` is null when no journey has started. */
+/**
+ * Action creator for calling home (FR-12). Offered only at a destination when
+ * money is below the cheapest mode on every route from it.
+ */
+export function callHome(): Action {
+  return { type: "callHome" };
+}
+
+/** Runs the end rules on a successful action's result (FR-11, FR-13). */
+function withEnd(result: Result, content: Content): Result {
+  return result.ok
+    ? { ok: true, state: evaluateEnd(result.state, content) }
+    : result;
+}
+
+/**
+ * `state` is null when no journey has started. Every successful action except
+ * `startJourney` runs the end rules, so the result already carries `outcome`.
+ */
 export function apply(
   state: GameState | null,
   action: Action,
@@ -51,9 +71,17 @@ export function apply(
   if (state.outcome !== null) return { ok: false, reason: "JOURNEY_ENDED" };
   switch (action.type) {
     case "travel":
-      return applyTravel(state, action.to, action.mode, content);
+      return withEnd(
+        applyTravel(state, action.to, action.mode, content),
+        content,
+      );
     case "spendCityDay":
-      return applySpendCityDay(state, action.sightIds, content);
+      return withEnd(
+        applySpendCityDay(state, action.sightIds, content),
+        content,
+      );
+    case "callHome":
+      return withEnd(applyCallHome(state, content), content);
     default: {
       const unhandled: never = action;
       return unhandled;

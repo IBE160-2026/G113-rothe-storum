@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 11-13-2026 15:53
-last_updated: 11-23-2026 22:16
+last_updated: 11-24-2026 16:58
 project: Worldbound Nomad
 project_key: NOKEY
 tracking_system: file-system
@@ -53,8 +53,8 @@ development_status:
   2-5-passport-stamps-and-photo-album-ui: backlog
   epic-2-retrospective: optional
 
-  epic-3: backlog
-  3-1-goal-call-home-and-end-rules-rules: backlog
+  epic-3: in-progress
+  3-1-goal-call-home-and-end-rules-rules: review
   3-2-call-home-and-can-t-continue-sheets-ui: backlog
   3-3-journey-summary-and-new-journey-ui: backlog
   epic-3-retrospective: optional
