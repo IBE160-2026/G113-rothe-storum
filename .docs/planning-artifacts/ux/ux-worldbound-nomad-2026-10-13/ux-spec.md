@@ -1,11 +1,14 @@
 ---
 title: "WORLDBOUND: NOMAD — UX Specification (Task 1: Core Mobile Screens)"
-status: draft
+status: superseded
 created: 2026-10-13
-updated: 2026-10-13
+updated: 2026-11-24
+superseded_by: ../../ux-designs/ux-worldbound-nomad-2026-10-13/EXPERIENCE.md
 ---
 
 # UX Specification: WORLDBOUND: NOMAD — Task 1
+
+> **Status: superseded (kept as a process record).** This low-fidelity spec was written by Thomas Rothe on 2026-10-13 (UX Task 1). On 2026-10-14 the team's UX work continued in [`ux-designs/ux-worldbound-nomad-2026-10-13/`](../../ux-designs/ux-worldbound-nomad-2026-10-13/), and `EXPERIENCE.md` and `DESIGN.md` there are the current UX source of truth. This file is not maintained. It is merged into `main` so the history of the UX process and its human and AI decisions (see `.memlog.md`) stays traceable.
 
 ## 1. Purpose and Scope
 
