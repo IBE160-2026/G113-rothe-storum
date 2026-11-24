@@ -1,0 +1,102 @@
+/* DESIGN.md → Resting panel, Destination chip, Map key. */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background: var(--color-surface);
+}
+
+.grab {
+  align-self: center;
+  width: 40px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-rule);
+}
+
+.title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-headline-sm-family);
+  font-size: var(--font-headline-sm-size);
+  font-weight: var(--font-headline-sm-weight);
+  line-height: var(--font-headline-sm-line-height);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--font-meta-size);
+}
+
+.caption {
+  margin: var(--space-2) 0 0;
+  color: var(--color-ink-muted);
+  font-family: var(--font-label-caps-family);
+  font-size: var(--font-label-caps-size);
+  letter-spacing: var(--font-label-caps-letter-spacing);
+  text-transform: uppercase;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-stack-tap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  composes: focusRing from "../styles/controls.module.css";
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-height: var(--space-touch-min);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-row);
+  color: var(--color-ink);
+  font: inherit;
+  line-height: var(--space-touch-min);
+  cursor: pointer;
+}
+
+.short {
+  border: 1.5px dashed var(--color-slot-dash);
+  background: transparent;
+}
+
+.city {
+  font-family: var(--font-label-strong-family);
+  font-size: var(--font-label-strong-size);
+  font-weight: var(--font-label-strong-weight);
+}
+
+.detail {
+  color: var(--color-ink-muted);
+  font-size: var(--font-meta-size);
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2) 0 0;
+  border-top: 1px solid var(--color-rule);
+  list-style: none;
+}
+
+.keyItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-ink-muted);
+  font-size: var(--font-caption-size);
+}
