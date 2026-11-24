@@ -21,6 +21,6 @@ Christian spurte hvorfor Thomas ikke står som bidragsyter i repoet, og om det h
 - PR #54 er åpnet: https://github.com/IBE160-2026/G113-rothe-storum/pull/54. Den er ikke flettet. Worktreen er fjernet.
 
 ### Åpne punkter
-- Thomas må legge til og verifisere `thomasrothe88@live.no` på GitHub-kontoen sin. Dette er ikke en repo-endring, og meldingen er gitt til Christian.
+- #56: Thomas må legge til og verifisere `thomasrothe88@live.no` på GitHub-kontoen sin. Issuen er tildelt Thomas.
 - PR #54 må gjennomgås og flettes med vanlig merge commit, ikke squash, så `45013aa` beholder Thomas som forfatter.
-- OQ-UX-1 til 7 i Thomas sin spesifikasjon er ikke sjekket mot Open Items i `EXPERIENCE.md`. Foreslått som GitHub-issue, som venter på Christians godkjenning.
+- #55: OQ-UX-1 til 7 i Thomas sin spesifikasjon er ikke sjekket mot Open Items i `EXPERIENCE.md`.
