@@ -58,5 +58,5 @@ The player opens WORLDBOUND: NOMAD, starts a journey from Bergen (`home`) and tr
 - 1.1 must land first: every other story relies on its scripts, lint boundary and test setup.
 - 1.3 also owns the error boundary and the in-tree content loading that every UI story (1.5–1.7) renders under.
 - 1.2 (content) and 1.3 (state, `apply`, types) feed 1.4 (travel/queries); UI stories 1.5–1.7 build against the types from 1.3 and the queries from 1.4.
-- Travel home in 1.4 records an "ended at home" outcome; goal evaluation is completed in Epic 3 (Story 3.1).
+- Travel home in 1.4 ends the journey and evaluates the goal (spec-1-4, Q1 = A). Since Story 3.1 this runs through the shared end rules in `src/rules/end.ts`.
 - Epic 2 (city days) and Epic 3 (journey end) extend `apply`, `queries` and the content files established here.
