@@ -6,6 +6,8 @@
 // - Map → Menu → "How to play": intro, back to the journey.
 // The journey itself is never saved (PRD §9.7, Decision L); only the intro
 // flag and the last name are kept on the device (AD-8).
+// - Starting a journey goes to the Map only when the store shows that
+//   `startJourney` was accepted; on a rejection the player stays on Start (#50).
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { ContentProvider } from "../app/content";
@@ -21,10 +23,12 @@ import { MenuSheet } from "./sheets/MenuSheet";
 type Screen =
   | { name: "start" }
   | { name: "intro"; variant: IntroVariant }
+  /** `startJourney` was dispatched; resolved to "map" or "start" next render. */
+  | { name: "starting" }
   | { name: "map" };
 
 function Screens({ storage }: { storage: DeviceStorage }) {
-  const { dispatch } = useJourney();
+  const { state, dispatch } = useJourney();
   const [screen, setScreen] = useState<Screen>({ name: "start" });
   const [name, setName] = useState(() => storage.lastName());
   const [menuOpen, setMenuOpen] = useState(false);
@@ -32,7 +36,7 @@ function Screens({ storage }: { storage: DeviceStorage }) {
 
   function beginJourney() {
     dispatch(startJourney({ name }));
-    setScreen({ name: "map" });
+    setScreen({ name: "starting" });
   }
 
   function onNewJourney() {
@@ -54,6 +58,17 @@ function Screens({ storage }: { storage: DeviceStorage }) {
     // browser ignores focus() on an inert element (focus would land on body).
     flushSync(() => setMenuOpen(false));
     menuButtonRef.current?.focus();
+  }
+
+  // The dispatch and the screen change are batched, so this render already
+  // sees the store's answer to startJourney. An accepted action clears
+  // `rejection` and sets `game`; a rejected one sets `rejection` and leaves
+  // `game` as it was. Adjusting state during render (no effect, no extra
+  // commit): React re-renders at once with the resolved screen.
+  if (screen.name === "starting") {
+    const accepted = state.rejection === null && state.game !== null;
+    setScreen(accepted ? { name: "map" } : { name: "start" });
+    return null;
   }
 
   switch (screen.name) {
