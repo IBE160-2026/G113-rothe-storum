@@ -1,7 +1,7 @@
 from lib import *
 # Reference photo: File:Exterior of the British Museum-London.jpg by Yair Haklai (CC BY-SA 4.0), https://commons.wikimedia.org/wiki/File:Exterior_of_the_British_Museum-London.jpg
-# Overall layout also checked against File:British Museum - panoramic (20496222784).jpg (Luke Massey &
-# the Greater London National Park City, CC BY 2.0); an aerial version drawn from it was not used.
+# Overall layout also checked against File:British Museum - panoramic (20496222784).jpg (Elliott Brown,
+# CC BY-SA 2.0). An aerial version was also drawn, from another photo, but not used.
 # The south front seen from the forecourt: the central portico with its sculpted pediment, the long
 # Ionic colonnade behind it, and the two projecting colonnaded wings on either side.
 import math

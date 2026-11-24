@@ -50,7 +50,9 @@ The four "Not changed" items above were decided by Christian in an AI-assisted s
 | `rome-vatican-museums` drawing | Redrawn as the double spiral staircase (the Momo staircase, 1932) seen from above. The alt text names no architect. |
 | `new-york-statue-of-liberty` drawing | Accepted as a monument, not a person. |
 
-In the same session all 16 drawings were redrawn from reference photos on Wikimedia Commons, at Christian's request. Each `imageAlt` was rewritten to match its new drawing, and each `source`, `author` and `licence` now records the reference photo (see the README credits table). These new alt texts and licence records were written by Claude and were **not** checked by the separate fact-check agent. They are open items for the final check:
+In the same session all 16 drawings were redrawn from reference photos on Wikimedia Commons, at Christian's request. Each `imageAlt` was rewritten to match its new drawing, and each `source`, `author` and `licence` now records the reference photo (see the README credits table). On 2026-11-24 Claude checked every reference photo's licence and author against its Commons page (API `extmetadata`). All 16 match `content/sights.json`. One credit was wrong and is corrected: the second British Museum photo (overall layout) is by Elliott Brown, CC BY-SA 2.0, not "Luke Massey & the Greater London National Park City, CC BY 2.0" (metadata from another photo was mixed up). Creative Commons lists the Free Art License 1.3 as BY-SA-compatible for version 4.0 since 21 October 2014, and BY-SA 2.0 and 3.0 allow adaptations under "a later version of the BY-SA license" ([compatible licenses](https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses/)). Christian still ticks the checklist below.
+
+These new alt texts and licence records were written by Claude and were **not** checked by the separate fact-check agent. They are open items for the final check:
 
 - [ ] Each `imageAlt` matches its drawing (checked in the browser, light and dark, issue #46).
 - [ ] Each reference photo's licence matches its Commons page.

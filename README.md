@@ -97,7 +97,7 @@ Each sight in `content/sights.json` records the photo page as `source`, `"Claude
 | Sydney Opera House    | CC BY-SA 4.0    | [Sydney Opera House from Circular Quay, 2023, 01.jpg](https://commons.wikimedia.org/wiki/File:Sydney_Opera_House_from_Circular_Quay,_2023,_01.jpg)                                                                                                                                                         | Kgbo              | CC BY-SA 4.0  |
 | Harbour Bridge        | CC BY-SA 4.0    | [Sydney Harbour Bridge night.jpg](https://commons.wikimedia.org/wiki/File:Sydney_Harbour_Bridge_night.jpg)                                                                                                                                                                                                 | Diliff            | CC BY-SA 3.0  |
 
-The British Museum drawing also follows the overall layout of [British Museum - panoramic (20496222784).jpg](<https://commons.wikimedia.org/wiki/File:British_Museum_-_panoramic_(20496222784).jpg>) by Luke Massey & the Greater London National Park City (CC BY 2.0).
+The British Museum drawing also follows the overall layout of [British Museum - panoramic (20496222784).jpg](<https://commons.wikimedia.org/wiki/File:British_Museum_-_panoramic_(20496222784).jpg>) by Elliott Brown (CC BY-SA 2.0).
 
 When a photo replaces a drawing, save it at the same path (or as `.webp` and update `image`), record its source page, author and licence in `sights.json`, and update this table. Photos must come from Wikimedia Commons, Unsplash or Pexels, or be AI-generated, and are never hotlinked.
 
