@@ -61,7 +61,9 @@ export const copy = {
   },
   error: {
     title: "Travel interrupted",
-    body: "Reload the page to try again.",
+    // #37: a reload cannot fix invalid content (it is bundled at build time),
+    // so the text does not promise that it will.
+    body: "Something went wrong. Reload the page, or try again later.",
     reload: "Reload",
   },
 } as const;
