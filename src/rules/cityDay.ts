@@ -104,7 +104,8 @@ export function checkCityDay(
  * days used rise by 1, the destination's city-day count rises by 1, the first
  * city day here earns the stamp, and each sight joins the album in the given
  * order. Every new entry's `day` is the new `daysUsed` (spine Conventions →
- * Days). No end rule fires here (out of days is Story 3.1).
+ * Days). The end rules (stranded, out of days) run afterwards in `apply`
+ * through `evaluateEnd` in end.ts.
  */
 export function applySpendCityDay(
   state: GameState,

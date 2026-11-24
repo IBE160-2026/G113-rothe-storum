@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import { expect } from "vitest";
 import { parseContent, type RawContent } from "../../src/content/load";
-import { apply } from "../../src/rules/apply";
+import { apply, startJourney } from "../../src/rules/apply";
 import type { Action, Content, GameState, Result } from "../../src/rules/types";
 
 /** A freshly parsed fixture from tests/fixtures/content/ (as in content.test.ts). */
@@ -42,4 +42,13 @@ export function applyFrozen(
 export function started(result: Result): GameState {
   if (!result.ok) throw new Error(`expected ok, got ${result.reason}`);
   return result.state;
+}
+
+/** A fresh journey with some fields overridden, as a frozen state. */
+export function stateWith(
+  content: Content,
+  patch: Partial<GameState>,
+): GameState {
+  const fresh = started(apply(null, startJourney({ name: "Ada" }), content));
+  return deepFreeze({ ...fresh, ...patch });
 }
