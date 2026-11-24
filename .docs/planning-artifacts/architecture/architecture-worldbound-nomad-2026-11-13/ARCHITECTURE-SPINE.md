@@ -7,7 +7,7 @@ paradigm: 'functional core, imperative shell (pure rules engine + thin React UI)
 scope: 'The whole MVP (core + extension): rules engine, content data, UI shell, storage, tests'
 status: final
 created: '2026-11-13'
-updated: '2026-11-19'
+updated: '2026-11-24'
 binds: [FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-8, FR-9, FR-10, FR-11, FR-12, FR-13, FR-14, FR-15, FR-16, FR-17, FR-18, FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, NFR-1, NFR-2, NFR-3, NFR-4, NFR-5, NFR-6, NFR-7, NFR-8, NFR-9]
 sources:
   - ../../prds/prd-worldbound-nomad-2026-10-12/prd.md
@@ -68,6 +68,24 @@ graph TD
 - **Binds:** FR-4, FR-9, FR-15, FR-21; copy in `src/ui/copy.ts`
 - **Prevents:** free-text errors that tests and copy cannot match
 - **Rule:** every rejection and unavailability carries a `ReasonCode` from one union in `src/rules/types.ts` (e.g. `NOT_ENOUGH_MONEY`, `NOT_ENOUGH_DAYS`, `NO_ROUTE`, `AT_HOME`, `ALREADY_IN_ALBUM`, `JOURNEY_ENDED`). The UI maps codes to copy, and tests assert codes, never strings.
+
+### Rules API — what the UI may call (reference for AD-2 – AD-4)
+
+Added 2026-11-24 (#35) so UI Stories 1.6 and 1.7 build against one listing; source of truth is the code in `src/rules/`. Planned members (`callHome`, end rules, [EXT]) are not listed until their stories add them.
+
+| Kind | Name | Module | Notes |
+| --- | --- | --- | --- |
+| Mutation | `apply(state \| null, action, content): Result` | `apply.ts` | The only mutation path (AD-2). The UI calls it only through `dispatch` in `src/app/store.ts`; a rejection lands in `rejection: { reason, seq }`. |
+| Action creators | `startJourney({ name, mode? })`, `travel({ to, mode })`, `spendCityDay({ sightIds })` | `apply.ts` | Mode defaults to Explorer. `spendCityDay` has no `ending` field in core (AD-6's `ending` is [EXT]). |
+| Queries | `routesFrom(state, content): RouteView[]` | `queries.ts` | Every route from the current position in content order; one `TravelOption` per mode. |
+| | `cityDayStatus(state, content): CityDayStatus` | `queries.ts` | Same check as `spendCityDay` with no sights; `stayPrice` is shown even when unavailable, `null` at home. |
+| | `cityDayPlan(state, sightIds, content): CityDayPlan` | `queries.ts` | The whole draft; `ok`/`reason` are exactly what `apply` would decide. |
+| | `daysTotal(state, content)`, `daysRemaining(state, content)` | `queries.ts` (re-exported from `days.ts`) | Import from `queries.ts`. |
+| Input helpers | `normalizeName`, `MAX_NAME_GRAPHEMES`, `DEFAULT_TRAVELLER_NAME` | `journey.ts` | For the name field only; `apply` normalises again. |
+
+- **`TravelOption`:** `{ mode, price, days, arrivalDay, available, reason, homeUnreachable }`. `arrivalDay` is **days used after arrival** (`daysUsed + days`), not a day label: the "Day X" label after arrival is `arrivalDay + 1` (Conventions → Days). `homeUnreachable` is a warning only, never blocks, and is always `false` when `available` is `false`.
+- **`ReasonCode`** (closed union in `types.ts`, AD-4): `UNKNOWN_MODE`, `NO_JOURNEY`, `JOURNEY_ENDED`, `NO_ROUTE`, `NOT_ENOUGH_MONEY`, `NOT_ENOUGH_DAYS`, `AT_HOME`, `INVALID_SIGHTS`, `ALREADY_IN_ALBUM`. Every member needs copy in `src/ui/copy.ts`; adding a member is a change to this listing.
+- The UI imports types and the members above; it does not import the internal checks (`checkTravel`, `checkCityDay`, `homeUnreachableAfter`, `accommodationPrice`), so the "available" it shows cannot drift from `apply` (AD-3).
 
 ### AD-5 — Money and days are integers; one pricing function
 - **Binds:** FR-6, FR-8, FR-17, FR-21, Decision E (halves round up)
