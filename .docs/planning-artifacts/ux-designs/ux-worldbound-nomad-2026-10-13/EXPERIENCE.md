@@ -288,7 +288,7 @@ Behavioural. Visual specs are in DESIGN.md → Components, under the same names,
 | Returning, saved journey | Start | [EXT] | Saved journey card first. The intro is skipped. |
 | Unreadable save | Start | [EXT] | Info banner (ext-1 X1c), save discarded, empty form, intro flag kept (FR-20). |
 | Cold load | Any | [CORE] | [ASSUMPTION] No loading state. Content is local (NFR-3, NFR-7), so the first paint is the Start screen, or the error fallback if content fails validation (next row). |
-| Content invalid or render error | Whole page | [CORE] | Fallback screen instead of a blank page (AR-10, #17, #24): H1 "Travel interrupted" (`error.title`), "Reload the page to try again." (`error.body`) and a `button-primary` "Reload" (`error.reload`) that reloads the page. Copy only: no content, logo or game state. The problems are logged to the console for developers. No mockup; built from existing components. |
+| Content invalid or render error | Whole page | [CORE] | Fallback screen instead of a blank page (AR-10, #17, #24): H1 "Travel interrupted" (`error.title`), "Something went wrong. Reload the page, or try again later." (`error.body`; changed 2026-11-24, #37, because a reload cannot fix invalid content) and a `button-primary` "Reload" (`error.reload`) that reloads the page. Copy only: no content, logo or game state. The problems are logged to the console for developers. No mockup; built from existing components. |
 | Offline | Any | [CORE] | Not applicable after the first load (NFR-3). |
 | Resting | Map | [CORE] | Resting panel with destination chips. City-day card if at a destination. |
 | At home (journey start) | Map | [CORE] | No city-day card at Bergen (FR-8); the resting panel lists the routes from Bergen. Bergen is in the Europe region. |
