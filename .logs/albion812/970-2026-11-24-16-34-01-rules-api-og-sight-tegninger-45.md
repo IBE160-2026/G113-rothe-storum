@@ -36,8 +36,12 @@ Christian ville fortsette fra i går, i rekkefølgen #35, #45, Story 3.1 og #32.
   - Galata-skriptet viste til feil referansefil. Rettet med nøyaktig tittel og lisens fra API-et, og Christian ble informert.
 - **Underveis svarte jeg Christian** at en ny terminal for Story 3.1 bør bruke en egen `git worktree`. Denne økten skrev bare til scratchpad mens Christian vurderte tegningene.
 
+- **Lisenskontroll mot Commons (etter Story 3.1 og #32, godkjent med "JA"):** alle 16 referansefotoene stemmer med `sights.json`. Én kreditering var feil: det andre British Museum-fotoet er av Elliott Brown, CC BY-SA 2.0, ikke Luke Massey med CC BY 2.0. Rettet i commit `92f383c`.
+  - Creative Commons bekrefter at FAL 1.3 er kompatibel med BY-SA 4.0, og at BY-SA 2.0 og 3.0 tillater en senere versjon.
+  - Kommentar på PR #53.
+
 ### Åpne punkter
-- **Christians endelige NFR-8-sjekk i PR #53:** alt-tekstene mot tegningene, lisensene mot Commons-sidene, og om FAL er kompatibel med BY-SA 4.0. Avkryssingslisten står i PR-en.
+- **Christians avkryssing i PR #53 (NFR-8):** lisensene og FAL-kompatibiliteten er kontrollert av Claude, men Christian krysser av selv. Alt-tekstene mot tegningene sjekkes i nettleseren (#46).
 - **#46:** sjekk SVG-ene i nettleseren, i lys og mørk modus. Kommentar om de nye tegningene er lagt til.
 - **#52:** bytte tegningene mot Commons-fotoer senere.
 - **Story 3.1 og #32** står igjen i dagens rekkefølge.
