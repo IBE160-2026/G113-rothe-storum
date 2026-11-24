@@ -31,13 +31,30 @@ After the corrections, 8 of the 24 facts changed: 4 that the agent marked "corre
 | `new-york-empire-state-building` (imageAlt) | "... with vertical window bands, setbacks near the top and a slender spire." | "... with several setbacks, vertical window bands and a slender spire on top." | Setbacks start at mid-height. |
 | `tokyo-skytree` (imageAlt) | "... two ring-shaped observation decks ..." | "... two box-shaped observation decks ..." | The decks are drawn as rectangles. |
 
-**Not changed (kept, listed for Christian's check):**
+**Not changed (kept, listed for Christian's check; decided on 2026-11-24, see [Christian's decisions](#christians-decisions-on-the-open-items-2026-11-24-45)):**
 
 - `sydney-harbour-bridge`: the span stays at 503 m. Wikipedia's infobox and ASCE give 503 m, while the article body says 504 m.
 - `new-york`: kept as drafted. The 1673–74 Dutch "New Orange" interlude and the pre-1904 elevated lines do not make the sentence wrong.
 - Licence wording: kept as "CC0 1.0 (AI-generated, no copyright claimed)", because the spec fixes it (Decision Q1 = A). The agent noted that a more precise form would be "CC0 1.0 (AI-generated; any rights waived by the Worldbound team)". This is a question for the team, not a correction.
 - `rome-vatican-museums` drawing: the dome reads as St Peter's Basilica rather than the Museums. The alt text describes the drawing correctly, but the image choice is for Christian to judge.
 - `new-york-statue-of-liberty` drawing: the only human figure in the set. It is a monument, not a person, but it sits close to the spec's "no people" rule.
+
+## Christian's decisions on the open items (2026-11-24, #45)
+
+The four "Not changed" items above were decided by Christian in an AI-assisted session (issue #45). Claude applied them after Christian approved each step.
+
+| Item | Decision |
+|---|---|
+| Licence wording | Licence model A: drawings after CC BY, CC BY-SA or Free Art License photos are `CC BY-SA 4.0` and credit the photographer; drawings after public-domain or CC0 photos are `CC0 1.0 (AI-generated; any rights waived by the Worldbound team)`. |
+| `sydney-harbour-bridge` | The span stays at 503 m. |
+| `rome-vatican-museums` drawing | Redrawn as the double spiral staircase (the Momo staircase, 1932) seen from above. The alt text names no architect. |
+| `new-york-statue-of-liberty` drawing | Accepted as a monument, not a person. |
+
+In the same session all 16 drawings were redrawn from reference photos on Wikimedia Commons, at Christian's request. Each `imageAlt` was rewritten to match its new drawing, and each `source`, `author` and `licence` now records the reference photo (see the README credits table). These new alt texts and licence records were written by Claude and were **not** checked by the separate fact-check agent. They are open items for the final check:
+
+- [ ] Each `imageAlt` matches its drawing (checked in the browser, light and dark, issue #46).
+- [ ] Each reference photo's licence matches its Commons page.
+- [ ] The Free Art License 1.3 (Galata) is compatible with CC BY-SA 4.0, as Creative Commons lists it.
 
 ## Tivoli (UX Open Item 6, orchestrator summary)
 
