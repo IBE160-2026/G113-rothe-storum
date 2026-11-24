@@ -9,7 +9,7 @@
 
 ## Deferred from: code review of spec-1-4-travel-and-route-queries (2026-11-22)
 
-- Planning docs do not reflect Q1 = A: `epic-1-context.md:55` and `epics.md:215` still say "ended at home" with goal evaluation in 3.1, and the FR-11 row in the coverage table in `epics.md` does not list Story 1.4. This extends the earlier entry above (#32). Editing them needs the team's approval.
+- Planning docs do not reflect Q1 = A: `epic-1-context.md:55` and `epics.md:215` still say "ended at home" with goal evaluation in 3.1, and the FR-11 row in the coverage table in `epics.md` does not list Story 1.4. This extends the earlier entry above (#32). Editing them needs the team's approval. → Done 2026-11-24 (#32).
 - PR #33 (`story-1-4-travel`) also contains Story 1.3 (#31) and the architecture fixes (#28), which are not merged yet. Merge #28 and #31 first, then update #33 from `main` so its diff shows only Story 1.4 (PR-1/AD-10: one story per PR).
 - No test checks that `src/main.tsx` wraps `App` in `ErrorBoundary`. Confirmed again by the verification-gap review of 1.4; see the Story 1.3 entry above (candidate for Story 1.5). → Done 2026-11-24 (#29): `tests/ui/main.test.tsx` imports the real entry point.
 - The new public rules API (`apply`, `travel`, `routesFrom`, `daysRemaining`, `TravelOption`/`RouteView`, the new `ReasonCode` members) is described only in spec-1-4's Design Notes. Add a short listing to ARCHITECTURE-SPINE (AD-3/AD-4) before UI Stories 1.6 and 1.7. → Done 2026-11-24 (#35).

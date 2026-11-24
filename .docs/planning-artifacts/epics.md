@@ -92,7 +92,7 @@ From PRD §6 (process):
 | FR-8 | 2.1, 2.4 |
 | FR-9 | 1.3, 1.4, 2.1, 3.1 |
 | FR-10 | 2.1, 2.4 |
-| FR-11 | 3.1, 3.3 |
+| FR-11 | 1.4, 3.1, 3.3 |
 | FR-12 | 3.1, 3.2 |
 | FR-13 | 3.1, 3.2 |
 | FR-14 | 3.3 |
@@ -212,7 +212,7 @@ So that I can choose between plane, train and bus.
 
 **Given** a travel to `home`
 **When** it is applied
-**Then** the journey ends with an outcome (goal evaluated in Story 3.1; until then the outcome is recorded as ended at home)
+**Then** the journey ends with the goal evaluated: `goalReached` or `goalNotReached` (spec-1-4, decision Q1 = A). Since Story 3.1 this runs through the shared end rules in `src/rules/end.ts`.
 
 ### Story 1.5: Start screen and first-time intro (UI)
 

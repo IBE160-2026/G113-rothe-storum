@@ -40,8 +40,10 @@ Christian ville fortsette fra i går, i rekkefølgen #35, #45, Story 3.1 og #32.
   - Creative Commons bekrefter at FAL 1.3 er kompatibel med BY-SA 4.0, og at BY-SA 2.0 og 3.0 tillater en senere versjon.
   - Kommentar på PR #53.
 
+- **Christians NFR-8-sjekk:** han gikk gjennom de 16 tegningene på en sjekkside (`dist/nfr8-check.html`, git-ignorert, med lys og mørk modus, alt-tekst, lisens og fotolenke). Han krysset av alle tre punktene i PR #53 og registrerte sjekken i en kommentar.
+
 ### Åpne punkter
-- **Christians avkryssing i PR #53 (NFR-8):** lisensene og FAL-kompatibiliteten er kontrollert av Claude, men Christian krysser av selv. Alt-tekstene mot tegningene sjekkes i nettleseren (#46).
+- **PR #53** venter på Thomas' review og fletting. Christians NFR-8-sjekk er gjort.
 - **#46:** sjekk SVG-ene i nettleseren, i lys og mørk modus. Kommentar om de nye tegningene er lagt til.
 - **#52:** bytte tegningene mot Commons-fotoer senere.
 - **Story 3.1 og #32** står igjen i dagens rekkefølge.
