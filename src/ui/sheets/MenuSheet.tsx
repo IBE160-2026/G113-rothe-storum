@@ -2,11 +2,13 @@
 // → Modal sheet). Only the "How to play" row (FR-2): "Album" and "New journey"
 // with its confirm come with the stories that own the album and the running
 // journey. Modal semantics: role="dialog", aria-modal, labelled by its title;
-// initial focus on the title; Tab wraps inside; Esc, × and the scrim close it.
+// initial focus on the title; Tab wraps inside over every focusable element
+// (focusTrap.ts, #49); Esc, × and the scrim close it.
 // The opener returns focus to its trigger and makes the background inert.
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import { copy } from "../copy";
 import controls from "../styles/controls.module.css";
+import { wrapTab } from "./focusTrap";
 import styles from "./MenuSheet.module.css";
 
 interface Props {
@@ -28,19 +30,7 @@ export function MenuSheet({ onClose, onHowToPlay }: Props) {
       onClose();
       return;
     }
-    if (event.key !== "Tab" || !sheetRef.current) return;
-    const focusable = sheetRef.current.querySelectorAll<HTMLElement>("button");
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (!first || !last) return;
-    const active = document.activeElement;
-    if (event.shiftKey && (active === first || active === titleRef.current)) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    if (sheetRef.current) wrapTab(event, sheetRef.current, titleRef.current);
   }
 
   return (
