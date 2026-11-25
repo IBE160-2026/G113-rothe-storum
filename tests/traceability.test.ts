@@ -40,7 +40,7 @@ const EXPECTED_ROWS: Record<string, number> = {
   "FR-4": 6,
   "FR-6": 4,
   "FR-7": 2,
-  "FR-8": 7,
+  "FR-8": 8,
   "FR-9": 5,
   "FR-10": 6,
   "FR-11": 8,

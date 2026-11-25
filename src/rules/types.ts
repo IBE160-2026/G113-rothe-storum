@@ -214,6 +214,12 @@ export interface CityDayStatus {
    * player sees what it would cost. `null` at home (no cost factor).
    */
   stayPrice: number | null;
+  /**
+   * After this city day, the fastest way home (ignoring money, FR-4) needs
+   * more days than remain. Never blocks. Always `false` when `available` is
+   * false (warning and unavailable are exclusive, as for travel).
+   */
+  homeUnreachable: boolean;
 }
 
 /** One sight of the current destination in a city-day draft (FR-10, FR-21). */

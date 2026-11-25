@@ -56,8 +56,11 @@ const priceOf = (sights: readonly Sight[]) =>
   sights.reduce((sum, s) => sum + s.price, 0);
 
 /**
- * Whether a city day can be spent here, and what the stay costs (FR-8). The
- * same check as `apply(spendCityDay({ sightIds: [] }))` (AD-3).
+ * Whether a city day can be spent here, what the stay costs, and whether home
+ * is out of reach after it (FR-8). The same check as
+ * `apply(spendCityDay({ sightIds: [] }))` (AD-3). The warning is the same rule
+ * as for travel (FR-4): a city day is 1 day at the current position, whatever
+ * the sights, so it does not depend on the draft.
  */
 export function cityDayStatus(
   state: GameState,
@@ -70,6 +73,9 @@ export function cityDayStatus(
     reason: check.ok ? null : check.reason,
     stayPrice:
       destination === undefined ? null : stayPrice(destination, content),
+    // Warning and unavailable are exclusive, as for travel options.
+    homeUnreachable:
+      check.ok && homeUnreachableAfter(state, state.position, 1, content),
   };
 }
 
