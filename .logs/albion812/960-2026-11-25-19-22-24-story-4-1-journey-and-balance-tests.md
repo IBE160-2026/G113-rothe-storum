@@ -49,6 +49,15 @@ Brukeren kjørte `/bmad-build 4.1` for å lage Story 4.1 (Epic 4): UJ-1 og balan
     - `.github/pull_request_template.md` har fått gruppas sjekkliste, med et eget punkt for FR-kartet;
     - issue #67 er opprettet.
   - `npm test` gir 378/378 grønne, og lint er ok.
+- **Walkthrough, del 2:** jeg gravde i intent-gapet med den ekte `apply` og en midlertidig test som ble slettet etterpå.
+  - Smutthullet er én reise: København, Paris, Roma, Istanbul, Tokyo og Sydney (6 stempler, €25 igjen, 17 dager brukt), og så Ring hjem. Sydney fjernes, og spilleren vinner med Tokyo.
+  - Varianter som lukker smutthullet: stempelstraff 2, Ring hjem til €100, eller 21 dager.
+  - Resultatene er postet som kommentar på #66.
+  - I chatten oppga jeg først dagene feil (18 i stedet for 17). Det ble rettet før kommentaren ble postet.
+- **Godkjent av brukeren og sendt videre:**
+  - Branchen er pushet, og PR #69 er åpnet med `ThomasRothe88` som reviewer.
+  - CI (lint, test, build) er grønn.
+  - Opprettet issue #68: regel-query for advarselen på bydag (FR-8).
 - **Issue #66** er opprettet etter brukerens godkjenning: «Balanse: Ring hjem gir 6 stempler og Tokyo-seier uten jobb (SM-3)».
 
 ### Åpne punkter
