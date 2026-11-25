@@ -39,12 +39,16 @@ with the story that owns them.
 | FR-4 | The route query and `apply` agree on every option | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › query and apply agree (AD-3) › gives the same reason for every option, and accepts every available one |
 | FR-4 | An option after which home is out of reach warns but is not blocked | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › home-unreachable warning › warns but stays available when home is out of reach after travel |
 | FR-4 | The warning uses the shortest route home in days, ignoring money | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › home-unreachable warning › uses the fewest days per route, ignoring money |
+| FR-4 | The Route sheet shows each mode's price and days (UI part) | `tests/ui/RouteSheet.test.tsx` | Story 1.6 AC2 / FR-4 route sheet › shows every mode's price and days from routesFrom (Bergen → Copenhagen) |
+| FR-4 | The Route sheet shows an unavailable mode with its reason (UI part) | `tests/ui/RouteSheet.test.tsx` | Story 1.6 AC2 / FR-4 route sheet › marks modes the player cannot afford with the reason (NOT_ENOUGH_MONEY) |
+| FR-4 | The Route sheet shows the home warning as icon + text and keeps the row selectable (UI part) | `tests/ui/RouteSheet.test.tsx` | Story 1.6 AC2 / FR-4 route sheet › shows the home warning as icon + text on a selectable row |
 | FR-6 | Travel deducts exactly the price, adds exactly the days and moves to the other end | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › travel › travels home to alpha by bus |
 | FR-6 | Travel is rejected when the price exceeds money or the days exceed days remaining, state unchanged | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › rejected › $name: $reason in query and apply |
 | FR-6 | Money equal to the price and days equal to the days remaining are allowed | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › travel › allows days equal to the days remaining |
 | FR-6 | A whole journey of travel on the real content (UJ-1) | `tests/rules/journeys.test.ts` | FR-6 FR-8 FR-10 FR-11 FR-21 FR-22 UJ-1 Ingrid reaches the goal (real content) › ends home after 16 days with €423, 5 stamps, 2 photos and the goal reached |
 | FR-7 | Arriving home ends the journey (rules part) | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › arriving home › ends the journey with goalNotReached and 0 stamps |
 | FR-7 | No action except a new journey is possible after arriving home | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › arriving home › rejects further travel after arriving home |
+| FR-7 | Before travel home, the game shows the stamp count and asks for confirmation; "Not now" changes nothing (UI part) | `tests/ui/Travel.test.tsx` | Story 1.7 AC2 / FR-7 travel home › Not now returns to the route sheet and nothing changes |
 | FR-8 | A city day deducts base × cost factor, rounded halves up | `tests/rules/money.test.ts` | FR-8 AD-5 accommodationPrice › accommodationPrice(%d, %s) is %d |
 | FR-8 | The real stays match PRD addendum §2 | `tests/rules/money.test.ts` | FR-8 AD-5 accommodationPrice › gives the stays of PRD addendum §2 for the real content |
 | FR-8 | A city day deducts the stay and adds 1 day | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › stay and stamp › spends a city day in Paris with the real content |
@@ -57,6 +61,7 @@ with the story that owns them.
 | FR-9 | Every action whose cost exceeds money is unavailable with the reason (travel) | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › query and apply agree (AD-3) › gives the same reason for every option, and accepts every available one |
 | FR-9 | Every action whose cost exceeds money is unavailable with the reason (city day and sights) | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › query and apply agree (AD-3) › agrees in every cell of the grid over %s |
 | FR-9 | Every action whose cost exceeds money is unavailable with the reason (call home) | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › query and apply agree (AD-3) › gives the same availability and reason as apply in every case |
+| FR-9 | Travel the player cannot afford is shown as unavailable with the reason (Route sheet, UI part) | `tests/ui/RouteSheet.test.tsx` | Story 1.6 AC2 / FR-4 route sheet › marks modes the player cannot afford with the reason (NOT_ENOUGH_MONEY) |
 | FR-10 | The first city day at a destination adds one stamp | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › stay and stamp › spends a city day in Paris with the real content |
 | FR-10 | Later city days at the same destination add no stamp | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › stay and stamp › gives no new stamp on a repeat city day |
 | FR-10 | Later visits add no stamp (UJ-2: three New York city days, one stamp) | `tests/rules/end.test.ts` | FR-11 FR-12 FR-13 UJ-2 Jonas calls home from Rome (real content) › calls home at 10 days: 17 days, 3 stamps, €20, goal not reached |
@@ -122,11 +127,10 @@ and removes the entry here.
 | --- | --- | --- |
 | FR-1 | The name is shown on the passport and in the journey summary (the start-screen preview is mapped above) | Stories 2.5, 3.3 |
 | FR-1 | Starting a new journey discards one in progress after the player confirms | [EXT] saved journeys |
-| FR-4 | The Route sheet shows each mode's price and days, unavailable modes with the reason, and the warning | Story 1.6 |
-| FR-7 | Before travel home, the game shows the stamp count and whether the goal will be reached, and asks for confirmation | Story 1.7 |
+| FR-7 | Before travel home, the game shows whether the goal will be reached (needs `travelPreview()`, #71) | Story 1.7 |
 | FR-7 | Arriving home shows the journey summary | Story 3.3 |
 | FR-8 | The city-day home-unreachable warning (PRD Decision M, #39); no rules query exists yet | Story 2.4 |
 | FR-8 | The UI lets the player pick sights before "End the day" | Story 2.4 |
-| FR-9 | Every action whose cost exceeds money is shown as unavailable with the reason on screen (the rules reasons are mapped above) | Stories 1.6, 2.4, 3.2 |
+| FR-9 | Every city day, sight or call home whose cost exceeds money is shown as unavailable with the reason on screen (travel is mapped above) | Stories 2.4, 3.2 |
 | FR-12 | The Call home sheet shows the cost, says when it cannot bring the player home in time, and "Not now" does not remove the offer | Story 3.2 |
 | FR-22 | The album shows each sight's photo and fact, and an album sight opens for free | Story 2.5 |

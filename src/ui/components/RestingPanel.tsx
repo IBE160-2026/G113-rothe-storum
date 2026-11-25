@@ -1,22 +1,37 @@
 // Resting panel and destination chips (EXPERIENCE → Resting panel,
 // Destination chip; DESIGN → Resting panel, Destination chip, Map key). The
 // chips are the complete non-map path to every destination (Tap rule 6,
-// UX-DR4). Everything shown comes from routesFrom(): the chip's price is the
-// lowest price among the options it returns, and the short variant shows when
-// that option's reason is NOT_ENOUGH_MONEY (decision B, spec-1-6).
+// UX-DR4). Everything shown comes from routesFrom() (AD-3):
+// - #64 (Story 1.7): the price is the lowest among the *available* options, so
+//   a chip never advertises a mode the player cannot take.
+// - When no option is available, the chip shows the short variant with the
+//   reason of the cheapest option: "Not enough money" (decision B, spec-1-6)
+//   or "Not enough days" (#64, wording pending Christian's confirmation).
 import type { MouseEvent } from "react";
 import type { PlaceId, RouteView, TravelOption } from "../../rules/types";
 import { copy } from "../copy";
 import styles from "./RestingPanel.module.css";
 import { MarkerShape, type MarkerState } from "./WorldMap";
 
-/** The option with the lowest price, as routesFrom() lists it. */
-export function cheapestOption(route: RouteView): TravelOption | undefined {
-  return route.options.reduce<TravelOption | undefined>(
+/** The option with the lowest price among `options`, as routesFrom() lists them. */
+function cheapest(options: readonly TravelOption[]): TravelOption | undefined {
+  return options.reduce<TravelOption | undefined>(
     (best, option) =>
       best === undefined || option.price < best.price ? option : best,
     undefined,
   );
+}
+
+/** The cheapest option the player can take now (#64). */
+export function cheapestAvailableOption(
+  route: RouteView,
+): TravelOption | undefined {
+  return cheapest(route.options.filter((o) => o.available));
+}
+
+/** The cheapest option overall, whose reason names why nothing fits. */
+export function cheapestOption(route: RouteView): TravelOption | undefined {
+  return cheapest(route.options);
 }
 
 interface Props {
@@ -45,15 +60,18 @@ export function RestingPanel({ place, routes, nameOf, homeId, onOpen }: Props) {
       <p className={styles.caption}>{copy.map.panelCaption(place)}</p>
       <ul className={styles.chips}>
         {routes.map((route) => {
-          const cheapest = cheapestOption(route);
-          if (!cheapest) return null;
-          const short = cheapest.reason === "NOT_ENOUGH_MONEY";
+          const available = cheapestAvailableOption(route);
+          const fallback = cheapestOption(route);
+          if (!fallback) return null;
+          const short = available === undefined;
           const isHome = route.to === homeId;
-          const detail = short
-            ? copy.map.chipShort
-            : isHome
-              ? copy.map.chipHome(cheapest.price)
-              : copy.map.chipFrom(cheapest.price);
+          const detail = available
+            ? isHome
+              ? copy.map.chipHome(available.price)
+              : copy.map.chipFrom(available.price)
+            : fallback.reason === "NOT_ENOUGH_DAYS"
+              ? copy.map.chipNoDays
+              : copy.map.chipShort;
           return (
             <li key={route.to}>
               <button

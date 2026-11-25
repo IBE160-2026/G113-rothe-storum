@@ -18,6 +18,7 @@ import { normalizeName } from "../rules/journey";
 import { IntroScreen, type IntroVariant } from "./screens/IntroScreen";
 import { MapScreen } from "./screens/MapScreen";
 import { StartScreen } from "./screens/StartScreen";
+import { TemporaryJourneyEnd } from "./screens/TemporaryJourneyEnd";
 import { MenuSheet } from "./sheets/MenuSheet";
 
 type Screen =
@@ -90,6 +91,17 @@ function Screens({ storage }: { storage: DeviceStorage }) {
         />
       );
     case "map":
+      // Story 1.7: once the rules end the journey, show the TEMPORARY end
+      // screen until Stories 3.2 and 3.3 (spec-1-7). "New journey" goes to
+      // Start, where the last name is prefilled.
+      if (state.game !== null && state.game.outcome !== null) {
+        return (
+          <TemporaryJourneyEnd
+            game={state.game}
+            onNewJourney={() => setScreen({ name: "start" })}
+          />
+        );
+      }
       return (
         <>
           <MapScreen

@@ -37,11 +37,11 @@ const SM1_FRS = [
  */
 const EXPECTED_ROWS: Record<string, number> = {
   "FR-1": 7,
-  "FR-4": 6,
+  "FR-4": 9,
   "FR-6": 4,
-  "FR-7": 2,
+  "FR-7": 3,
   "FR-8": 7,
-  "FR-9": 5,
+  "FR-9": 6,
   "FR-10": 6,
   "FR-11": 6,
   "FR-12": 12,

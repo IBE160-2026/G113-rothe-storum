@@ -9,8 +9,12 @@
 //   aria-describedby; icon + text, never colour alone.
 // - Dialog: role="dialog", aria-modal, labelled by the headline, initial focus
 //   on the headline, Tab wraps inside (wrapTab, #49), Esc closes.
-// Confirming travel is Story 1.7: until `onConfirm` is given, the primary
-// button is shown but unavailable.
+// Story 1.7: the primary commits the chosen mode through `onConfirm` (the
+// screen dispatches `travel`). On a route to Bergen it reads "Continue" and
+// swaps the content to Travel home (EXPERIENCE → Route sheet, Travel home
+// sheet); "Not now" there swaps back with nothing changed. Esc, ×, scrim and
+// Back close the whole sheet in either content. Focus goes to the headline of
+// whichever content is shown.
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import type { RouteView, TransportMode, TravelOption } from "../../rules/types";
 import { Icon } from "../components/Icon";
@@ -18,6 +22,7 @@ import { copy } from "../copy";
 import controls from "../styles/controls.module.css";
 import { wrapTab } from "./focusTrap";
 import styles from "./RouteSheet.module.css";
+import { TravelHome } from "./TravelHome";
 
 interface Props {
   route: RouteView;
@@ -29,8 +34,11 @@ interface Props {
   money: number;
   /** The journey's total days (daysTotal), for the over-the-limit reason. */
   daysTotal: number;
+  /** Stamps earned so far and the goal, for the Travel home content. */
+  stamps: number;
+  goalStamps: number;
   onRequestClose: () => void;
-  /** Story 1.7. Without it the primary button stays unavailable. */
+  /** Commits the trip. Without it the primary button stays unavailable. */
   onConfirm?: (mode: TransportMode) => void;
 }
 
@@ -55,6 +63,8 @@ export function RouteSheet({
   toStamped,
   money,
   daysTotal,
+  stamps,
+  goalStamps,
   onRequestClose,
   onConfirm,
 }: Props) {
@@ -63,12 +73,14 @@ export function RouteSheet({
   const sheetRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [selected, setSelected] = useState<TransportMode | null>(null);
+  const [view, setView] = useState<"route" | "home">("route");
   const chosen = route.options.find((o) => o.mode === selected && o.available);
   const noneFits = route.options.every((o) => !o.available);
+  const showHome = view === "home" && chosen !== undefined;
 
   useEffect(() => {
     titleRef.current?.focus();
-  }, []);
+  }, [showHome]);
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Escape") {
@@ -84,7 +96,61 @@ export function RouteSheet({
     : toIsHome
       ? copy.route.continueHome(chosen.price)
       : copy.route.primary(copy.route.verb[chosen.mode], chosen.price);
-  const primaryEnabled = chosen !== undefined && onConfirm !== undefined;
+  // To Bergen the primary only swaps the content; elsewhere it commits.
+  const primaryEnabled =
+    chosen !== undefined && (toIsHome || onConfirm !== undefined);
+
+  function onPrimary() {
+    if (!chosen) return;
+    if (toIsHome) setView("home");
+    else onConfirm?.(chosen.mode);
+  }
+
+  const closeButton = (
+    <button
+      type="button"
+      className={controls.iconButton}
+      aria-label={copy.route.close}
+      onClick={onRequestClose}
+    >
+      <Icon name="close" size={22} />
+    </button>
+  );
+
+  if (showHome) {
+    return (
+      <div className={styles.layer}>
+        <div
+          className={styles.scrim}
+          aria-hidden="true"
+          onClick={onRequestClose}
+        />
+        <div
+          ref={sheetRef}
+          className={styles.sheet}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          onKeyDown={onKeyDown}
+        >
+          <div className={styles.header}>
+            <span />
+            {closeButton}
+          </div>
+          <TravelHome
+            option={chosen}
+            fromName={fromName}
+            stamps={stamps}
+            goalStamps={goalStamps}
+            titleId={titleId}
+            titleRef={titleRef}
+            onConfirm={() => onConfirm?.(chosen.mode)}
+            onNotNow={() => setView("route")}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.layer}>
@@ -119,14 +185,7 @@ export function RouteSheet({
               </p>
             )}
           </div>
-          <button
-            type="button"
-            className={controls.iconButton}
-            aria-label={copy.route.close}
-            onClick={onRequestClose}
-          >
-            <Icon name="close" size={22} />
-          </button>
+          {closeButton}
         </div>
 
         <fieldset className={styles.options}>
@@ -208,7 +267,7 @@ export function RouteSheet({
           className={controls.primary}
           aria-disabled={!primaryEnabled || undefined}
           onClick={() => {
-            if (chosen && onConfirm) onConfirm(chosen.mode);
+            if (primaryEnabled) onPrimary();
           }}
         >
           {primaryLabel}

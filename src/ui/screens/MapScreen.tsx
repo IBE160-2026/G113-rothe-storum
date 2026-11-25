@@ -6,13 +6,19 @@
 // - Route sheet for the chosen destination. Esc, ×, scrim and browser Back
 //   close it, and focus returns to the control that opened it; a pointer-only
 //   map marker hands focus to the same city's chip.
-// Every route value comes from routesFrom() (AD-3). Travel is Story 1.7.
+// Every route value comes from routesFrom() (AD-3).
+// Story 1.7: confirming a trip dispatches `travel` (apply decides, AD-2) and
+// closes the sheet through history (#65); focus goes to the Map headline, as
+// the chips now list routes from the new place. The status chips, strip and
+// map follow the new game state. A trip that ends the journey leaves the Map
+// for the temporary end screen (App).
 import { useEffect, useRef, useState, type Ref } from "react";
 import { flushSync } from "react-dom";
 import { useContent } from "../../app/content";
 import { useJourney } from "../../app/store";
+import { travel } from "../../rules/apply";
 import { daysTotal, routesFrom } from "../../rules/queries";
-import type { PlaceId } from "../../rules/types";
+import type { PlaceId, TransportMode } from "../../rules/types";
 import { Logo } from "../components/Logo";
 import { RestingPanel } from "../components/RestingPanel";
 import { StatusBar } from "../components/StatusBar";
@@ -33,7 +39,7 @@ interface Props {
 
 export function MapScreen({ onOpenMenu, menuButtonRef, inert }: Props) {
   const content = useContent();
-  const { state } = useJourney();
+  const { state, dispatch } = useJourney();
   const game = state.game;
   const headingRef = useRef<HTMLHeadingElement>(null);
   const mainRef = useRef<HTMLElement>(null);
@@ -71,6 +77,23 @@ export function MapScreen({ onOpenMenu, menuButtonRef, inert }: Props) {
 
   function requestClose() {
     if (!back.close()) closeSheet();
+  }
+
+  /**
+   * Commits the trip. Only available options can be confirmed, and they are
+   * exactly what `apply` accepts (routesFrom shares its check, AD-3).
+   */
+  function confirmTravel(to: PlaceId, mode: TransportMode) {
+    openerRef.current = headingRef.current;
+    // Pop the sheet's history entry (#65), then close at once: after the
+    // trip the route is gone, so waiting for popstate would leave the Map
+    // inert and focus nowhere in between.
+    back.close();
+    flushSync(() => {
+      dispatch(travel({ to, mode }));
+      setOpenTo(null);
+    });
+    headingRef.current?.focus();
   }
 
   return (
@@ -136,7 +159,10 @@ export function MapScreen({ onOpenMenu, menuButtonRef, inert }: Props) {
           toStamped={game.stamps.some((s) => s.id === openRoute.to)}
           money={game.money}
           daysTotal={daysTotal(game, content)}
+          stamps={game.stamps.length}
+          goalStamps={content.config.goalStamps}
           onRequestClose={requestClose}
+          onConfirm={(mode) => confirmTravel(openRoute.to, mode)}
         />
       )}
     </>

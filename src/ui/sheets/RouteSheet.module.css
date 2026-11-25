@@ -177,3 +177,33 @@
   color: var(--color-ink);
   font-size: var(--font-meta-size);
 }
+
+/* Story 1.7: Travel home content (DESIGN → Travel home sheet). */
+.stamps {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-label-strong-family);
+  font-size: var(--font-label-strong-size);
+  font-weight: var(--font-label-strong-weight);
+}
+
+.ends {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-label-strong-family);
+  font-size: var(--font-label-strong-size);
+  font-weight: var(--font-label-strong-weight);
+}
+
+.secondary {
+  composes: focusRing from "../styles/controls.module.css";
+  min-height: var(--space-button-height-secondary);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-button-family);
+  font-size: var(--font-button-size);
+  font-weight: var(--font-button-weight);
+  cursor: pointer;
+}

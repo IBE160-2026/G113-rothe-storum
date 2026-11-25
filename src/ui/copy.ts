@@ -80,6 +80,9 @@ export const copy = {
     // Decision (Thomas, 2026-11-24, spec-1-6): the short chip names the reason
     // reported by routesFrom() instead of an amount the UI would compute.
     chipShort: "Not enough money",
+    // #64 (Thomas, 2026-11-25): the same chip when no mode fits the days left.
+    // Wording proposed to Christian; pending his confirmation (spec-1-7).
+    chipNoDays: "Not enough days",
     key: {
       here: "You're here",
       home: "Home",
@@ -126,6 +129,41 @@ export const copy = {
       `No route from ${city} fits your ${euros(money)}.`,
     options: "How to travel",
     close: "Close",
+  },
+  // Story 1.7 (EXPERIENCE → Copy templates: home, {verb} home forms).
+  home: {
+    verb: {
+      plane: "Fly home",
+      train: "Take the train home",
+      bus: "Take the bus home",
+    },
+    title: (mode: "plane" | "train" | "bus", verb: string) =>
+      mode === "plane" ? "Fly home to Bergen?" : `${verb} to Bergen?`,
+    // DESIGN → Travel home sheet: "Istanbul → Bergen · Plane €250 · 1 day".
+    routeLine: (
+      from: string,
+      mode: "plane" | "train" | "bus",
+      price: number,
+      days: number,
+    ) =>
+      `${from} → Bergen · ${{ plane: "Plane", train: "Train", bus: "Bus" }[mode]} ${euros(price)} · ${dayCount(days)}`,
+    stamps: (n: number, goal: number) => `Stamps ${n}/${goal}`,
+    ends: "Your journey ends when you land.",
+    primary: (verb: string, price: number) => `${verb} · ${euros(price)}`,
+    notNow: "Not now",
+  },
+  // Temporary journey end (Story 1.7) until Stories 3.2 and 3.3: headlines and
+  // labels from EXPERIENCE → sum.*; the full summary is Story 3.3.
+  end: {
+    reached: "What an adventure.",
+    notReached: "Almost there.",
+    failed: "The adventure ends here.",
+    stranded: (city: string) => `Stranded in ${city} — no way home in time.`,
+    outOfDays: (city: string) => `Out of days in ${city}.`,
+    goalReached: "Goal reached",
+    goalNotReached: "Goal not reached",
+    calledHome: "Called home",
+    newJourney: "New journey",
   },
   error: {
     title: "Travel interrupted",

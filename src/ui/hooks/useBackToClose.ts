@@ -20,7 +20,10 @@ export interface BackToClose {
 
 export function useBackToClose(onBack: () => void): BackToClose {
   const onBackRef = useRef(onBack);
+  /** Our entry is on the history stack and not yet being popped. */
   const pushed = useRef(false);
+  /** `close()` called `history.back()`; its `popstate` has not arrived yet. */
+  const closing = useRef(false);
 
   useEffect(() => {
     onBackRef.current = onBack;
@@ -28,12 +31,23 @@ export function useBackToClose(onBack: () => void): BackToClose {
 
   useEffect(() => {
     function onPopState() {
-      if (!pushed.current) return;
+      if (!pushed.current && !closing.current) return;
       pushed.current = false;
+      closing.current = false;
       onBackRef.current();
     }
     window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+      // #65: unmounting with a sheet still open (for example a confirmed trip
+      // that ends the journey) would leave the entry behind, and the next
+      // Back would seem to do nothing. Pop it; no listener is left to react.
+      // Not when close() already popped it: that would go back twice.
+      if (pushed.current) {
+        pushed.current = false;
+        window.history.back();
+      }
+    };
   }, []);
 
   const open = useCallback(() => {
@@ -44,6 +58,8 @@ export function useBackToClose(onBack: () => void): BackToClose {
 
   const close = useCallback(() => {
     if (!pushed.current) return false;
+    pushed.current = false;
+    closing.current = true;
     window.history.back();
     return true;
   }, []);

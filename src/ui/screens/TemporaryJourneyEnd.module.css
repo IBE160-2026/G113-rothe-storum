@@ -1,0 +1,55 @@
+/* Temporary until Stories 3.2 / 3.3 (see TemporaryJourneyEnd.tsx). */
+
+.screen {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: var(--space-column-max);
+  margin: 0 auto;
+  padding: var(--space-gutter);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-headline-family);
+  font-size: var(--font-headline-size);
+  font-weight: var(--font-headline-weight);
+  line-height: var(--font-headline-line-height);
+}
+
+.title:focus {
+  outline: none;
+}
+
+.reason {
+  margin: 0;
+  color: var(--color-ink-body);
+}
+
+.labels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.labels li {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-label-strong-family);
+  font-size: var(--font-label-strong-size);
+  font-weight: var(--font-label-strong-weight);
+}
