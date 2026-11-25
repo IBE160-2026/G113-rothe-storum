@@ -38,3 +38,24 @@ Thomas godkjente PR #70 og la igjen to kommentarer. Han utfordret alternativ B f
 ### Åpne punkter
 - Gjennomfør E på `gh-66-call-home-goal` med `bmad-build` (`Closes #66`). Dekket av #66.
 - Svar til Thomas på #70: E er godtatt, og spørsmålene hans om `travelPreview()`, midlertidig slutt-skjerm, eierskap til 3.2 og 3.3 og #64 må besvares av brukeren. Be ham se på `70791ed` før merge.
+
+## 2026-11-25 kl. 20:57 — Albion812
+
+### Oppgave
+Brukeren ba om svar til Thomas på PR #70: E for #66, review av commitene etter godkjenningen, og svar på spørsmålene han trenger besvart før Story 1.7.
+
+### Plan
+- Begge kommentarene ble skrevet av AI og lagt fram som utkast. Brukeren godkjente dem uendret («post it as is»).
+- Brukerens svar: 3.2 og 3.3 tar den som har tid. Ja til AI-forslagene om `travelPreview()`, midlertidig slutt-skjerm og #64.
+
+### Resultat
+- [Kommentar 1 på #70](https://github.com/IBE160-2026/G113-rothe-storum/pull/70#issuecomment-7172968862): E er godtatt (Decision N, `24832a1`). Thomas blir bedt om å se på `70791ed` før merge.
+- [Kommentar 2 på #70](https://github.com/IBE160-2026/G113-rothe-storum/pull/70#issuecomment-7172995488):
+  - `travelPreview()` med signaturen til Thomas, i en liten regel-PR rett etter #66.
+  - Midlertidig slutt-skjerm er greit.
+  - 3.2 og 3.3 tar den som har tid.
+  - #64: billigste tilgjengelige pris. Thomas sender teksten for tilfellet der dagene ikke rekker.
+
+### Åpne punkter
+- Gjennomfør E på `gh-66-call-home-goal` (#66). Lag deretter `travelPreview()` i en egen regel-PR, før 1.7 merges. Opprett issue for `travelPreview()` hvis brukeren ønsker det.
+- Bekreft teksten fra Thomas for #64 når den kommer.
