@@ -3,7 +3,8 @@
 // no row, when a map row is malformed, or when a row names a test file that
 // does not exist or has no `describe`/`it`/`test` call for every title of the
 // row's `describe › it` path, in source order and not skipped. The marker
-// "pending Story 3.3" is allowed only for FR-14 (spec 4.1 decision).
+// "pending Story 3.3" is allowed only for FR-14 (spec 4.1 decision). The
+// number of rows per FR is pinned in EXPECTED_ROWS, so a deleted row fails.
 import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -28,6 +29,27 @@ const SM1_FRS = [
   "FR-21",
   "FR-22",
 ];
+
+/**
+ * Rows per FR in the map, pinned so a deleted row fails by name (Story 4.1
+ * elicitation, chaos check M5). Change a count only together with the map:
+ * a UI story that moves a Flagged consequence into the table adds 1 here.
+ */
+const EXPECTED_ROWS: Record<string, number> = {
+  "FR-1": 7,
+  "FR-4": 6,
+  "FR-6": 4,
+  "FR-7": 2,
+  "FR-8": 7,
+  "FR-9": 5,
+  "FR-10": 6,
+  "FR-11": 6,
+  "FR-12": 12,
+  "FR-13": 11,
+  "FR-14": 7,
+  "FR-21": 6,
+  "FR-22": 4,
+};
 
 interface MapRow {
   fr: string;
@@ -238,6 +260,19 @@ function checkMap(
   return problems;
 }
 
+/** FRs whose row count differs from the pinned one, as readable lines. */
+function checkRowCounts(
+  rows: MapRow[],
+  expected: Record<string, number>,
+): string[] {
+  return Object.entries(expected).flatMap(([fr, want]) => {
+    const got = rows.filter((r) => r.fr === fr).length;
+    return got === want
+      ? []
+      : [`${fr}: ${String(got)} rows, expected ${String(want)}`];
+  });
+}
+
 function readRepoFile(file: string): string | undefined {
   const url = new URL(file, ROOT);
   return existsSync(url) ? readFileSync(url, "utf8") : undefined;
@@ -254,6 +289,18 @@ describe("SM-1 FR → test map guard", () => {
 
   it("maps every SM-1 FR to tests that exist", () => {
     expect(checkMap(parsed, readRepoFile)).toEqual([]);
+  });
+
+  it("keeps the pinned number of rows for every SM-1 FR", () => {
+    expect(Object.keys(EXPECTED_ROWS).sort()).toEqual([...SM1_FRS].sort());
+    expect(checkRowCounts(parsed.rows, EXPECTED_ROWS)).toEqual([]);
+  });
+
+  it("names an FR whose row count changed", () => {
+    const row = { fr: "FR-7", consequence: "c", file: "f", test: "t" };
+    expect(checkRowCounts([row], { "FR-7": 2, "FR-13": 0 })).toEqual([
+      "FR-7: 1 rows, expected 2",
+    ]);
   });
 
   it("names a missing FR, a renamed, skipped or misordered test, a missing file and a misplaced pending marker", () => {

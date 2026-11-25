@@ -12,6 +12,8 @@ every title in the row's `describe › it` path. Titles are written exactly as
 in the source, so an `it.each` row shows its template (`$name`, `%s`). The
 marker `pending Story 3.3` in the file column is allowed only for FR-14 (spec
 4.1, decision CSE 2026-11-25); Story 3.3 must replace those rows with tests.
+The number of rows per FR is pinned in `EXPECTED_ROWS` in the guard, so a
+deleted row fails by name; change the count together with the map.
 
 The SM-3 balance test (`tests/balance/balance.test.ts`) deliberately excludes
 call home: a journey counts only when it travels home (PRD addendum §6 model,
@@ -112,7 +114,8 @@ with the story that owns them.
 
 These consequences are UI behaviour whose screens are still in the backlog, or
 [EXT]. They have no row above because no test can exist before the UI does.
-When the owning story adds a test, it adds the row to the main table above
+When the owning story adds a test, it adds the row to the main table above,
+raises that FR's count in `EXPECTED_ROWS` in `tests/traceability.test.ts`,
 and removes the entry here.
 
 | FR | Consequence | Owner |

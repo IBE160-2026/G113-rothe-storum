@@ -87,6 +87,21 @@ context:
 - Review pass 1: AC 2 is now also an automated test (a frozen content copy with Rome at cost factor 4.0 leaves fewer than 3 sets); the balance header, the FR map and epic-4-context state that call home is excluded (#66); the guard matches titles only as the first argument of `describe`/`it`/`test` calls (also after `.each(...)`), in source order, not skipped, and names malformed map rows; `play()` moved to `tests/rules/helpers.ts`.
 - `npm test`: 20 files, 375 tests, ~1.6 s wall time (baseline 1.6 s).
 
+- Advanced elicitation after the walkthrough (2026-11-25; Assumption Audit, Second-Order Thinking, Chaos Monkey). Mutation evidence, each change reverted with `git checkout`:
+
+  | # | Mutation | Result |
+  |---|---|---|
+  | M1 | remove the Paris–Rome route | balance test fails (fewer than 3 goal sets) |
+  | M2 | `goalStamps` 5 → 4 | 3 balance tests fail (goal sets no longer have exactly `goalStamps` stamps) |
+  | M3 | `totalDays` 30 → 21 | all balance tests pass: SM-3 holds at 21 days (input for Story 4.4's lever) |
+  | M4 | `describe.skip` on the city-day block | map guard fails; 45 tests reported skipped |
+  | M5 | delete one FR-12 map row | nothing failed → fixed: row counts per FR pinned in `EXPECTED_ROWS`; rerun fails with "FR-12: 11 rows, expected 12" (reverses triage #25, decision CSE) |
+  | M6 | call-home `stampPenalty` 1 → 0 | UJ-2 fails; balance tests unaffected (call home excluded, #66) |
+  | M7 | Istanbul bus €80 → €60 | UJ-1 fails (€443 ≠ €423) |
+  | M8 | halve every route price | 3 balance tests fail (six-stamp journeys appear) |
+
+  Assumption audit: the weakest assumption is that Story 3.3 replaces the FR-14 "pending" rows; tracked as #67. Margins: without sights the 4th set (New York, €1,480) is €20 under the limit; with a full album exactly 1 set meets the threshold of 1.
+
 ## Spec Change Log
 
 - **Loop 1 (review pass 1, intent_gap #1–#2):** call home is not in the balance search, but the real rules let a player reach 6 stamps away from home and win via call home. CSE decided: exclude call home, document the exclusion, open a GitHub issue; keep the code and amend it. Amended: the Decisions in the frozen block. Known-bad state avoided: a balance test that silently claims "no 6-stamp journey" while the rules allow one. KEEP: the UJ-1 test, the `apply`-driven search with its dominance key and the Europe vacuity guard, the map's 81 rows and Flagged table, and the guard's named problem lines.

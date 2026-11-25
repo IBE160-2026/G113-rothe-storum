@@ -49,5 +49,5 @@ Prove the core game works and can be handed over. The rules and the two core use
 
 - 4.1 needs only the finished rules (Epics 1–3). It can start now.
 - 4.2, 4.3 and 4.4 need the whole core UI, much of which is still in the backlog: 1.6, 1.7, 2.3–2.5, 3.2 and 3.3.
-- 4.4 depends on 4.1's balance test for the 21-day lever, and its outcome may change content values. Playtest results gate the start of Epic 5: no extension work while core tests or the playtest fail.
+- 4.4 depends on 4.1's balance test for the 21-day lever, and its outcome may change content values. With the content of 2026-11-25, SM-3 still holds at 21 days (all balance tests pass with `totalDays` 21), so the lever can be used without content changes. Playtest results gate the start of Epic 5: no extension work while core tests or the playtest fail.
 - 4.5 comes last. It verifies the commands and the docs produced by every other story, including the e2e run from 4.2 and the photo credits from the 2.2 content records.
