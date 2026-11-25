@@ -10,13 +10,19 @@ import {
   startJourney,
   travel,
 } from "../../src/rules/apply";
-import { cityDayPlan, cityDayStatus, daysTotal } from "../../src/rules/queries";
+import {
+  cityDayPlan,
+  cityDayStatus,
+  daysRemaining,
+  daysTotal,
+} from "../../src/rules/queries";
 import type {
   CityDayPlan,
   Content,
   GameState,
   Result,
 } from "../../src/rules/types";
+import { shortestDaysHome } from "../../src/rules/travel";
 import { applyFrozen, deepFreeze, smallContent, started } from "./helpers";
 
 /** A fresh journey with some fields overridden, as a frozen state. */
@@ -329,18 +335,21 @@ describe("FR-8 FR-9 FR-10 FR-21 FR-22 city day", () => {
         available: true,
         reason: null,
         stayPrice: 50,
+        homeUnreachable: false,
       });
       const broke = stateWith(content, { position: "beta-town", money: 10 });
       expect(cityDayStatus(broke, content)).toEqual({
         available: false,
         reason: "NOT_ENOUGH_MONEY",
         stayPrice: 75,
+        homeUnreachable: false,
       });
       const home = stateWith(content, {});
       expect(cityDayStatus(home, content)).toEqual({
         available: false,
         reason: "AT_HOME",
         stayPrice: null,
+        homeUnreachable: false,
       });
     });
 
@@ -552,6 +561,14 @@ describe("FR-8 FR-9 FR-10 FR-21 FR-22 city day", () => {
         const empty = spend(state, [], content);
         expect(status.available).toBe(empty.ok);
         expect(status.reason).toBe(empty.ok ? null : empty.reason);
+        if (!status.available) expect(status.homeUnreachable).toBe(false);
+        // The warning matches the state the city day actually produces.
+        if (empty.ok) {
+          expect(status.homeUnreachable).toBe(
+            shortestDaysHome(empty.state.position, content) >
+              daysRemaining(empty.state, content),
+          );
+        }
         for (const sightIds of drafts) {
           const plan = cityDayPlan(state, sightIds, content);
           const result = spend(state, sightIds, content);
@@ -569,6 +586,106 @@ describe("FR-8 FR-9 FR-10 FR-21 FR-22 city day", () => {
         }
       }
       expect(checked).toBeGreaterThan(500);
+    });
+  });
+
+  describe("home-unreachable warning", () => {
+    it("warns but does not block when home is out of reach after the day", () => {
+      const content = smallContent();
+      expect(shortestDaysHome("beta-town", content)).toBe(2);
+      // Day 9 used after the city day, 1 left, but home is 2 days away.
+      const state = stateWith(content, { position: "beta-town", daysUsed: 8 });
+      expect(cityDayStatus(state, content)).toMatchObject({
+        available: true,
+        reason: null,
+        homeUnreachable: true,
+      });
+      expect(spend(state, [], content).ok).toBe(true);
+    });
+
+    it("does not warn when the fastest way home just fits", () => {
+      const content = smallContent();
+      // beta-town: day 8 after the city day, then 2 days home = day 10.
+      const beta = stateWith(content, { position: "beta-town", daysUsed: 7 });
+      expect(cityDayStatus(beta, content).homeUnreachable).toBe(false);
+      // alpha is 1 day from home: day 9 after the city day, home on day 10.
+      const alpha = stateWith(content, { position: "alpha", daysUsed: 8 });
+      expect(cityDayStatus(alpha, content).homeUnreachable).toBe(false);
+    });
+
+    it("warns on the last day at alpha", () => {
+      const content = smallContent();
+      const state = stateWith(content, { position: "alpha", daysUsed: 9 });
+      expect(cityDayStatus(state, content)).toMatchObject({
+        available: true,
+        homeUnreachable: true,
+      });
+      expect(spend(state, [], content).ok).toBe(true);
+    });
+
+    it("ignores money: the fastest mode counts even when unaffordable", () => {
+      const content = smallContent();
+      // 80 pays the stay (75) but no route home; train + plane still fit.
+      const state = stateWith(content, {
+        position: "beta-town",
+        daysUsed: 7,
+        money: 80,
+      });
+      expect(cityDayStatus(state, content)).toMatchObject({
+        available: true,
+        homeUnreachable: false,
+      });
+    });
+
+    it("treats no path home as unreachable", () => {
+      const raw = smallContent();
+      const content = deepFreeze({
+        ...raw,
+        routes: raw.routes.filter((r) => r.between.includes("beta-town")),
+      });
+      const state = stateWith(content, { position: "beta-town" });
+      expect(cityDayStatus(state, content)).toMatchObject({
+        available: true,
+        homeUnreachable: true,
+      });
+      expect(spend(state, [], content).ok).toBe(true);
+    });
+
+    it("never warns when the city day is unavailable", () => {
+      const content = smallContent();
+      for (const patch of [
+        { position: "beta-town", daysUsed: 8, money: 10 },
+        { position: "beta-town", daysUsed: 10 },
+        {
+          position: "beta-town",
+          daysUsed: 8,
+          outcome: "goalNotReached" as const,
+        },
+        { position: "home", daysUsed: 9 },
+      ]) {
+        const status = cityDayStatus(stateWith(content, patch), content);
+        expect(status.available).toBe(false);
+        expect(status.homeUnreachable).toBe(false);
+      }
+    });
+
+    it("warns late in Sydney with the real content", () => {
+      const content = deepFreeze(loadContent());
+      const total = daysTotal(stateWith(content, {}), content);
+      const home = shortestDaysHome("sydney", content);
+      const at = (daysUsed: number) =>
+        cityDayStatus(
+          stateWith(content, { position: "sydney", money: 1500, daysUsed }),
+          content,
+        );
+      expect(at(total - 1 - home)).toMatchObject({
+        available: true,
+        homeUnreachable: false,
+      });
+      expect(at(total - home)).toMatchObject({
+        available: true,
+        homeUnreachable: true,
+      });
     });
   });
 

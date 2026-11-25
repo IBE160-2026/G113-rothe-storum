@@ -465,7 +465,7 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 
 ### 9.8 Decisions During Implementation (2026-11-23)
 
-- **M. City day warns when home becomes unreachable.** A city day uses a day just like travel, so it can make home unreachable in time without the player noticing. The City day screen therefore shows the same kind of warning as the route sheet (FR-4), and the city day is never blocked (FR-8). The rules query is added in Story 2.4, next to "Money's tight", and reuses the FR-4 rule. Decided by Christian Storum (issue #39), found in the elicitation of the Story 2.1 spec. **Rejected:** adding the flag in Story 2.1 (it would reopen an approved spec) and keeping FR-4's scope (the player would only see the warning after the day was spent).
+- **M. City day warns when home becomes unreachable.** A city day uses a day just like travel, so it can make home unreachable in time without the player noticing. The City day screen therefore shows the same kind of warning as the route sheet (FR-4), and the city day is never blocked (FR-8). The rules query is added in Story 2.4, next to "Money's tight", and reuses the FR-4 rule. Decided by Christian Storum (issue #39), found in the elicitation of the Story 2.1 spec. **Rejected:** adding the flag in Story 2.1 (it would reopen an approved spec) and keeping FR-4's scope (the player would only see the warning after the day was spent). **Update 2026-11-25 (#68):** the rules query was added ahead of Story 2.4, as `cityDayStatus().homeUnreachable`; Story 2.4 only shows it.
 
 ## 10. Success Metrics
 
