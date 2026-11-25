@@ -53,5 +53,5 @@ Brukeren kjørte `/bmad-build 4.1` for å lage Story 4.1 (Epic 4): UJ-1 og balan
 
 ### Åpne punkter
 - #66: teamet må avgjøre om Ring hjem kan være en gratis snarvei til målet (eventuelt via `bmad-correct-course`).
-- Forslag til issue, venter på brukerens godkjenning: advarselen på bydag om at hjemmet ikke lenger kan nås (PRD Decision M, lukket #39) har ingen regel-query, så FR-8-konsekvensen kan ikke testes ennå. Står i Flagged-tabellen med Story 2.4 som eier.
+- #68: advarselen på bydag om at hjemmet ikke lenger kan nås (PRD Decision M, lukket #39) har ingen regel-query, så FR-8-konsekvensen kan ikke testes ennå. Står i Flagged-tabellen med Story 2.4 som eier.
 - #67: Story 3.3 må erstatte de fire FR-14-radene merket «pending Story 3.3» med tester og flytte sine Flagged-rader inn i hovedtabellen.
