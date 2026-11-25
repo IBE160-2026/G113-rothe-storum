@@ -18,3 +18,23 @@ Thomas begynner på Story 1.7, så brukeren ville gjøre noe parallelt som ikke 
 
 ### Åpne punkter
 - Gjennomfør endringsforslaget med `bmad-build` på `gh-66-call-home-penalty` når #69 er merget. Dette dekkes av #66, som lukkes med `Closes #66` i den PR-en. Ingen ny issue.
+
+## 2026-11-25 kl. 20:54 — Albion812
+
+### Oppgave
+Thomas godkjente PR #70 og la igjen to kommentarer. Han utfordret alternativ B for #66 og foreslo at Ring hjem aldri skal telle som «Goal reached». Brukeren sa seg enig med Thomas og valgte E.
+
+### Plan
+- Reviewene og kommentarene på #70 ble lest. Godkjenningen gjelder `ff1e92a`. `472a485` og `70791ed` ble pushet etterpå og er ikke dekket av den.
+- **AI-feil rettet:** AI sa tidligere «Thomas har ikke reviewet #70 ennå» uten å sjekke. Reviewen kom kl. 20:31, før pushen kl. 20:46. Dette er sagt til brukeren, og det anbefales at Thomas ser på `70791ed` før merge.
+- Fakta for svaret til Thomas: med B gir Ring hjem målet bare med 7 eller flere stempler borte. Dagens innhold gir 0 slike, men jobb (Epic 5) kan åpne smutthullet igjen. E lukker det som regel.
+- Revidert endringsforslag for E lagt fram: `evaluateEnd()` krever `!calledHome`, `stampPenalty` blir værende 1, og FR-11-«literal»-testen snus. Det trengs en ny kopi-variant for hjemringt med 5 eller flere stempler: «{stamps}, safely home — next time, travel home yourself.» Godkjent av brukeren («ja, copy is fine»).
+
+### Resultat
+- `24832a1` på `main`: `sprint-change-proposal-2026-11-25.md` er skrevet om for E. Historikk-seksjonen viser B (`7bf1338`), innsigelsen fra Thomas og byttet til E. Decision N: foreslått av Thomas Rothe, godtatt av Christian Storum.
+- Kode, tester og planleggingsdokumenter er ikke endret ennå.
+- Ikke pushet.
+
+### Åpne punkter
+- Gjennomfør E på `gh-66-call-home-goal` med `bmad-build` (`Closes #66`). Dekket av #66.
+- Svar til Thomas på #70: E er godtatt, og spørsmålene hans om `travelPreview()`, midlertidig slutt-skjerm, eierskap til 3.2 og 3.3 og #64 må besvares av brukeren. Be ham se på `70791ed` før merge.
