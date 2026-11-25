@@ -1,0 +1,78 @@
+/* DESIGN.md → Map marker, map colours. Sizes are SVG units (degrees);
+   at 375 px one unit is about 1.56 px. */
+
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+.sea {
+  fill: var(--color-map-sea);
+}
+
+.route {
+  stroke: var(--color-ochre-text);
+  stroke-width: 0.6;
+  stroke-dasharray: 2 1.5;
+  stroke-linecap: round;
+}
+
+.marker[data-target] {
+  cursor: pointer;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.halo {
+  fill: var(--color-pin);
+  opacity: 0.2;
+}
+
+.current {
+  fill: var(--color-pin);
+  stroke: var(--color-surface);
+  stroke-width: 0.8;
+}
+
+.home {
+  fill: var(--color-ink);
+}
+
+.stamped {
+  fill: var(--color-ink);
+}
+
+.check {
+  fill: none;
+  stroke: var(--color-on-ink);
+  stroke-width: 0.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notYet {
+  fill: var(--color-surface);
+  stroke: var(--color-ink);
+  stroke-width: 0.8;
+}
+
+.noRoute {
+  fill: var(--color-unavailable);
+  stroke: var(--color-slot-dash);
+  stroke-width: 0.6;
+  stroke-dasharray: 1 0.8;
+}
+
+.label {
+  fill: var(--color-ink);
+  font-family: var(--font-map-label-family);
+  font-size: 7px;
+  font-weight: var(--font-map-label-weight);
+  paint-order: stroke;
+  stroke: var(--color-background);
+  stroke-width: 1.4px;
+}

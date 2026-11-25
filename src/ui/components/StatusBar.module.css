@@ -1,0 +1,105 @@
+/* DESIGN.md → Status chip, Passport cover → Slim strip. */
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: 3fr 2fr; /* day chip 1.5× the money chip */
+  gap: var(--space-2);
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-height: var(--space-status-chip-height);
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.dayChip {
+  min-width: 0;
+}
+
+.icon {
+  flex: none;
+  color: var(--color-ochre);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.value {
+  color: var(--color-ink);
+  font-family: var(--font-figure-family);
+  font-size: var(--font-figure-size);
+  font-weight: var(--font-figure-weight);
+  line-height: var(--font-figure-line-height);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.label {
+  color: var(--color-ink-muted);
+  font-family: var(--font-chip-label-family);
+  font-size: var(--font-chip-label-size);
+  font-weight: var(--font-chip-label-weight);
+  line-height: var(--font-chip-label-line-height);
+  letter-spacing: var(--font-chip-label-letter-spacing);
+  text-transform: uppercase;
+}
+
+.strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-height: var(--space-strip-height);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-cover-explorer);
+  color: var(--color-on-cover-explorer);
+}
+
+.stripMode {
+  flex: none;
+  color: var(--color-cover-explorer-mode);
+  font-family: var(--font-strip-mode-family);
+  font-size: var(--font-strip-mode-size);
+  font-weight: var(--font-strip-mode-weight);
+  letter-spacing: var(--font-strip-mode-letter-spacing);
+}
+
+.slots {
+  display: flex;
+  gap: 3px;
+  margin-left: auto;
+}
+
+.slot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px dashed var(--color-slot-dash-on-navy);
+  border-radius: var(--radius-full);
+  color: var(--color-slot-dash-on-navy);
+  font-size: var(--font-caption-size);
+}
+
+.slotFilled {
+  border-style: solid;
+  border-color: var(--color-ochre-light);
+  color: var(--color-ochre-light);
+}

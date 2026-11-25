@@ -44,6 +44,18 @@ export function started(result: Result): GameState {
   return result.state;
 }
 
+/** Runs actions in order through applyFrozen; each must succeed. */
+export function play(
+  state: GameState,
+  actions: Action[],
+  content: Content,
+): GameState {
+  return actions.reduce(
+    (s, action) => started(applyFrozen(s, action, content)),
+    state,
+  );
+}
+
 /** A fresh journey with some fields overridden, as a frozen state. */
 export function stateWith(
   content: Content,

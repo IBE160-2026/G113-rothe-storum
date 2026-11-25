@@ -4,10 +4,21 @@
 // call (see ./helpers.ts).
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../../src/content/load";
-import { apply, startJourney } from "../../src/rules/apply";
+import {
+  apply,
+  spendCityDay,
+  startJourney,
+  travel,
+} from "../../src/rules/apply";
 import { daysTotal } from "../../src/rules/queries";
 import type { GameState, JourneyMode } from "../../src/rules/types";
-import { applyFrozen, deepFreeze, smallContent, started } from "./helpers";
+import {
+  applyFrozen,
+  deepFreeze,
+  play,
+  smallContent,
+  started,
+} from "./helpers";
 
 function nameOf(name: string): Pick<GameState, "travellerName" | "nameGiven"> {
   const { travellerName, nameGiven } = started(
@@ -127,6 +138,29 @@ describe("FR-1 start a journey", () => {
 
     it("keeps inner spaces and other characters", () => {
       expect(nameOf(" Ada  O'Neil-2 ").travellerName).toBe("Ada  O'Neil-2");
+    });
+
+    it("never affects the rules: the same actions give the same journey", () => {
+      const content = smallContent();
+      const actions = [
+        travel({ to: "alpha", mode: "bus" }),
+        spendCityDay({ sightIds: ["alpha-one"] }),
+        travel({ to: "home", mode: "plane" }),
+      ];
+      const journey = (name: string) =>
+        play(
+          started(applyFrozen(null, startJourney({ name }), content)),
+          actions,
+          content,
+        );
+      const named = journey("Ada");
+      const unnamed = journey("");
+      expect(unnamed).toEqual({
+        ...named,
+        travellerName: "Traveller",
+        nameGiven: false,
+      });
+      expect(named.outcome).not.toBeNull();
     });
   });
 

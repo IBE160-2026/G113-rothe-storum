@@ -22,6 +22,7 @@ import type {
 import {
   applyFrozen,
   deepFreeze,
+  play,
   smallContent,
   started,
   stateWith,
@@ -34,14 +35,6 @@ function cheapStay(): Content {
     ...content,
     config: { ...content.config, baseAccommodationPrice: 10 },
   });
-}
-
-/** Runs actions in order through applyFrozen; each must succeed. */
-function play(state: GameState, actions: Action[], content: Content) {
-  return actions.reduce(
-    (s, action) => started(applyFrozen(s, action, content)),
-    state,
-  );
 }
 
 // Small fixture: home–alpha plane €100/1 d and bus €40/2 d, alpha–beta-town

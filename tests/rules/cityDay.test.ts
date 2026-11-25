@@ -163,6 +163,7 @@ describe("FR-8 FR-9 FR-10 FR-21 FR-22 city day", () => {
       const { content, state } = atAlpha({ money: 100 });
       const next = started(spend(state, ["alpha-one", "alpha-two"], content));
       expect(next.money).toBe(25);
+      expect(next.daysUsed).toBe(1);
       expect(next.album).toEqual([
         { id: "alpha-one", day: 1 },
         { id: "alpha-two", day: 1 },
