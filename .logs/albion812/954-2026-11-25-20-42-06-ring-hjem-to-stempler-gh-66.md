@@ -89,3 +89,20 @@ Brukeren ba om push, om å starte #66 (alternativ E) og om en issue for `travelP
 ### Åpne punkter
 - Push `gh-66-call-home-goal` og åpne PR med `Closes #66`, med Thomas som reviewer. PR #70 ligger tett på i PRD (Decision M/N) og `fr-test-map.md`, så den som merges sist kan få en liten tekstkonflikt.
 - #71: `travelPreview()` etter #66.
+
+## 2026-11-25 kl. 21:27 — Albion812
+
+### Oppgave
+Brukeren ba om å merge #70 og #72 etter at Thomas hadde gitt klarsignal, og løse PRD-konflikten mellom dem.
+
+### Plan
+- AI sa først at Thomas ikke hadde svart på #70. Sjekken leste bare de tre siste kommentarene. Brukeren protesterte, og timelinen viste en kommentar fra Thomas kl. 21:22: `70791ed` var sjekket, #70 og #72 var klare, og konflikten i `prd.md` skulle løses ved å beholde begge beslutningene. Thomas godkjente også «Not enough days» for #64 selv, som UX-eier (i #73).
+- Rekkefølge: merge #70, merge `main` inn i #72 og løs konflikten, kjør tester, push, vent på CI, merge #72.
+
+### Resultat
+- #70 er merget som `f0168bd`, og #68 ble lukket automatisk.
+- `0277388`: merge av `main` inn i `gh-66-call-home-goal`. Konflikten lå bare i PRD §9.8. Decision M med #68-oppdateringen fra `main` er beholdt, med Decision N etter. Endringsloggen ble flettet uten konflikt. `npm test` 405/405, lint og build uten feil, og CI er grønn.
+- #72 er merget som `fd7dc0e`, og #66 ble lukket automatisk.
+
+### Åpne punkter
+- #71: `travelPreview()`. Den blokkerer Thomas sin Story 1.7 (#73, draft).
