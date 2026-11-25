@@ -96,7 +96,7 @@ Fixture `valid-small` + sights: alpha (factor 1.0, stay â‚¬50) has `alpha-one` â
 
 **Notes for later stories (not 2.1 work):**
 
-- 2.4 adds the city-day home-unreachable warning (PRD Decision M, #39), e.g. `homeUnreachableAfter(state, state.position, 1, content)` next to "Money's tight". 2.1 adds no such flag.
+- 2.4 adds the city-day home-unreachable warning (PRD Decision M, #39), e.g. `homeUnreachableAfter(state, state.position, 1, content)` next to "Money's tight". 2.1 adds no such flag. (Update 2026-11-25: the flag was added in #68 as `cityDayStatus().homeUnreachable`; 2.4 only shows it.)
 - 2.2 makes `fact`, `image`, `imageAlt`, `source`, `author` and `licence` required, so it must add them to the sights in all 7 content fixtures (`valid-small` and the 6 broken ones). Count this in 2.2's estimate.
 - 3.1's out-of-days rule (FR-13: "no affordable city day") must reuse `checkCityDay`/`cityDayStatus`, not a check of its own, so the ending and the City day screen never disagree.
 

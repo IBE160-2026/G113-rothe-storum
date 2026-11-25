@@ -15,10 +15,10 @@ marker `pending Story 3.3` in the file column is allowed only for FR-14 (spec
 The number of rows per FR is pinned in `EXPECTED_ROWS` in the guard, so a
 deleted row fails by name; change the count together with the map.
 
-The SM-3 balance test (`tests/balance/balance.test.ts`) deliberately excludes
-call home: a journey counts only when it travels home (PRD addendum §6 model,
-decision CSE 2026-11-25). Under the real rules call home is a loophole; issue
-#66 tracks it.
+The SM-3 balance test (`tests/balance/balance.test.ts`) excludes call home: a
+journey counts only when it travels home (PRD addendum §6 model). That model
+is complete, because a journey ended by call home never reaches the goal (PRD
+Decision N, #66).
 
 Consequences that cannot be tested yet are listed under
 [Flagged](#flagged-consequences-with-no-test-yet) below the table, outside it,
@@ -56,6 +56,7 @@ with the story that owns them.
 | FR-8 | Money equal to the stay is allowed | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › stay and stamp › allows money equal to the stay |
 | FR-8 | Fixed order: the stay first, then the sights from the money left | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › sights › rejects a sight the money left cannot pay |
 | FR-8 | A draft charges nothing until the day is confirmed; the plan says what `apply` would decide | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › query and apply agree (AD-3) › agrees in every cell of the grid over %s |
+| FR-8 | A city day that makes home unreachable in time warns, and is never blocked (Decision M, rules part) | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › home-unreachable warning › warns but does not block when home is out of reach after the day |
 | FR-9 | No action takes money below €0: money equal to the cost reaches exactly €0 | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › travel › allows money equal to the price |
 | FR-9 | No action takes money below €0: a stay and both sights equal to the money | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › sights › allows money equal to the stay and both sights |
 | FR-9 | Every action whose cost exceeds money is unavailable with the reason (travel) | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › query and apply agree (AD-3) › gives the same reason for every option, and accepts every available one |
@@ -73,7 +74,9 @@ with the story that owns them.
 | FR-11 | Home with enough stamps but more days than the total is goalNotReached | `tests/rules/end.test.ts` | FR-13 FR-11 end rules › evaluateEnd › home with enough stamps but more days than the total is goalNotReached |
 | FR-11 | Home with 5 stamps in 16 days on the real content is goalReached (UJ-1) | `tests/rules/journeys.test.ts` | FR-6 FR-8 FR-10 FR-11 FR-21 FR-22 UJ-1 Ingrid reaches the goal (real content) › ends home after 16 days with €423, 5 stamps, 2 photos and the goal reached |
 | FR-11 | Stamps removed by call home are not counted | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › apply › goes home, uses the days, removes the last stamp and keeps the money |
-| FR-11 | The stamps left after call home still count when they meet the goal | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › apply › reaches the goal when the stamps left still meet it (FR-11 literal) |
+| FR-11 | A journey ended by call home is goalNotReached, even with enough stamps left (Decision N) | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › apply › does not reach the goal after call home, even with enough stamps left (Decision N) |
+| FR-11 | The same home state with enough stamps in time is goalReached only when not called home (Decision N) | `tests/rules/end.test.ts` | FR-13 FR-11 end rules › evaluateEnd › home with enough stamps in time is goalReached only when not called home (Decision N) |
+| FR-11 | The #66 loophole on the real content: 6 stamps, call home from Sydney, Tokyo kept, goal not reached (Decision N) | `tests/rules/end.test.ts` | FR-11 FR-12 Decision N the #66 call-home loophole is closed (real content) › calls home from Sydney with 6 stamps and ends with Tokyo kept but the goal not reached |
 | FR-12 | Call home is not offered when money equals the cheapest fare | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › rejects, with state unchanged, in the fixed order › CALL_HOME_NOT_OFFERED when money equals the cheapest fare |
 | FR-12 | Call home is not offered at home or after the end | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › callHomeStatus › is not offered at home or after the end |
 | FR-12 | Call home is offered at a destination with no routes | `tests/rules/callHome.test.ts` | FR-12 FR-11 call home › apply › is offered at a destination with no routes, whatever the money |
@@ -129,7 +132,7 @@ and removes the entry here.
 | FR-1 | Starting a new journey discards one in progress after the player confirms | [EXT] saved journeys |
 | FR-7 | Before travel home, the game shows whether the goal will be reached (needs `travelPreview()`, #71) | Story 1.7 |
 | FR-7 | Arriving home shows the journey summary | Story 3.3 |
-| FR-8 | The city-day home-unreachable warning (PRD Decision M, #39); no rules query exists yet | Story 2.4 |
+| FR-8 | The City day screen shows the home-unreachable warning from `cityDayStatus().homeUnreachable` (UI part) | Story 2.4 |
 | FR-8 | The UI lets the player pick sights before "End the day" | Story 2.4 |
 | FR-9 | Every city day, sight or call home whose cost exceeds money is shown as unavailable with the reason on screen (travel is mapped above) | Stories 2.4, 3.2 |
 | FR-12 | The Call home sheet shows the cost, says when it cannot bring the player home in time, and "Not now" does not remove the offer | Story 3.2 |

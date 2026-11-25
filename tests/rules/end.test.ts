@@ -295,6 +295,29 @@ describe("FR-13 FR-11 end rules", () => {
       });
     });
 
+    it("home with enough stamps in time is goalReached only when not called home (Decision N)", () => {
+      const content = smallContent();
+      const home = (calledHome: boolean) =>
+        stateWith(content, {
+          position: "home",
+          daysUsed: 8,
+          calledHome,
+          stamps: [
+            { id: "alpha", day: 1 },
+            { id: "beta-town", day: 2 },
+          ],
+        });
+      expect(content.config.goalStamps).toBe(2);
+      expect(evaluateEnd(home(false), content)).toMatchObject({
+        outcome: "goalReached",
+        failReason: null,
+      });
+      expect(evaluateEnd(home(true), content)).toMatchObject({
+        outcome: "goalNotReached",
+        failReason: null,
+      });
+    });
+
     it("leaves a running journey with options unchanged", () => {
       const content = smallContent();
       const state = stateWith(content, { position: "alpha", money: 500 });
@@ -455,5 +478,63 @@ describe("FR-11 FR-12 FR-13 UJ-2 Jonas calls home from Rome (real content)", () 
       ok: false,
       reason: "JOURNEY_ENDED",
     });
+  });
+});
+
+describe("FR-11 FR-12 Decision N the #66 call-home loophole is closed (real content)", () => {
+  const content = deepFreeze(loadContent());
+  const city = () => spendCityDay({ sightIds: [] });
+
+  /**
+   * The only journey that won via call home under the old rule (#66): bus
+   * through Copenhagen, Paris, Rome and Istanbul, then plane to Tokyo and
+   * Sydney, with a city day in each. Sydney leaves too little money for any
+   * route out, so call home is offered and fits.
+   */
+  const toSydney: Action[] = [
+    travel({ to: "copenhagen", mode: "bus" }),
+    city(),
+    travel({ to: "paris", mode: "bus" }),
+    city(),
+    travel({ to: "rome", mode: "bus" }),
+    city(),
+    travel({ to: "istanbul", mode: "bus" }),
+    city(),
+    travel({ to: "tokyo", mode: "plane" }),
+    city(),
+    travel({ to: "sydney", mode: "plane" }),
+    city(),
+  ];
+
+  it("calls home from Sydney with 6 stamps and ends with Tokyo kept but the goal not reached", () => {
+    const start = started(
+      applyFrozen(null, startJourney({ name: "Loophole" }), content),
+    );
+    const sydney = play(start, toSydney, content);
+    expect(sydney).toMatchObject({ position: "sydney", outcome: null });
+    expect(sydney.stamps).toHaveLength(6);
+    expect(callHomeStatus(sydney, content)).toMatchObject({
+      offered: true,
+      fits: true,
+      available: true,
+    });
+
+    const home = started(applyFrozen(sydney, callHome(), content));
+    expect(home.stamps.map((s) => s.id)).toEqual([
+      "copenhagen",
+      "paris",
+      "rome",
+      "istanbul",
+      "tokyo",
+    ]);
+    expect(home).toMatchObject({
+      position: "home",
+      calledHome: true,
+      outcome: "goalNotReached",
+      failReason: null,
+    });
+    expect(home.daysUsed).toBeLessThanOrEqual(
+      content.config.modes.explorer.totalDays,
+    );
   });
 });

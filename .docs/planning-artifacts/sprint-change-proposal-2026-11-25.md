@@ -138,3 +138,10 @@ NEW: (same) | 0 stamps: (same) · called home with 5 or more stamps: "{stamps}, 
   - The call-home test proves "goalNotReached" with enough stamps left.
   - The travel test proves the same stamps still win when arriving by travel.
   - All edits in section 4 are made, and the PR says `Closes #66`.
+
+## Update 2026-11-25: copy changed during implementation review
+
+The review of `spec-gh-66-call-home-goal.md` found two copy gaps, and CSE decided both (answers 1.A and 2.A):
+
+- **Call home sheet:** adds "Calling home ends your journey without the goal." This states the consequence before the player confirms (PRD §7, FR-12).
+- **Summary:** every called-home journey shows "{stamps}, safely home." with no "next time" clause. This replaces the variant in section 4 ("…next time, travel home yourself."), which would have stood next to the called-home tip as a second "next time" line. It also avoids "next time, {5 − n} more" for a called-home player, which suggested that more stamps alone would have won.
