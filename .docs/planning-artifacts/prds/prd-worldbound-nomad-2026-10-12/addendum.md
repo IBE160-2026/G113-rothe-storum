@@ -110,6 +110,7 @@ Routes work in both directions with the same price and days. Pairs not listed ha
 - Tokyo and Sydney are not part of any winning core journey; they need work (PRD Open Question 1).
 - Winning core journeys use 14–16 of 30 days; money, not time, is the binding constraint (PRD §9.3, a deliberate decision).
 - Night departures make the game easier; their prices and Nomad's values must be rechecked once work exists (PRD Open Question 2).
+- Call home can never reach the goal (PRD Decision N, 2026-11-25), so a balance model that counts only journeys that travel home is complete.
 
 The check should become an automated balance test over the content data once the game is built, so that any price change is checked against SM-3.
 

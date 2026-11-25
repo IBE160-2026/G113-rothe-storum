@@ -446,7 +446,7 @@ So that I am never stuck and always know the result.
 
 **Given** the player arrives home
 **When** the journey ends
-**Then** the goal is reached if and only if stamps ≥ 5 and days used ≤ 30, and stamps removed by call home are not counted
+**Then** the goal is reached if and only if stamps ≥ 5 and days used ≤ 30 and the journey did not end by call home, and stamps removed by call home are not counted (changed by Decision N, #66)
 
 **Given** an ended journey
 **When** any action other than `startJourney` is applied
@@ -468,7 +468,7 @@ So that I understand the cost.
 
 **Given** call home becomes offered
 **When** the player is on the map
-**Then** the Call home sheet opens once by itself; "Not now" closes it and a persistent "Call home" button stays while the condition holds
+**Then** the Call home sheet opens once by itself and states that calling home ends the journey without the goal (changed by Decision N, #66); "Not now" closes it and a persistent "Call home" button stays while the condition holds
 
 **Given** the journey ended away from home
 **When** the rules set the outcome
@@ -486,7 +486,7 @@ So that I can see what I achieved and try again.
 
 **Given** an ended journey
 **When** the summary shows
-**Then** it shows the traveller name, stamps with destination names, photo album, days used, money left, "Goal reached"/"Goal not reached", "Called home" when relevant, and the failure reason when relevant
+**Then** it shows the traveller name, stamps with destination names, photo album, days used, money left, "Goal reached"/"Goal not reached", "Called home" when relevant, and the failure reason when relevant; a called-home journey shows "{stamps}, safely home." with no "next time" clause (changed by Decision N, #66)
 
 **Given** the summary
 **When** the player taps "New journey"

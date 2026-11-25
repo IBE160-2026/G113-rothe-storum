@@ -155,7 +155,7 @@ Variables are in `{braces}`. Values come from the rules layer or content data; t
 | dc.repeat | eyebrow "Day complete" · "Another day in {city}." · lede "A full day, well spent. No new stamp this time." | [ASSUMPTION] |
 | dc.actions | "New in album" · "Back to the map" · "View album" · [EXT] "{verb}" (night: "Board the train") | |
 | **Call home** | | |
-| call | "Call home" · "This costs 7 days and one stamp. No money needed." · "Day {day} → {dayAfter}" · "Stamps {n} → {n − 1} ({city} removed)" · "Slot {n} empties" · "Fly home to Bergen" · "Not now" / "Call home" | `{city}` = most recent stamp (FR-12). |
+| call | "Call home" · "This costs 7 days and one stamp. No money needed." · "Calling home ends your journey without the goal." (PRD Decision N, #66) · "Day {day} → {dayAfter}" · "Stamps {n} → {n − 1} ({city} removed)" · "Slot {n} empties" · "Fly home to Bergen" · "Not now" / "Call home" | `{city}` = most recent stamp (FR-12). |
 | call.noStamps | "This costs 7 days. You have no stamp to lose, and no money is needed." · "Stamps 0 — nothing to remove" | [ASSUMPTION] |
 | **Can't continue** | | |
 | end.stranded | "Calling home takes 7 days — you only have {left}." · "This journey can't be completed." · "Day {N} is the last day" · "{over} too many" (`{over}` in `{days}` form) · "See your journey" | CH2 |
@@ -163,7 +163,7 @@ Variables are in `{braces}`. Values come from the rules layer or content data; t
 | **Journey summary** | | |
 | sum.eyebrow | "Journey complete · home in Bergen" / failed: "Journey over · in {city}" | |
 | sum.reached | "What an adventure." (with a name: "What an adventure, {name}.") · "{daysUsed} days, {stamps}, safely home — a true {modeWord}." · "Goal reached" | |
-| sum.notReached | "Almost there." · "{stamps}, safely home — next time, {5 − n} more." · "Goal not reached" · "Called home" when relevant | 0 stamps: "No stamps, safely home — next time, 5 more." |
+| sum.notReached | "Almost there." · "{stamps}, safely home — next time, {5 − n} more." · "Goal not reached" · "Called home" when relevant | 0 stamps: "No stamps, safely home — next time, 5 more." · Called home (any number of stamps): "{stamps}, safely home." with no "next time" clause; the "Called home" tag and `sum.tip` carry the lesson (PRD Decision N, #66) |
 | sum.failed | "The adventure ends here." · "{reason} Every route teaches something — try again?" · "Goal not reached" | `{reason}`: out of days "Out of days in {city}." / stranded "Stranded in {city} — no way home in time." |
 | sum.stats | "{daysUsed} days used" · "of {N}" · "{money} left over" · "{name}'s journey" | |
 | sum.album | "No photos this time. Sights are optional." | |
@@ -406,9 +406,9 @@ Jonas, 19.
 1. From Bergen he picks New York, flies (€350), and spends three city days there. The first earns the New York stamp; the later ones show the repeat-visit state.
 2. He flies to Paris, takes the train to London and flies to Rome, with a city day in each. Rome's Day complete leaves him with €20 on Day 11 of 30.
 3. He taps "Back to the map". Every route from Rome is unavailable ("Not enough money (you have €20)"), so the Call home sheet opens by itself.
-4. The sheet states "This costs 7 days and one stamp. No money needed.", "Day 11 → 18", "Stamps 4 → 3 (Rome removed)" with slot 4 emptying, and "Fly home to Bergen".
+4. The sheet states "This costs 7 days and one stamp. No money needed.", "Calling home ends your journey without the goal.", "Day 11 → 18", "Stamps 4 → 3 (Rome removed)" with slot 4 emptying, and "Fly home to Bergen".
 5. He taps "Call home".
-6. **Climax:** he lands in Bergen with 17 days used. The Journey summary reads "Almost there." and "3 stamps, safely home — next time, 2 more.", and shows "Goal not reached", the "Called home" tag, three stamps (New York, Paris, London) and two empty slots, €20 left over, and the Tip "Next time, keep enough for a ticket out before your last city day."
+6. **Climax:** he lands in Bergen with 17 days used. The Journey summary reads "Almost there." and "3 stamps, safely home.", and shows "Goal not reached", the "Called home" tag, three stamps (New York, Paris, London) and two empty slots, €20 left over, and the Tip "Next time, keep enough for a ticket out before your last city day."
 7. He taps "New journey".
 
 Failure paths: "Not now" closes the sheet; Jonas stays in Rome with the "Call home" button on the city-day card and in the route sheet, and the sheet does not reopen by itself. Edge case (Day 25 of 30, 24 days used, 6 left): the rules layer ends the journey, and the Can't-continue sheet reads "Calling home takes 7 days — you only have 6 days left.", "This journey can't be completed." and "1 day too many". "See your journey" opens the summary: "The adventure ends here.", "Stranded in Rome — no way home in time. Every route teaches something — try again?" and "Goal not reached", with his four stamps kept.

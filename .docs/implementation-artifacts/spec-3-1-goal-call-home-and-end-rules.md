@@ -28,7 +28,7 @@ context:
   1. Position is home → `goalReached` if stamps ≥ `goalStamps` and days used ≤ the total, else `goalNotReached`. `failReason` stays `null`.
   2. Call home is offered and does not fit → `failed`, `stranded`. This holds even if a city day is affordable.
   3. No available travel option, no available city day and call home not available (`checkCallHome` fails) → `failed`, `outOfDays`. Decision 2026-11-24 (review round 1, EC1): "not available" instead of "not offered", so a call home the player cannot pay never leaves them stuck.
-- The goal follows FR-11 literally: a called-home player with 6 stamps keeps 5 and reaches the goal if the days fit.
+- The goal follows FR-11 literally: a called-home player with 6 stamps keeps 5 and reaches the goal if the days fit. _Superseded 2026-11-25 by PRD Decision N (#66): a journey ended by call home never reaches the goal (`spec-gh-66-call-home-goal.md`)._
 - `callHome` is rejected, with state unchanged, in this order: `JOURNEY_ENDED`, `AT_HOME`, `CALL_HOME_NOT_OFFERED` (new `ReasonCode`), `NOT_ENOUGH_DAYS`, `NOT_ENOUGH_MONEY`.
 - `callHomeStatus` and `apply(callHome())` use the same check (AD-3). The end rules use `checkTravel`, `checkCityDay` and the same call-home check.
 - Pure functions: no mutation of inputs, no throws for player actions, and no imports outside `src/rules/` (AD-1, AD-4).

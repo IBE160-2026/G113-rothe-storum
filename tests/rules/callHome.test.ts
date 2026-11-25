@@ -85,7 +85,7 @@ describe("FR-12 FR-11 call home", () => {
       expect(next.outcome).toBe("goalNotReached");
     });
 
-    it("reaches the goal when the stamps left still meet it (FR-11 literal)", () => {
+    it("does not reach the goal after call home, even with enough stamps left (Decision N)", () => {
       const content = smallContent();
       expect(content.config.goalStamps).toBe(2);
       const state = stateWith(content, {
@@ -99,7 +99,7 @@ describe("FR-12 FR-11 call home", () => {
       expect(next).toMatchObject({
         daysUsed: 8,
         calledHome: true,
-        outcome: "goalReached",
+        outcome: "goalNotReached",
         failReason: null,
       });
     });
@@ -114,7 +114,13 @@ describe("FR-12 FR-11 call home", () => {
       });
       const next = started(call(state, content));
       expect(next.daysUsed).toBe(10);
-      expect(next.outcome).toBe("goalReached");
+      // Home in time, not stranded; a called-home journey never reaches the
+      // goal (Decision N).
+      expect(next).toMatchObject({
+        position: "home",
+        outcome: "goalNotReached",
+        failReason: null,
+      });
     });
 
     it("removes the last stampPenalty stamps, or fewer if there are fewer", () => {
