@@ -52,6 +52,7 @@ with the story that owns them.
 | FR-8 | Money equal to the stay is allowed | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › stay and stamp › allows money equal to the stay |
 | FR-8 | Fixed order: the stay first, then the sights from the money left | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › sights › rejects a sight the money left cannot pay |
 | FR-8 | A draft charges nothing until the day is confirmed; the plan says what `apply` would decide | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › query and apply agree (AD-3) › agrees in every cell of the grid over %s |
+| FR-8 | A city day that makes home unreachable in time warns, and is never blocked (Decision M, rules part) | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › home-unreachable warning › warns but does not block when home is out of reach after the day |
 | FR-9 | No action takes money below €0: money equal to the cost reaches exactly €0 | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › travel › allows money equal to the price |
 | FR-9 | No action takes money below €0: a stay and both sights equal to the money | `tests/rules/cityDay.test.ts` | FR-8 FR-9 FR-10 FR-21 FR-22 city day › sights › allows money equal to the stay and both sights |
 | FR-9 | Every action whose cost exceeds money is unavailable with the reason (travel) | `tests/rules/travel.test.ts` | FR-4 FR-6 FR-7 FR-9 travel › query and apply agree (AD-3) › gives the same reason for every option, and accepts every available one |
@@ -125,7 +126,7 @@ and removes the entry here.
 | FR-4 | The Route sheet shows each mode's price and days, unavailable modes with the reason, and the warning | Story 1.6 |
 | FR-7 | Before travel home, the game shows the stamp count and whether the goal will be reached, and asks for confirmation | Story 1.7 |
 | FR-7 | Arriving home shows the journey summary | Story 3.3 |
-| FR-8 | The city-day home-unreachable warning (PRD Decision M, #39); no rules query exists yet | Story 2.4 |
+| FR-8 | The City day screen shows the home-unreachable warning from `cityDayStatus().homeUnreachable` (UI part) | Story 2.4 |
 | FR-8 | The UI lets the player pick sights before "End the day" | Story 2.4 |
 | FR-9 | Every action whose cost exceeds money is shown as unavailable with the reason on screen (the rules reasons are mapped above) | Stories 1.6, 2.4, 3.2 |
 | FR-12 | The Call home sheet shows the cost, says when it cannot bring the player home in time, and "Not now" does not remove the offer | Story 3.2 |
