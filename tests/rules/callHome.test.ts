@@ -4,7 +4,7 @@
 // grid (AD-3). Every callHome call runs through applyFrozen (see ./helpers.ts).
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../../src/content/load";
-import { callHome } from "../../src/rules/apply";
+import { callHome, spendCityDay, travel } from "../../src/rules/apply";
 import { callHomeStatus } from "../../src/rules/queries";
 import type {
   CallHomeStatus,
@@ -153,6 +153,33 @@ describe("FR-12 FR-11 call home", () => {
       });
       expect(statusFrozen(state, content).offered).toBe(true);
       expect(started(call(state, content)).position).toBe("home");
+    });
+
+    it("stays offered after a rejected action and a city day until it is used", () => {
+      const small = smallContent();
+      const content = deepFreeze({
+        ...small,
+        config: { ...small.config, baseAccommodationPrice: 10 },
+      });
+      const state = stateWith(content, { position: "alpha", money: 39 });
+      expect(statusFrozen(state, content).available).toBe(true);
+      // The €40 bus home is rejected and leaves the state as it was.
+      expect(
+        applyFrozen(state, travel({ to: "home", mode: "bus" }), content),
+      ).toEqual({ ok: false, reason: "NOT_ENOUGH_MONEY" });
+      // A €10 city day keeps money below every fare: still offered.
+      const stayed = started(
+        applyFrozen(state, spendCityDay({ sightIds: [] }), content),
+      );
+      expect(stayed).toMatchObject({ money: 29, daysUsed: 1, outcome: null });
+      expect(statusFrozen(stayed, content)).toMatchObject({
+        offered: true,
+        available: true,
+      });
+      expect(started(call(stayed, content))).toMatchObject({
+        position: "home",
+        calledHome: true,
+      });
     });
   });
 
