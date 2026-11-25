@@ -18,7 +18,7 @@ Every journey ends in exactly one clearly explained way, either home with or wit
 - **Call home effect:** days used +7, the most recently earned stamp is removed (if any), money is unchanged, position becomes home, `calledHome = true`, and the journey ends. Declining ("Not now") never removes the offer while the condition holds.
 - **Stranded:** call home is offered but 7 days exceed the days remaining. The journey ends at once as failed, even if a city day is still affordable, because nothing in core can raise money. [EXT note: once work exists, an available shift should prevent stranded. Confirm this when the Work epic starts.]
 - **Out of days:** there is no affordable travel that fits the days remaining, no affordable city day and no call home that fits. The journey ends as failed.
-- **Goal:** reached if and only if the player is home with at least 5 stamps and days used ≤ the mode's days (30). Stamps removed by call home do not count. A journey that ends away from home is always failed.
+- **Goal:** reached if and only if the player is home with at least 5 stamps and days used ≤ the mode's days (30), and the journey did not end by call home (PRD Decision N, #66). Stamps removed by call home do not count. A journey that ends away from home is always failed.
 - **After the end,** every action except `startJourney` is rejected with `JOURNEY_ENDED`. Only the summary and "New journey" remain.
 - **Money never below €0** holds on every path, including call home.
 - **UJ-2 acceptance script:** Jonas has €20 in Rome after 10 days used. He calls home and ends at 17 days with 3 stamps (New York, Paris, London), €20 left, "Called home" and "Goal not reached". The same situation at 24 days used (6 left) ends as stranded with all 4 stamps kept.

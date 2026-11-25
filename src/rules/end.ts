@@ -22,7 +22,8 @@ function anyTravelAvailable(state: GameState, content: Content): boolean {
  * Applies the end rules, in order, to a running journey; an ended journey is
  * returned as is.
  * 1. Home: `goalReached` with at least `goalStamps` stamps and days used ≤ the
- *    total, else `goalNotReached` (FR-11). Removed stamps do not count.
+ *    total, and the player did not call home (Decision N), else
+ *    `goalNotReached` (FR-11). Removed stamps do not count.
  * 2. Call home offered but does not fit: `failed`/`stranded`, even if a city
  *    day is affordable (FR-13, Decision H).
  * 3. No available travel, no available city day and call home not available
@@ -34,6 +35,7 @@ export function evaluateEnd(state: GameState, content: Content): GameState {
   if (state.outcome !== null) return state;
   if (state.position === content.home.id) {
     const goalReached =
+      !state.calledHome &&
       state.stamps.length >= content.config.goalStamps &&
       state.daysUsed <= daysTotal(state, content);
     return {

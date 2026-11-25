@@ -65,7 +65,7 @@ A second pass looked for better sources for the Backpacker comparison and for wh
 
 **Videos for a human to check:** two mobile gameplay videos may show the hotel/street choice at the end of a day: [PlayRawNow, Android gameplay](https://www.youtube.com/watch?v=BnZIm79Y6V0) and [World Tour Trivia Game gameplay](https://www.youtube.com/watch?v=4zWWOMhkL2c). No PC video was found; searching YouTube directly for "Backpacker BMG 1995 pc" or "Backpacker 2 1997 gameplay" is the best next step to see the phone booth.
 
-**What this changes.** NOMAD's "call home" (FR-12) and Bergen as start and end point (Decision A) have a clear precedent in Backpacker (1995). NOMAD's version differs: calling home costs 7 days and one stamp but no money and always works, and the journey can still reach the goal afterwards. The inspiration paragraph should name this openly rather than leave it out.
+**What this changes.** NOMAD's "call home" (FR-12) and Bergen as start and end point (Decision A) have a clear precedent in Backpacker (1995). NOMAD's version differs: calling home costs 7 days and one stamp but no money and always works, and the journey can still reach the goal afterwards (_superseded 2026-11-25 by PRD Decision N, #66: a journey ended by call home never reaches the goal_). The inspiration paragraph should name this openly rather than leave it out.
 
 ## Cross-dimension insights
 

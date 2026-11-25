@@ -29,7 +29,7 @@ NOMAD is inspired by the Swedish Backpacker series (PC 1995–2006; mobile by Qi
 |---|---|---|
 | Goal | Circle the world in the shortest time, or collect job certificates (PC) | Collect 5 stamps and be home in Bergen within a fixed 30 days |
 | Clock | A race: the faster, the better | A fixed budget of days: what can you make of them? |
-| Out of money | Call home: the family may send money, or you are sent home and lose (PC 1995); sleep in the street with less energy (mobile) | Call home always works: it costs 7 days and one stamp, no money, and the goal can still be reached |
+| Out of money | Call home: the family may send money, or you are sent home and lose (PC 1995); sleep in the street with less energy (mobile) | Call home always works: it costs 7 days and one stamp, no money, but the goal is not reached |
 | Work | Jobs tied to quiz questions; more correct answers pay more | [EXT] A shift costs 1 day; each destination has a finite, non-repeating sequence of 15 questions |
 | Places | 70–100 destinations (PC), 69 cities (mobile) | 8 destinations: Europe as a plane/train/bus hub, three far goals by plane |
 | Rewards | Job certificates (PC); stamps, mementos, minigames (mobile) | Stamps and a photo album of chosen sights |
@@ -237,7 +237,7 @@ The player earns a stamp on their first city day at a destination.
 The game evaluates the goal when the journey ends.
 
 **Consequences (testable):**
-- The goal is reached if and only if the player arrives home with at least 5 stamps and days used ≤ the mode's days.
+- The goal is reached if and only if the player arrives home by travel with at least 5 stamps and days used ≤ the mode's days. A journey ended by call home never reaches the goal (Decision N).
 - Stamps removed by call home (FR-12) are not counted.
 
 ### 4.7 Call Home [CORE]
@@ -250,7 +250,7 @@ The player can call home when they cannot afford any travel out of the current d
 
 **Consequences (testable):**
 - Call home is offered if and only if the player is at a destination and money is below the cheapest transport mode on every route from it.
-- The offer shows its cost before the player confirms: 7 days and one stamp.
+- The offer shows its cost before the player confirms: 7 days and one stamp, and that the journey then ends without the goal (Decision N).
 - Call home adds 7 days to days used, removes one stamp (if the player has any), costs no money, and moves the player home.
 - If 7 days exceed days remaining, call home cannot bring the player home in time; the game says so and the journey ends as failed with the reason "stranded" (FR-13).
 - While call home is offered, it stays available until the player uses it or leaves the condition; declining it ("Not now") never removes it (EXPERIENCE.md → Call home sheet).
@@ -466,6 +466,7 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 ### 9.8 Decisions During Implementation (2026-11-23)
 
 - **M. City day warns when home becomes unreachable.** A city day uses a day just like travel, so it can make home unreachable in time without the player noticing. The City day screen therefore shows the same kind of warning as the route sheet (FR-4), and the city day is never blocked (FR-8). The rules query is added in Story 2.4, next to "Money's tight", and reuses the FR-4 rule. Decided by Christian Storum (issue #39), found in the elicitation of the Story 2.1 spec. **Rejected:** adding the flag in Story 2.1 (it would reopen an approved spec) and keeping FR-4's scope (the player would only see the warning after the day was spent). **Update 2026-11-25 (#68):** the rules query was added ahead of Story 2.4, as `cityDayStatus().homeUnreachable`; Story 2.4 only shows it.
+- **N. Call home never reaches the goal (2026-11-25).** With call home counting towards the goal, a player could reach 6 stamps away from home, call home for free, keep Tokyo and win without work, which contradicts addendum §6 and §4.7 ("never better than buying a ticket"). A journey that ends by call home is now always "Goal not reached", whatever the stamps left. This supersedes the brief's "A player with 6 or more stamps can still reach the goal this way" and spec-3-1's literal reading of FR-11. Proposed by Thomas Rothe in the PR #70 review comments and agreed by Christian Storum (issue #66). **Rejected:** a two-stamp penalty (chosen first by CSE, then replaced: it depends on today's prices and days, and work can reopen the loophole), call home at €100 (it only works at today's prices), and 21 days (that is the §9.3 lever and depends on SM-2b).
 
 ## 10. Success Metrics
 
@@ -513,5 +514,6 @@ Proposed on 2026-11-13 in response to `tilbakemelding-prd.md` (2026-11-12). The 
 - **2026-11-16 — saving stays in the extension** (issue #13, Decision L). Decided by the group. Changed: §1 "one or two sittings" → "one sitting"; §9.7 added with Decision L. Not changed: FR-20 and its place in §9.2, the architecture and the epics (they already keep saving in [EXT]), rules and values.
 - **2026-11-17 — follow-up to Thomas Rothe's approval of PR #4.** Changed: §9.6 intro dates his review to 2026-11-15 (approved 2026-11-16). Not changed: all rules and addendum values.
 - **2026-11-23 — city-day home-unreachable warning** (issue #39, Decision M). Changed: FR-8 gains a warning consequence; §9.8 added. Not changed: FR-4, addendum values, the Story 2.1 spec.
+- **2026-11-25 — call home never reaches the goal** (issue #66, Decision N). Changed: FR-11 (goal only when arriving home by travel); FR-12 (the offer states that the goal will not be reached); the comparison table in §1.1; §9.8 gains Decision N; addendum §6 gains a note. The summary copy for a called-home journey lives in EXPERIENCE.md (`sum.notReached`) and the Story 3.3 AC; FR-14's list of what the summary shows is unchanged. Not changed: FR-12 (7 days, one stamp, €0), addendum values. Sprint change proposal: `sprint-change-proposal-2026-11-25.md`.
 
 **FR index:** FR-1 §4.1 · FR-2 §4.1 · FR-3 §4.2 · FR-4 §4.2 · FR-5 §4.2 · FR-6 §4.3 · FR-7 §4.3 · FR-8 §4.4 · FR-9 §4.4 · FR-10 §4.6 · FR-11 §4.6 · FR-12 §4.7 · FR-13 §4.8 · FR-14 §4.8 · FR-15 §4.9 · FR-16 §4.9 · FR-17 §4.10 · FR-18 §4.12 · FR-19 §4.13 · FR-20 §4.14 · FR-21 §4.5 · FR-22 §4.5 · FR-23 §4.11 · FR-24 §4.15

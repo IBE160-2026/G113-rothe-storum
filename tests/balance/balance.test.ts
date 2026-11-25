@@ -13,10 +13,9 @@
 // through a city without one (stopovers). A journey counts only when `apply`
 // ends it at home, which the rules allow only within the days total.
 //
-// Call home is deliberately not a move (PRD addendum §6 model, decision CSE
-// 2026-11-25): a journey counts only when it travels home. Under the real
-// rules call home is a loophole (6 stamps are reachable away from home, and a
-// Tokyo set wins via call home); issue #66 tracks it.
+// Call home is not a move: a journey counts only when it travels home (PRD
+// addendum §6 model). That model is complete, because a journey ended by call
+// home never reaches the goal (PRD Decision N, #66).
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../../src/content/load";
 import {

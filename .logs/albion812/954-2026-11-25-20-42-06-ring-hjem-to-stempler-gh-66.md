@@ -59,3 +59,33 @@ Brukeren ba om svar til Thomas på PR #70: E for #66, review av commitene etter 
 ### Åpne punkter
 - Gjennomfør E på `gh-66-call-home-goal` (#66). Lag deretter `travelPreview()` i en egen regel-PR, før 1.7 merges. Opprett issue for `travelPreview()` hvis brukeren ønsker det.
 - Bekreft teksten fra Thomas for #64 når den kommer.
+
+## 2026-11-25 kl. 21:10 — Albion812
+
+### Oppgave
+Brukeren ba om push, om å starte #66 (alternativ E) og om en issue for `travelPreview()`.
+
+### Plan
+- `main` ble pushet. Issue #71 (`travelPreview()`) ble opprettet etter godkjenning, og det fantes ingen duplikat.
+- `bmad-build` (oneshot) på `gh-66-call-home-goal`, med spec `.docs/implementation-artifacts/spec-gh-66-call-home-goal.md` og endringsforslaget som referanse. Brukeren godkjente subagenter.
+- Review med én Blind Hunter-subagent: 12 funn. Hver påstand ble sjekket mot koden. 8 ble patchet, 2 ble lagt fram for brukeren og 2 ble forkastet. Se Review Triage Log i spec-en.
+
+### Resultat
+- `b03fa4a`: `evaluateEnd()` krever nå `!calledHome` for `goalReached`, og `stampPenalty` er fortsatt 1.
+- Tester:
+  - FR-11-testen fra Ring hjem er snudd.
+  - Grensetesten for dager forventer nå `goalNotReached`. Den var ikke med i forslaget og ble funnet ved første testkjøring.
+  - Ny kontrolltest for `evaluateEnd`.
+  - Ny test på ekte innhold av #66-reisen fra Sydney. Den feiler med den gamle regelen (mutasjonssjekk).
+- FR-kartet: `EXPECTED_ROWS` FR-11 er endret fra 6 til 8.
+- Dokumenter oppdatert: PRD, addendum, EXPERIENCE, epics, epic-3- og epic-4-context, og daterte merknader i spec-3-1, spec-4-1 og research.
+- **Tekst endret i review** (brukeren valgte 1.A og 2.A):
+  - Ring hjem-arket sier «Calling home ends your journey without the goal.».
+  - Oppsummeringen for alle hjemringte reiser er «{stamps}, safely home.» uten «next time»-ledd. Den erstatter varianten som ble godkjent tidligere.
+  - Endringsforslaget har fått en datert oppdateringsseksjon.
+- Verifisert: `npm test` 398/398, `npm run lint` og `npm run build` uten feil.
+- Ikke pushet, og ingen PR ennå.
+
+### Åpne punkter
+- Push `gh-66-call-home-goal` og åpne PR med `Closes #66`, med Thomas som reviewer. PR #70 ligger tett på i PRD (Decision M/N) og `fr-test-map.md`, så den som merges sist kan få en liten tekstkonflikt.
+- #71: `travelPreview()` etter #66.
