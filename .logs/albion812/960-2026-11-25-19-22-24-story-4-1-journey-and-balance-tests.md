@@ -40,9 +40,18 @@ Brukeren kjørte `/bmad-build 4.1` for å lage Story 4.1 (Epic 4): UJ-1 og balan
   - En «pinnet» test av Ring hjem-smutthullet (avvist av brukeren).
   - 21-dagersparameter i balansetesten (hører til Story 4.4).
   - Telling av konsekvenser per FR og at «pending»-markøren skal utløpe (for mye kompleksitet for liten gevinst).
+- **Walkthrough og advanced elicitation** (Assumption Audit, Second-Order Thinking, Chaos Monkey). Jeg gjorde 8 mutasjoner, og alle ble tilbakestilt:
+  - 6 av dem ble fanget av testene.
+  - `totalDays` 21 ga ingen feil. Det viser at SM-3 holder ved 21 dager, og det er nyttig for 21-dagershåndtaket i Story 4.4.
+  - Å slette én rad i FR-kartet ga først ingen feil. Det er nå rettet: antall rader per FR er låst i `EXPECTED_ROWS` i vakttesten, som snur triage #25 etter brukerens beslutning.
+  - Brukeren godtok alle fem forslagene, og de er lagt inn i commit `8853ddd`:
+    - mutasjonsbeviset og 21-dagersfunnet står i spec-ens Implementation Notes og i `epic-4-context.md`;
+    - `.github/pull_request_template.md` har fått gruppas sjekkliste, med et eget punkt for FR-kartet;
+    - issue #67 er opprettet.
+  - `npm test` gir 378/378 grønne, og lint er ok.
 - **Issue #66** er opprettet etter brukerens godkjenning: «Balanse: Ring hjem gir 6 stempler og Tokyo-seier uten jobb (SM-3)».
 
 ### Åpne punkter
 - #66: teamet må avgjøre om Ring hjem kan være en gratis snarvei til målet (eventuelt via `bmad-correct-course`).
 - Forslag til issue, venter på brukerens godkjenning: advarselen på bydag om at hjemmet ikke lenger kan nås (PRD Decision M, lukket #39) har ingen regel-query, så FR-8-konsekvensen kan ikke testes ennå. Står i Flagged-tabellen med Story 2.4 som eier.
-- Story 3.3 må erstatte de fire FR-14-radene merket «pending Story 3.3» i FR-kartet med tester (står i spec-beslutningen).
+- #67: Story 3.3 må erstatte de fire FR-14-radene merket «pending Story 3.3» med tester og flytte sine Flagged-rader inn i hovedtabellen.
