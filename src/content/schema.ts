@@ -105,6 +105,12 @@ const destinationSchema = z.strictObject({
     .number()
     .positive()
     .multipleOf(0.01, "must have at most two decimals"),
+  // Whole degrees in the range DESIGN → Stamp allows (−12° to +9°, NFR-1).
+  stampAngle: z
+    .number()
+    .int("must be a whole number of degrees")
+    .min(-12, "must be at least -12 degrees")
+    .max(9, "must be at most 9 degrees"),
   fact: fact(2, 3, 320),
 }) satisfies z.ZodType<Destination>;
 

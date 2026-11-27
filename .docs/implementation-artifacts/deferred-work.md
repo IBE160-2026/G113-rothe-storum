@@ -19,3 +19,7 @@
 - source_spec: `.docs/implementation-artifacts/spec-gh-50-begin-journey-rejection.md`
   summary: When Story 3.3 adds "New journey" from the summary, test that a rejected `startJourney` with a previous journey in the store keeps the player off the Map.
   evidence: App's check uses `rejection === null && game !== null`; today every test starts with `game === null`, because the UI has no path back to Start once a journey exists (#50 review, finding 1).
+
+- source_spec: `.docs/implementation-artifacts/spec-gh-78-stamp-angle-content.md`
+  summary: The README checklist for adding a destination (FR-19) does not say that the fixed tables in tests/content/content.test.ts (the 8-id list and the stamp-angle table) must be updated too.
+  evidence: Blind Hunter BH1 in the gh-78 review; "loads home as Bergen and exactly 8 destinations" and the new angle test both list ids, so Madrid/Cape Town (Epic 5) fail them even when every README step is done.

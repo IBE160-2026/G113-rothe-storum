@@ -484,7 +484,7 @@ Content data for the map (NFR-7). Places and regions are records; the map is one
 | Route lines | Straight segments in projection. A line spanning more than 180° of longitude wraps across the map edge instead (New York – Tokyo crosses the Pacific). The trail follows the same rule. |
 | Current region | The region of the traveller's position. The loupe shows it; when the traveller is outside Europe, there is no Europe loupe. |
 
-**Per place:** `id`, `name`, `iata` (destinations only; the stamp code), `lat`, `lon`, `regionId`, `labelOffset` (px at loupe scale), `pillOffset` (px at zoom scale), `stampAngle`.
+**Per place:** `id`, `name`, `iata` (destinations only; the stamp code), `lat`, `lon`, `regionId`, `labelOffset` (px at loupe scale), `pillOffset` (px at zoom scale), `stampAngle` (destinations only).
 
 | Place | Lat, lon | Region | Tag |
 |---|---|---|---|
