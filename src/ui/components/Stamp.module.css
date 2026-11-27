@@ -1,0 +1,79 @@
+/* DESIGN.md → Stamp and Stamp slot. All colours from tokens.css, so dark
+   mode follows the device. Lengths inside the SVG are viewBox units. */
+
+/* Inline like the slot, so a stamp and a slot sit side by side in any row. */
+.stamp {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+}
+
+.ring {
+  fill: var(--color-stamp-ring);
+  fill-opacity: 0.12;
+  stroke: var(--color-stamp-ring);
+  stroke-width: 2.5;
+}
+
+.innerRing {
+  fill: none;
+  stroke: var(--color-stamp-ink);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.code {
+  fill: var(--color-stamp-ink);
+  font-family: var(--font-stamp-code-family);
+  font-size: var(--font-stamp-code-size);
+  font-weight: var(--font-stamp-code-weight);
+  letter-spacing: var(--font-stamp-code-letter-spacing);
+}
+
+.check {
+  fill: none;
+  stroke: var(--color-stamp-ink);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.slot {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1.5px dashed var(--color-slot-dash);
+  border-radius: 50%;
+  color: var(--color-ink-muted);
+  font-family: var(--font-slot-numeral-family);
+  font-size: var(--font-slot-numeral-size);
+  font-weight: var(--font-slot-numeral-weight);
+  line-height: var(--font-slot-numeral-line-height);
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+
+/* Positioned so it paints above the wash below, not under it. */
+.numeral {
+  position: relative;
+}
+
+/* The next slot to fill: 2 px ochre dashed ring and an 8% ochre wash.
+   The wash is a pseudo-element with opacity, not color-mix(), which the
+   README's browser floor (Chrome 107, Safari 16) does not support.
+   Keyed on data-next, the same attribute the tests check. */
+.slot[data-next="true"] {
+  border: 2px dashed var(--color-ochre);
+}
+
+.slot[data-next="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-ochre);
+  opacity: 0.08;
+}
