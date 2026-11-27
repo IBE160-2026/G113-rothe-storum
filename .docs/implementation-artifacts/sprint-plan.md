@@ -1,6 +1,6 @@
 # Sprint Plan — WORLDBOUND: NOMAD (2026-11-13 → 2026-12-15)
 
-**Status:** proposed by the AI agent (Claude Code) on 2026-11-13; adjusted on 2026-11-16 after Thomas Rothe's review of the planning pull request (PR #4): UI starts in S1, both team members test and review the rules logic, and Story 1.2 has an owner.
+**Status:** proposed by the AI agent (Claude Code) on 2026-11-13; adjusted on 2026-11-16 after Thomas Rothe's review of the planning pull request (PR #4): UI starts in S1, both team members test and review the rules logic, and Story 1.2 has an owner. Team split adjusted on 2026-11-27 (#11): Christian takes over UI stories 2.5, 3.2 and 3.3.
 **Source:** `.docs/planning-artifacts/epics.md` · story status: `sprint-status.yaml` (BMAD tracking file).
 **Deadline:** Tuesday 2026-12-15 (submission). 32 days, about 4.5 weeks.
 
@@ -41,9 +41,13 @@ Agreed in Thomas Rothe's review of PR #4 (2026-11-15; approved 2026-11-16); clos
 | Area | Lead | Reviewer |
 | --- | --- | --- |
 | 1.1 scaffold, 1.2 content data and validation, rules (1.3, 1.4, 2.1, 3.1), tests 4.1 | Christian | Thomas |
-| UI (1.5–1.7, 2.3–2.5, 3.2, 3.3), e2e 4.2, a11y 4.3 | Thomas | Christian |
+| UI (1.5–1.7, 2.3, 2.4), e2e 4.2, a11y 4.3 | Thomas | Christian |
+| UI: Polaroid components (`Polaroid`, `PolaroidSheet`), 2.5, 3.2, 3.3 | Christian | Thomas |
 | Content 2.2 (AI drafts, fact-check) | Christian | Thomas |
 | Playtest 4.4, README 4.5 | both | both |
+| EXT epics 5–7 | decided at the start of S4, if S3 is green | — |
+
+**Adjusted 2026-11-27 ([#11](https://github.com/IBE160-2026/G113-rothe-storum/issues/11)):** Christian takes over UI stories 2.5, 3.2 and 3.3 and builds the Polaroid components as a small, separate PR before 2.4 and 2.5. This makes both members visible as story leads in the history and spreads the six remaining S2 UI stories over two people. Order for Christian: 3.3 (after #73 is merged), 2.5, then 3.2 (after 2.3 and 2.4, so the two of us do not edit the same files at the same time). Agreed orally between Thomas and Christian; recorded in #11.
 
 Both team members write and review tests for the rules logic (1.3, 1.4, 2.1, 3.1, 4.1), so the quality assurance of the rules does not rest on one person.
 
