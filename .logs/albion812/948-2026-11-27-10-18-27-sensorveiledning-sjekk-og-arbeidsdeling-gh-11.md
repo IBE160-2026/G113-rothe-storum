@@ -21,6 +21,8 @@ Christian ville vite om prosjektet fortsatt følger sensorveiledningen for Del 1
   - `README.md`: ny seksjon «Arbeidsdeling» med lenker til #5, #11 og sprintplanen.
   - `prettier --check` består på begge filene (Prettier fylte ut README-tabellen).
 
+- **Review-rekkefølge til Thomas:** postet som kommentar på PR #73 (https://github.com/IBE160-2026/G113-rothe-storum/pull/73#issuecomment-7215200730). Rekkefølgen er #74 (blokkerer 1.7), så #77 (trengs i 2.4, 2.5 og 3.3), så #75 og #76.
+
 **KI-forslag som ble rettet i økten:**
 - Claude påsto først at Epic 4 ikke var fordelt. Ved kontroll viste `sprint-plan.md` at 4.2 og 4.3 tilhører Thomas, og 4.4 og 4.5 begge. Claude rettet seg selv, og oppdaget samtidig at avtalen fra 27.11 også måtte inn i sprintplanen, ikke bare i README, for å holde plan og README konsistente.
 - Utkastet til kommentaren påsto at de fleste av Thomas sine reviews var uten tekst. Det bygde på at Claude bare telte PR-kommentarer, ikke selve review-teksten. Christian rettet dette før postingen: reviewene er skriftlige (akseptansekriterier, hva han sjekket, og «changes requested» på #4 og #28). Punktet ble fjernet, og tallene ble oppdatert (249/7, 21 av 30 PR-er).
