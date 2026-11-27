@@ -70,7 +70,7 @@ context:
 **Execution:**
 - [x] `src/ui/copy.ts` -- add `polaroid` (`meta(city, day)` → "Paris · Day 6", in normal case so screen readers do not spell it out, uppercased by CSS, `empty`, `close`, `sheetLabel(name)`) -- AD-9. The meta line comes from DESIGN → Polaroid, and the empty line from EXPERIENCE → Empty album.
 - [x] `src/ui/sheets/sheet.module.css` -- the shared sheet shell (`.layer`, `.scrim`, `.sheet`, header), the same as `MenuSheet.module.css` today -- one place for Story 4.3 and the sheets in 3.2.
-- [x] `src/ui/components/Polaroid.tsx` + `.module.css` -- the print. Props: `sight`, `day`, `city`, `onOpen(el)`, `tilt` (`"left"` | `"right"`), `size` (`"small"` 62 px album strip | `"medium"` 86 px Day complete | `"large"` 118 px Journey summary photo height). An empty variant is used when there is no `sight`.
+- [x] `src/ui/components/Polaroid.tsx` + `.module.css` -- the print. Props: `sight`, `day`, `city`, `onOpen(el)`, `tilt` (`"left"` | `"right"`), `size` (`"album"` 62 px photo | `"dayComplete"` 86 px photo | `"summary"` 118 px wide print, 78 px photo; renamed and corrected 2026-11-27, see Spec Change Log). An empty variant is used when there is no `sight`.
 - [x] `src/ui/sheets/PolaroidSheet.tsx` + `.module.css` -- the read-only sheet, built on `sheet.module.css` with `composes`. Props: `sight`, `day`, `city`, `onClose`.
 - [x] `src/ui/hooks/usePolaroidSheet.tsx` -- `{ open(entry, openerEl), isOpen, sheet }`. It looks up the sight and city in content, wires `useBackToClose`, and returns focus with `flushSync`.
 - [x] `tests/ui/Polaroid.test.tsx` -- every row of the I/O matrix, through a small test opener with `inert={isOpen}`. Use days 1, 6 and 30, and "Empire State Building" as the longest name. CSS clamping and the 4:3 box are checked in the screenshots, since jsdom does no layout.
@@ -131,6 +131,8 @@ Implemented directly in the planning session, from this spec, without an impleme
   - Screenshots at 375 px in light and dark through a temporary Vite harness, deleted afterwards. `scrollWidth` was 375 in both. Tab shows the focus ring. Esc closes the sheet and focus returns to the print.
 
 ## Spec Change Log
+
+- **2026-11-27, BH9 settled by Story 3.3 (D1, Christian).** Finding BH9 asked whether "album strip of 118 px polaroids" is the photo height or the whole print. The J1 mockup answers it: `.albumstrip .polaroid{width:118px}` with `box-sizing: border-box`, so 118 px is the whole print. `large` (118 px photo height, about 171 px wide) is replaced by `summary`, a 78 px photo: 104 px wide at 4:3, plus 2 × 6 px padding and 2 × 1 px border, gives 118 px. The sizes are renamed after where they are used (`album`, `dayComplete`, `summary`), because by height the summary now sits between the other two. No caller used `size` yet. KEEP: the photo stays 4:3, and DESIGN's 62–86 px range still holds. The `deferred-work.md` entry for BH9 is resolved by this.
 
 ## Review Triage Log
 

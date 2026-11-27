@@ -24,16 +24,18 @@
   align-self: flex-start;
 }
 
-.small {
+.album {
   --photo-height: 62px;
 }
 
-.medium {
+.dayComplete {
   --photo-height: 86px;
 }
 
-.large {
-  --photo-height: 118px;
+/* 118 px wide in all: 104 px photo (78 px tall at 4:3) + 2 × 6 px padding
+   + 2 × 1 px border, as in the J1 mockup (Story 3.3, D1). */
+.summary {
+  --photo-height: 78px;
 }
 
 .left {
@@ -89,11 +91,11 @@
   overflow-wrap: anywhere;
 }
 
-/* The small print is about 83 px wide. Tighter caps (0.4 px instead of
+/* The album print is about 83 px wide. Tighter caps (0.4 px instead of
    label-caps' 1.6 px) keep "COPENHAGEN" whole at the 11 px minimum (NFR-5,
    EXPERIENCE → Accessibility Floor); checked over all 16 sights in Chromium.
    overflow-wrap stays as a safety net for longer names. */
-.small .meta {
+.album .meta {
   letter-spacing: 0.4px;
 }
 

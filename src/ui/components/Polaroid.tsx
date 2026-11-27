@@ -9,8 +9,12 @@ import { copy } from "../copy";
 import { Icon } from "./Icon";
 import styles from "./Polaroid.module.css";
 
-/** Photo heights from DESIGN.md: album strip, Day complete, Journey summary. */
-export type PolaroidSize = "small" | "medium" | "large";
+/**
+ * Where the print is used. Album strip: 62 px photo. Day complete: 86 px
+ * photo. Journey summary: the whole print is 118 px wide (J1 mockup,
+ * `.albumstrip .polaroid`), which gives a 78 px photo (Story 3.3, D1).
+ */
+export type PolaroidSize = "album" | "dayComplete" | "summary";
 
 /** What a print shows for one album entry. */
 export interface PolaroidPrint {
@@ -65,7 +69,7 @@ export function Polaroid({
   city,
   day,
   onOpen,
-  size = "small",
+  size = "album",
   tilt = "left",
 }: Props) {
   return (
