@@ -28,7 +28,7 @@ This contradicts PRD addendum §6 ("Tokyo and Sydney need a job") and PRD §4.7 
 - **Superseded decisions:** the brief's "A player with 6 or more stamps can still reach the goal this way" and spec-3-1's "The goal follows FR-11 literally: a called-home player with 6 stamps keeps 5 and reaches the goal if the days fit". Both documents are left as history, and Decision N records that they are superseded.
 - **Epic 3:** the Story 3.1 (done) AC is updated, and the code and tests change. Story 3.3 (backlog) needs a summary copy variant for a called-home player with 5 or more stamps.
 - **Epic 4:** Story 4.1's balance search can keep excluding call home. The exclusion is now backed by the rule instead of only by the model, so only the header comment changes.
-- **Story 1.7:** not affected. `travelPreview()` reads the outcome from `evaluateEnd()`, so it follows the new rule automatically.
+- **Story 1.7:** not affected. `travelPreview()` reads the outcome from `evaluateEnd()`, so it follows the new rule automatically. *(Update 2026-11-27, #71: `travelPreview()` runs `apply(travel)`, which runs `evaluateEnd()`, so this still holds; see `spec-gh-71-travel-preview.md`.)*
 - **Not affected:** Epic 2, the architecture (ARCHITECTURE-SPINE), the content schema, UJ-2 (Jonas already ends with "Goal not reached").
 
 ## 3. Recommended approach

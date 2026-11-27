@@ -1,5 +1,6 @@
 // Read-only queries for the UI (AD-3). They share their checks with `apply`,
 // so what the UI shows as available is exactly what `apply` accepts.
+import { apply, travel } from "./apply";
 import {
   callHomeFits,
   callHomeOffered,
@@ -14,10 +15,13 @@ import type {
   CityDayStatus,
   Content,
   GameState,
+  PlaceId,
   RouteView,
   Sight,
   SightPlanView,
+  TransportMode,
   TravelOption,
+  TravelPreview,
 } from "./types";
 
 // Re-exported so callers keep one entry point for queries (#38).
@@ -157,5 +161,31 @@ export function callHomeStatus(
     stampsLost: callHomeStampsLost(state, content),
     price,
     daysUsedAfter: state.daysUsed + days,
+  };
+}
+
+/**
+ * One trip as it would turn out before the player confirms it: money, days
+ * and stamps after it, and the outcome if it ends the journey (FR-6, FR-7,
+ * #71). It runs `apply(travel({ to, mode }))` on the state and reads the
+ * result, so it is exactly what `apply` decides, including the end rules and
+ * Decision N (AD-3). A rejected trip gives the current values and no outcome.
+ */
+export function travelPreview(
+  state: GameState,
+  to: PlaceId,
+  mode: TransportMode,
+  content: Content,
+): TravelPreview {
+  const result = apply(state, travel({ to, mode }), content);
+  const after = result.ok ? result.state : state;
+  return {
+    ok: result.ok,
+    reason: result.ok ? null : result.reason,
+    moneyAfter: after.money,
+    daysUsedAfter: after.daysUsed,
+    stampsAfter: after.stamps.length,
+    outcome: result.ok ? after.outcome : null,
+    failReason: result.ok ? after.failReason : null,
   };
 }
