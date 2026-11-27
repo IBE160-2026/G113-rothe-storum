@@ -33,16 +33,18 @@ context:
 1. **Given** an ended journey, **when** the summary shows, **then** it shows the traveller name, stamps with destination names, the photo album, days used, money left, "Goal reached"/"Goal not reached", "Called home" when relevant, and the failure reason when relevant. A called-home journey shows "{stamps}, safely home." with no "next time" clause (Decision N, #66).
 2. **Given** the summary, **when** the player taps "New journey", **then** the Start screen opens with the last name prefilled, and no other game action is possible from the summary.
 
-## Decisions for the story owner (Christian), before implementation
+## Decisions (Christian, 2026-11-27)
 
-| # | Question | Recommendation | Why |
+All six were decided by the story owner on 2026-11-27, each following the recommendation.
+
+| # | Question | Decision | Why |
 |---|---|---|---|
-| D1 | Polaroid size on the summary (deferred item BH9 from PR #77) | **118 px is the width of the whole print**, not the photo height. Use or add a `Polaroid` size whose print is 118 px wide. | The J1 mockup sets `.albumstrip .polaroid{width:118px}` (`mockups/screens-core.html`). This settles BH9 with the design files, as the deferred item asks. |
+| D1 | Polaroid size on the summary (deferred item BH9 from PR #77) | **Decided: 118 px is the width of the whole print**, not the photo height. Use or add a `Polaroid` size whose print is 118 px wide. | The J1 mockup sets `.albumstrip .polaroid{width:118px}` (`mockups/screens-core.html`). This settles BH9 with the design files, as the deferred item in PR #77 asks. |
 | D2 | Who builds the 50 px stamp? `epic-3-context.md` says 3.3 uses "the stamp and polaroid components from 2.5", but #11 puts 3.3 before 2.5. | **Decided (Christian, 2026-11-27):** `Stamp` and `StampSlot` come in their own small PR before 3.3 (`spec-stamp-and-stamp-slot.md`, branch `stamp-component`). 3.3 uses them at 50 px, and 2.5 at 80 px. | The order changed in #11. Building it once avoids two stamp implementations. This is a deviation from the epic context. |
 | D3 | Stamp angle: DESIGN asks for a fixed `stampAngle` per destination from content data, but `content/destinations.json` has none. | **Decided (Christian, 2026-11-27): 0°**, built into `Stamp`. Follow-up issue for `stampAngle` in content and schema (AD-7): #78. | Adding a content field means a schema change and content review. That is not needed for FR-14, and the stamp still reads by code and check, not by angle. |
-| D4 | Back on the summary "does nothing" (EXPERIENCE → Back). | **Defer**, as Story 1.6 did for Back on the Map: Back leaves the page, as today. Record it as a deviation for the later navigation story. | Trapping Back needs a history strategy shared with the Map. Doing it for one screen only would be inconsistent. |
-| D5 | Reduced menu on the summary: "How to play" and "New journey". `MenuSheet` has only "How to play" today. | **Add an optional `onNewJourney` prop.** The row is shown only when the journey has ended, and it goes straight to Start with no confirm (nothing can be lost). The in-journey "New journey" with its data-loss confirm stays out of scope. | EXPERIENCE says the confirm is for "a journey in progress". After the end there is nothing to lose. |
-| D6 | Failed journeys before Story 3.2 (Can't-continue sheet). | **Show the summary directly** for `failed`. 3.2 later puts the sheet in front of it with "See your journey". | `TemporaryJourneyEnd` is removed in full here, so there is no second temporary screen. |
+| D4 | Back on the summary "does nothing" (EXPERIENCE → Back). | **Decided: defer**, as Story 1.6 did for Back on the Map: Back leaves the page, as today. Record it as a deviation for the later navigation story. | Trapping Back needs a history strategy shared with the Map. Doing it for one screen only would be inconsistent. |
+| D5 | Reduced menu on the summary: "How to play" and "New journey". `MenuSheet` has only "How to play" today. | **Decided: add an optional `onNewJourney` prop.** The row is shown only when the journey has ended, and it goes straight to Start with no confirm (nothing can be lost). The in-journey "New journey" with its data-loss confirm stays out of scope. | EXPERIENCE says the confirm is for "a journey in progress". After the end there is nothing to lose. |
+| D6 | Failed journeys before Story 3.2 (Can't-continue sheet). | **Decided: show the summary directly** for `failed`. 3.2 later puts the sheet in front of it with "See your journey". | `TemporaryJourneyEnd` is removed in full here, so there is no second temporary screen. |
 
 ## Scope
 
@@ -109,4 +111,4 @@ Not run yet. Filled in when the story is implemented.
 
 ## AI involvement
 
-Spec drafted by Claude Code (Opus 5.5) on 2026-11-27 from epics.md, epic-3-context.md, EXPERIENCE.md, DESIGN.md, the J1/J2/CH3 mockups, PRD FR-7/11/13/14 and the open PRs #73 and #77. The decisions D1–D6 are recommendations and wait for Christian.
+Spec drafted by Claude Code (Opus 5.5) on 2026-11-27 from epics.md, epic-3-context.md, EXPERIENCE.md, DESIGN.md, the J1/J2/CH3 mockups, PRD FR-7/11/13/14 and the open PRs #73 and #77. Claude recommended D1–D6, and Christian decided all six on 2026-11-27 (each as recommended).
