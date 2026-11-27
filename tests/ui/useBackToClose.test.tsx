@@ -44,4 +44,38 @@ describe("UX-DR2 useBackToClose", () => {
     expect(back).toHaveBeenCalledTimes(1);
     back.mockRestore();
   });
+
+  it("#65: unmounting with an entry still open pops it once", () => {
+    const back = vi.spyOn(window.history, "back").mockImplementation(() => {});
+    const { result, unmount } = renderHook(() => useBackToClose(() => {}));
+    act(() => result.current.open());
+
+    unmount();
+    expect(back).toHaveBeenCalledTimes(1);
+    back.mockRestore();
+  });
+
+  it("#65: close() then unmount before popstate goes back only once", () => {
+    const back = vi.spyOn(window.history, "back").mockImplementation(() => {});
+    const { result, unmount } = renderHook(() => useBackToClose(() => {}));
+    act(() => result.current.open());
+    expect(result.current.close()).toBe(true);
+
+    unmount();
+    expect(back).toHaveBeenCalledTimes(1);
+    back.mockRestore();
+  });
+
+  it("calls onBack once when the popstate for close() arrives", () => {
+    const back = vi.spyOn(window.history, "back").mockImplementation(() => {});
+    const onBack = vi.fn();
+    const { result } = renderHook(() => useBackToClose(onBack));
+    act(() => result.current.open());
+    result.current.close();
+
+    pop();
+    pop();
+    expect(onBack).toHaveBeenCalledTimes(1);
+    back.mockRestore();
+  });
 });

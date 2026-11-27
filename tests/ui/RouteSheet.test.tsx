@@ -9,7 +9,7 @@ import { describe, expect, it, vi } from "vitest";
 import { loadContent } from "../../src/content/load";
 import { apply, startJourney } from "../../src/rules/apply";
 import { daysTotal, routesFrom } from "../../src/rules/queries";
-import type { GameState, PlaceId } from "../../src/rules/types";
+import type { GameState, PlaceId, TransportMode } from "../../src/rules/types";
 import { copy } from "../../src/ui/copy";
 import { RouteSheet } from "../../src/ui/sheets/RouteSheet";
 
@@ -21,7 +21,12 @@ function journey(overrides: Partial<GameState> = {}): GameState {
   return { ...result.state, ...overrides };
 }
 
-function renderSheet(game: GameState, to: PlaceId, onRequestClose = vi.fn()) {
+function renderSheet(
+  game: GameState,
+  to: PlaceId,
+  onRequestClose = vi.fn(),
+  onConfirm?: (mode: TransportMode) => void,
+) {
   const route = routesFrom(game, content).find((r) => r.to === to);
   if (!route) throw new Error(`no route to ${to}`);
   const name = (id: PlaceId) =>
@@ -37,10 +42,13 @@ function renderSheet(game: GameState, to: PlaceId, onRequestClose = vi.fn()) {
       toStamped={game.stamps.some((s) => s.id === to)}
       money={game.money}
       daysTotal={daysTotal(game, content)}
+      stamps={game.stamps.length}
+      goalStamps={content.config.goalStamps}
       onRequestClose={onRequestClose}
+      onConfirm={onConfirm}
     />,
   );
-  return { route, onRequestClose };
+  return { route, onRequestClose, onConfirm };
 }
 
 const row = (mode: string) =>
@@ -129,6 +137,8 @@ describe("Story 1.6 AC2 / FR-4 route sheet", () => {
           toStamped={false}
           money={game.money}
           daysTotal={30}
+          stamps={0}
+          goalStamps={5}
           onRequestClose={() => {}}
         />,
       );
@@ -174,5 +184,100 @@ describe("Story 1.6 AC2 / FR-4 route sheet", () => {
       within(dialog).getByRole("button", { name: copy.route.close }),
     );
     expect(onRequestClose).toHaveBeenCalledTimes(2);
+  });
+});
+
+// Story 1.7 (FR-6, FR-7): the primary commits the chosen mode; a route to
+// Bergen swaps to Travel home first, and "Not now" swaps back unchanged.
+describe("Story 1.7 / FR-6 FR-7 confirm travel in the route sheet", () => {
+  it("commits the chosen available mode through onConfirm", () => {
+    const onConfirm = vi.fn();
+    renderSheet(journey(), "copenhagen", vi.fn(), onConfirm);
+
+    const choose = screen.getByRole("button", { name: copy.route.choose });
+    fireEvent.click(choose);
+    expect(onConfirm).not.toHaveBeenCalled();
+
+    fireEvent.click(row("Bus"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: copy.route.primary("Take the bus", 70),
+      }),
+    );
+    expect(onConfirm).toHaveBeenCalledExactlyOnceWith("bus");
+  });
+
+  it("cannot commit an unavailable mode (NOT_ENOUGH_MONEY)", () => {
+    const onConfirm = vi.fn();
+    renderSheet(journey({ money: 100 }), "copenhagen", vi.fn(), onConfirm);
+
+    // A browser never dispatches clicks to a disabled radio; jsdom may still
+    // tick it, so assert on what matters: nothing becomes committable.
+    expect(row("Plane")).toBeDisabled();
+    fireEvent.click(row("Plane"));
+    const primary = screen.getByRole("button", { name: copy.route.choose });
+    expect(primary).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(primary);
+    expect(onConfirm).not.toHaveBeenCalled();
+  });
+
+  it("swaps to Travel home on a route to Bergen; Not now swaps back unchanged", () => {
+    const onConfirm = vi.fn();
+    const game = journey({
+      position: "copenhagen",
+      money: 900,
+      daysUsed: 4,
+      stamps: [{ id: "copenhagen", day: 3 }],
+    });
+    renderSheet(game, "home", vi.fn(), onConfirm);
+
+    fireEvent.click(row("Train"));
+    fireEvent.click(
+      screen.getByRole("button", { name: copy.route.continueHome(110) }),
+    );
+    expect(onConfirm).not.toHaveBeenCalled();
+
+    const title = copy.home.title("train", copy.home.verb.train);
+    expect(screen.getByRole("dialog", { name: title })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: title })).toHaveFocus();
+    expect(screen.getByText(copy.home.stamps(1, 5))).toBeInTheDocument();
+    expect(screen.getByText(copy.home.ends)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: copy.home.notNow }));
+    expect(
+      screen.getByRole("dialog", { name: "Copenhagen → Bergen" }),
+    ).toBeInTheDocument();
+    expect(row("Train")).toBeChecked();
+    expect(onConfirm).not.toHaveBeenCalled();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: copy.route.continueHome(110) }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: copy.home.primary("Take the train home", 110),
+      }),
+    );
+    expect(onConfirm).toHaveBeenCalledExactlyOnceWith("train");
+  });
+
+  it("closes Travel home on Esc and keeps Tab inside", () => {
+    const onRequestClose = vi.fn();
+    const game = journey({ position: "copenhagen", money: 900 });
+    renderSheet(game, "home", onRequestClose, vi.fn());
+    fireEvent.click(row("Bus"));
+    fireEvent.click(
+      screen.getByRole("button", { name: copy.route.continueHome(70) }),
+    );
+
+    const dialog = screen.getByRole("dialog");
+    within(dialog).getByRole("button", { name: copy.home.notNow }).focus();
+    fireEvent.keyDown(dialog, { key: "Tab" });
+    expect(
+      within(dialog).getByRole("button", { name: copy.route.close }),
+    ).toHaveFocus();
+
+    fireEvent.keyDown(dialog, { key: "Escape" });
+    expect(onRequestClose).toHaveBeenCalledTimes(1);
   });
 });
