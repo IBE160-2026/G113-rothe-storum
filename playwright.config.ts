@@ -17,6 +17,9 @@ export default defineConfig({
       // Chromium with a phone-sized, touch-enabled viewport (mobile first).
       use: {
         ...devices["Desktop Chrome"],
+        // PW_CHANNEL=chrome uses the locally installed Google Chrome, for
+        // systems where Playwright has no Chromium build, e.g. macOS 13 (#22).
+        channel: process.env.PW_CHANNEL,
         viewport: { width: 375, height: 812 },
         isMobile: true,
         hasTouch: true,

@@ -26,6 +26,8 @@ npm install
 npx playwright install chromium   # one-time browser download for the end-to-end tests
 ```
 
+On macOS 13, Playwright has no Chromium build, so `npx playwright install chromium` fails. Install Google Chrome instead and run the end-to-end tests with `PW_CHANNEL=chrome npm run test:e2e`.
+
 ### Scripts
 
 | Command            | What it does                                                         |
