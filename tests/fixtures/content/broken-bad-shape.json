@@ -29,6 +29,7 @@
         "lat": 50.0,
         "lon": 10.0,
         "costFactor": 1.0,
+        "stampAngle": -5,
         "fact": "Alpha is a test destination. It has two test sights."
       },
       {
@@ -38,6 +39,7 @@
         "lat": 40.0,
         "lon": -20.0,
         "costFactor": 1.5,
+        "stampAngle": 3,
         "fact": "Beta Town is a test destination. It has two test sights."
       }
     ]

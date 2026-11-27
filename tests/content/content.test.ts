@@ -218,6 +218,39 @@ describe("NFR-7 AR-6 content", () => {
       );
     });
 
+    it("NFR-1 gives every destination its own fixed stamp angle (#78)", () => {
+      // Decision B in spec-gh-78-stamp-angle-content.md: one distinct angle each.
+      const angles = Object.fromEntries(
+        content.destinations.map((d) => [d.id, d.stampAngle]),
+      );
+      expect(angles).toEqual({
+        copenhagen: -10,
+        paris: 7,
+        london: -8,
+        rome: -3,
+        istanbul: 4,
+        "new-york": -12,
+        tokyo: 9,
+        sydney: -6,
+      });
+      expect(new Set(Object.values(angles)).size).toBe(8);
+      // A second load parses the files again and gives the same angles. This checks
+      // the data only; a render test for the rotation belongs to #78 part 2.
+      expect(loadContent().destinations.map((d) => d.stampAngle)).toEqual(
+        content.destinations.map((d) => d.stampAngle),
+      );
+    });
+
+    it("accepts stamp angles at both ends of the range", () => {
+      const parsed = parseContent(
+        withDefect((r) => {
+          r.destinations.destinations[0].stampAngle = -12;
+          r.destinations.destinations[1].stampAngle = 9;
+        }),
+      );
+      expect(parsed.destinations.map((d) => d.stampAngle)).toEqual([-12, 9]);
+    });
+
     it("has the Explorer core values", () => {
       expect(content.config.modes.explorer).toEqual({
         startMoney: 1500,
@@ -817,6 +850,42 @@ describe("NFR-7 AR-6 content", () => {
         (r) => (r.destinations.destinations[0].iata = "AAAA"),
         "destinations.json",
         "destinations[0].iata",
+      ],
+      [
+        "stamp angle below -12",
+        (r) => (r.destinations.destinations[0].stampAngle = -13),
+        "destinations.json",
+        "destinations[0].stampAngle",
+      ],
+      [
+        "stamp angle above 9",
+        (r) => (r.destinations.destinations[0].stampAngle = 10),
+        "destinations.json",
+        "destinations[0].stampAngle",
+      ],
+      [
+        "stamp angle that is not whole",
+        (r) => (r.destinations.destinations[0].stampAngle = 2.5),
+        "destinations.json",
+        "destinations[0].stampAngle",
+      ],
+      [
+        "stamp angle on home",
+        (r) => poke(r.destinations.home, "stampAngle", 0),
+        "destinations.json",
+        "home",
+      ],
+      [
+        "missing stamp angle",
+        (r) => poke(r.destinations.destinations[1], "stampAngle", undefined),
+        "destinations.json",
+        "destinations[1].stampAngle",
+      ],
+      [
+        "stamp angle as a string",
+        (r) => poke(r.destinations.destinations[0], "stampAngle", "5"),
+        "destinations.json",
+        "destinations[0].stampAngle",
       ],
       [
         "blank name",

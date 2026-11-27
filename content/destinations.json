@@ -8,6 +8,7 @@
       "lat": 55.68,
       "lon": 12.57,
       "costFactor": 1.8,
+      "stampAngle": -10,
       "fact": "Copenhagen has been the capital of Denmark since the early 15th century. Its name comes from the Old Danish for \"merchants' harbour\". The Round Tower, completed in 1642, has a spiral ramp instead of stairs."
     },
     {
@@ -17,6 +18,7 @@
       "lat": 48.86,
       "lon": 2.35,
       "costFactor": 1.6,
+      "stampAngle": 7,
       "fact": "Paris hosted the Summer Olympics in 1900, 1924 and 2024. The first line of the Paris Metro opened in 1900, during that year's World's Fair."
     },
     {
@@ -26,6 +28,7 @@
       "lat": 51.51,
       "lon": -0.13,
       "costFactor": 2.0,
+      "stampAngle": -8,
       "fact": "The London Underground opened in 1863 as the world's first underground passenger railway. Much of the City of London was rebuilt after the Great Fire of 1666."
     },
     {
@@ -35,6 +38,7 @@
       "lat": 41.9,
       "lon": 12.5,
       "costFactor": 1.4,
+      "stampAngle": -3,
       "fact": "According to legend, Rome was founded in 753 BC by Romulus. The city became the capital of a unified Italy in 1871."
     },
     {
@@ -44,6 +48,7 @@
       "lat": 41.01,
       "lon": 28.98,
       "costFactor": 0.8,
+      "stampAngle": 4,
       "fact": "Istanbul spans two continents, Europe and Asia, on either side of the Bosphorus strait. The city was once called Byzantium and later Constantinople, and its name officially became Istanbul in 1930."
     },
     {
@@ -53,6 +58,7 @@
       "lat": 40.71,
       "lon": -74.01,
       "costFactor": 2.2,
+      "stampAngle": -12,
       "fact": "New York was called New Amsterdam until the English took control of it in 1664. The city is made up of five boroughs, and its first subway line opened in 1904."
     },
     {
@@ -62,6 +68,7 @@
       "lat": 35.68,
       "lon": 139.69,
       "costFactor": 1.8,
+      "stampAngle": 9,
       "fact": "Tokyo was called Edo until 1868, when it was renamed and became the imperial capital of Japan. The city hosted the Summer Olympics in 1964, and the postponed 2020 Games in 2021."
     },
     {
@@ -71,6 +78,7 @@
       "lat": -33.87,
       "lon": 151.21,
       "costFactor": 1.7,
+      "stampAngle": -6,
       "fact": "Sydney was founded in 1788 as a British penal colony at Sydney Cove. The city hosted the Summer Olympics in 2000."
     }
   ]

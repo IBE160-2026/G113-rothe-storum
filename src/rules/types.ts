@@ -26,6 +26,11 @@ export interface Destination extends Place {
   /** Multiplier on the base accommodation price for a city day. */
   costFactor: number;
   /**
+   * The stamp's fixed angle in whole degrees, −12 to +9 (DESIGN → Stamp), so
+   * every render of this destination's stamp is identical (NFR-1).
+   */
+  stampAngle: number;
+  /**
    * The fact card shown on arrival (FR-5): 2–3 English sentences, at most 320
    * characters (AD-7, NFR-6). Fact-checked per NFR-8.
    */

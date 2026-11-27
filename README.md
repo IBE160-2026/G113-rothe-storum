@@ -63,7 +63,7 @@ Places, routes, sights and core values live in `content/config.json`, `content/d
 
 The content files are validated strictly, so a new destination (for example Madrid or Cape Town, FR-19) needs all of this in the same change, or `npm test` and CI fail and the app shows a content error on start:
 
-1. `content/destinations.json`: a lowercase kebab `id`, `name`, three-letter `iata`, `lat`, `lon`, `costFactor` (at most two decimals) and a 2–3 sentence `fact`.
+1. `content/destinations.json`: a lowercase kebab `id`, `name`, three-letter `iata`, `lat`, `lon`, `costFactor` (at most two decimals), `stampAngle` (whole degrees from -12 to 9) and a 2–3 sentence `fact`.
 2. `content/sights.json`: exactly 2 sights with ids `{destId}-{slug}`, whole-euro prices 8–20, a 1–2 sentence `fact`, `image`, an `imageAlt` starting with "Line drawing of" (for drawings), and `source`, `author` and `licence`.
 3. `public/assets/sights/`: one image file per sight, named exactly as its `image` path. An SVG drawing uses `viewBox="0 0 800 600"`, starts with the theme `<style>` block and strokes in `currentColor`.
 4. `content/routes.json`: at least one route that connects the destination to the network.
