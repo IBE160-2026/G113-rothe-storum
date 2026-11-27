@@ -68,6 +68,17 @@ export const copy = {
     howToPlay: "How to play",
     close: "Close",
   },
+  // Polaroid and Polaroid sheet (shared by Stories 2.4, 2.5 and 3.3). The meta
+  // line is written in normal case and shown in caps by CSS (DESIGN →
+  // Polaroid: "PARIS · DAY 6"), so screen readers do not spell it out.
+  polaroid: {
+    // A no-break space keeps "Day 6" on one line.
+    meta: (city: string, day: number) => `${city} · Day\u00a0${day}`,
+    label: (name: string, city: string, day: number) =>
+      `${name}, ${city}, Day ${day}`,
+    empty: "Your next photo goes here",
+    close: "Close",
+  },
   map: {
     heading: "Map",
     srWhere: (city: string) => `You're in ${city}. Routes are listed below.`,

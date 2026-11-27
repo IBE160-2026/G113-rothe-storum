@@ -1,0 +1,127 @@
+/* DESIGN.md → Polaroid: surface-row frame, 6 px padding (9 px bottom),
+   rounded.xs, object shadow, rotated ±2–2.5°. A 4:3 photo area, the title in
+   serif-sm, a caps place and day line, and an italic muted fact. Title and
+   fact are clamped to 2 lines; the sheet shows them whole. */
+
+.print {
+  composes: focusRing from "../styles/controls.module.css";
+  --photo-height: 62px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: content-box;
+  width: calc(var(--photo-height) * 4 / 3);
+  padding: 6px 6px 9px;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-row);
+  box-shadow: var(--shadow-object);
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* A print never stretches to its neighbour's height in a row. */
+  align-self: flex-start;
+}
+
+.small {
+  --photo-height: 62px;
+}
+
+.medium {
+  --photo-height: 86px;
+}
+
+.large {
+  --photo-height: 118px;
+}
+
+.left {
+  transform: rotate(-2deg);
+}
+
+.right {
+  transform: rotate(2.5deg);
+}
+
+/* A fixed 4:3 box with paper behind it, so the frame keeps its shape even if
+   the image does not load. */
+.photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 4px;
+  overflow: hidden;
+  background: var(--color-surface-inset);
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title,
+.fact {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.title {
+  font-family: var(--font-serif-sm-family);
+  font-size: var(--font-serif-sm-size);
+  font-weight: var(--font-serif-sm-weight);
+  line-height: var(--font-serif-sm-line-height);
+}
+
+.meta {
+  color: var(--color-ink-muted);
+  font-family: var(--font-label-caps-family);
+  font-size: var(--font-label-caps-size);
+  letter-spacing: var(--font-label-caps-letter-spacing);
+  line-height: var(--font-label-caps-line-height);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+/* The small print is about 83 px wide: smaller, tighter caps keep "COPENHAGEN" whole.
+   overflow-wrap stays as a safety net for longer names. */
+.small .meta {
+  font-size: 10px;
+  letter-spacing: 0.4px;
+}
+
+.fact {
+  color: var(--color-ink-muted);
+  font-family: var(--font-meta-family);
+  font-size: var(--font-meta-size);
+  font-style: italic;
+  line-height: var(--font-meta-line-height);
+}
+
+/* EXPERIENCE → Empty album: one wide dashed tile, not a button. */
+.empty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 72px;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px dashed var(--color-slot-dash);
+  border-radius: var(--radius-xs);
+  color: var(--color-ink-muted);
+  font-family: var(--font-meta-family);
+  font-size: var(--font-meta-size);
+  line-height: var(--font-meta-line-height);
+}
+
+.empty svg {
+  flex: none;
+  color: var(--color-ochre);
+}
