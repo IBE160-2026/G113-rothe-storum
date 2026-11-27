@@ -14,7 +14,7 @@ Christian ville vite om prosjektet fortsatt følger sensorveiledningen for Del 1
 
 ### Resultat
 - **Vurdering mot sensorveiledningen (anslag, ikke fasit):** kriterium 1 A–B, 3 A–B, 5 A–B, 7 A–B, 6 B og 4 B (foreløpig). Kriterium 2 er D–E i dag og B hvis S2 blir ferdig: bare start, intro og kart er spillbart, og 1.7, 2.3–2.5, 3.2 og 3.3 er `backlog` med S2-frist søndag 29.11. Det gir ca. 3,5 vektet i dag og ca. 4,3–4,6 hvis S2 og S3 holder. Christian valgte å følge BMAD-rekkefølgen videre.
-- **Kjørt:** `npm run lint` består, `npm test` gir 405/405 tester grønne i 23 filer, og `npm run build` består. `npm run test:e2e` ble ikke kjørt fordi port 4173 allerede var i bruk av en egen `node`-prosess (PID 6202). Prosessen ble ikke stoppet.
+- **Kjørt:** `npm run lint` består, `npm test` gir 405/405 tester grønne i 23 filer, og `npm run build` består. `npm run test:e2e` kunne først ikke kjøres fordi port 4173 var i bruk av en egen `node`-prosess (PID 6202), som ikke ble stoppet. Da porten var ledig, ble testene kjørt på `main` (`b571375`): 3/3 grønne i Chromium med 375 px bredde (`start.spec.ts`, `map.spec.ts`, `first-visit.spec.ts`). Byggesteget ga en ufarlig PostCSS-advarsel om at `from` mangler. E2E kjører ikke i CI ennå, og testene dekker foreløpig bare start, intro og kart.
 - **Målinger for #11:** 201 mot 7 commits (uten merges), der 124 av Christian sine er `Logg:`-commits. `git blame` gir ca. 69 % / 31 % av linjene i `src/` og `tests/`. Thomas er reviewer på ca. 22 PR-er og har ledet 1.5, 1.6 og 1.7.
 - **PR #76** (https://github.com/IBE160-2026/G113-rothe-storum/pull/76), commit `e29ddb9`, med Thomas som reviewer og `Closes #11`:
   - `sprint-plan.md`: ny fordeling i Team split-tabellen (Christian: Polaroid-komponentene, 2.5, 3.2, 3.3; Thomas: 1.5–1.7, 2.3, 2.4, 4.2, 4.3), en rad for EXT-epics 5–7, en datert merknad og en setning i statuslinjen.
@@ -27,4 +27,4 @@ Christian ville vite om prosjektet fortsatt følger sensorveiledningen for Del 1
 
 ### Åpne punkter
 - Ingen nye issues er opprettet. #11 lukkes automatisk når PR #76 merges.
-- `npm run test:e2e` er ikke verifisert i denne økten (port 4173 var opptatt).
+- E2E i CI og E2E-dekning av reise, bydag og slutt hører til Story 4.2. Ingen egen issue er opprettet.
