@@ -40,7 +40,7 @@ context:
 
 | Scenario | Input / State | Expected Output / Behavior | Error Handling |
 |----------|--------------|---------------------------|----------------|
-| Print | sight `paris-eiffel-tower`, album entry day 6, city "Paris" | Button with the image (`alt=""`), title "Eiffel Tower", the line "Paris · Day 6" shown in caps by CSS (`text-transform`), italic fact. The accessible name is title, place and day ("Eiffel Tower, Paris, Day 6", via `aria-labelledby`); the fact is shown but is not part of the name | N/A |
+| Print | sight `paris-eiffel-tower`, album entry day 6, city "Paris" | Button with the image (`alt=""`), title "Eiffel Tower", the line "Paris · Day 6" shown in caps by CSS (`text-transform`), italic fact. The accessible name is title, place and day ("Eiffel Tower, Paris, Day 6", via `aria-label`, see Deviations); the fact is shown but is not part of the name | N/A |
 | Empty | no sight | One wide dashed tile with an icon and "Your next photo goes here"; not a button. Only the Album tab uses it. The Summary's empty text ("No photos this time…") is Story 3.3, and Day complete with no sights shows nothing (EXPERIENCE → Empty album) | N/A |
 | Open | tap or Enter on a print | Sheet opens, focus on the title, background inert | N/A |
 | Close | Esc, ×, scrim or browser Back | Sheet closes, one history entry popped, focus back on the print that opened it | N/A |
@@ -68,7 +68,7 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [x] `src/ui/copy.ts` -- add `polaroid` (`meta(city, day)` → "Paris · Day 6", in normal case so screen readers do not spell it out, uppercased by CSS, `empty`, `close`, `sheetLabel(name)`) -- AD-9. The meta line comes from DESIGN → Polaroid, and the empty line from EXPERIENCE → Empty album.
+- [x] `src/ui/copy.ts` -- add `polaroid` (`meta(city, day)` → "Paris · Day 6", in normal case so screen readers do not spell it out, uppercased by CSS, `empty`, `close`, `label(name, city, day)`) -- AD-9. The meta line comes from DESIGN → Polaroid, and the empty line from EXPERIENCE → Empty album.
 - [x] `src/ui/sheets/sheet.module.css` -- the shared sheet shell (`.layer`, `.scrim`, `.sheet`, header), the same as `MenuSheet.module.css` today -- one place for Story 4.3 and the sheets in 3.2.
 - [x] `src/ui/components/Polaroid.tsx` + `.module.css` -- the print. Props: `sight`, `day`, `city`, `onOpen(el)`, `tilt` (`"left"` | `"right"`), `size` (`"album"` 62 px photo | `"dayComplete"` 86 px photo | `"summary"` 118 px wide print, 78 px photo; renamed and corrected 2026-11-27, see Spec Change Log). An empty variant is used when there is no `sight`.
 - [x] `src/ui/sheets/PolaroidSheet.tsx` + `.module.css` -- the read-only sheet, built on `sheet.module.css` with `composes`. Props: `sight`, `day`, `city`, `onClose`.
