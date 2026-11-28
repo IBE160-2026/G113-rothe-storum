@@ -29,6 +29,8 @@
 }
 
 .reload {
+  /* DESIGN.md → Focus ring (#36). */
+  composes: focusRing from "../styles/controls.module.css";
   min-height: var(--space-button-height);
   min-width: var(--space-touch-min);
   padding: 0 var(--space-6);
