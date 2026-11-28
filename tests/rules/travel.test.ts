@@ -5,13 +5,18 @@
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../../src/content/load";
 import { apply, startJourney, travel } from "../../src/rules/apply";
-import { daysRemaining, routesFrom } from "../../src/rules/queries";
+import {
+  daysRemaining,
+  routesFrom,
+  travelPreview,
+} from "../../src/rules/queries";
 import { shortestDaysHome } from "../../src/rules/travel";
 import type {
   Content,
   GameState,
   RouteView,
   TransportMode,
+  TravelPreview,
 } from "../../src/rules/types";
 import { applyFrozen, deepFreeze, smallContent, started } from "./helpers";
 
@@ -491,6 +496,214 @@ describe("FR-4 FR-6 FR-7 FR-9 travel", () => {
         }
       }
       expect(checked).toBeGreaterThan(1000);
+    });
+  });
+
+  describe("travel preview (#71, AD-3)", () => {
+    /** Runs travelPreview on frozen inputs and asserts neither input changed. */
+    function previewFrozen(
+      state: GameState,
+      to: string,
+      mode: TransportMode,
+      content: Content,
+    ): TravelPreview {
+      const before = structuredClone({ state, content });
+      const preview = travelPreview(deepFreeze(state), to, mode, content);
+      expect({ state, content }).toEqual(before);
+      return preview;
+    }
+
+    it("shows money, days and stamps after a trip that goes on", () => {
+      const content = smallContent();
+      const state = stateWith(content, {
+        position: "home",
+        money: 500,
+        daysUsed: 2,
+        stamps: [{ id: "alpha", day: 1 }],
+      });
+      // Home → alpha by bus is €40 and 2 days in valid-small.json.
+      expect(previewFrozen(state, "alpha", "bus", content)).toEqual({
+        ok: true,
+        reason: null,
+        moneyAfter: 460,
+        daysUsedAfter: 4,
+        stampsAfter: 1,
+        outcome: null,
+        failReason: null,
+      });
+    });
+
+    it("shows goalReached for a trip home with enough stamps", () => {
+      const content = smallContent();
+      const state = stateWith(content, {
+        position: "alpha",
+        daysUsed: 8,
+        stamps: [
+          { id: "alpha", day: 2 },
+          { id: "beta-town", day: 5 },
+        ],
+      });
+      expect(content.config.goalStamps).toBe(2);
+      expect(previewFrozen(state, "home", "bus", content)).toMatchObject({
+        ok: true,
+        daysUsedAfter: 10,
+        stampsAfter: 2,
+        outcome: "goalReached",
+        failReason: null,
+      });
+    });
+
+    it("shows goalNotReached for a trip home one stamp short", () => {
+      const content = smallContent();
+      const state = stateWith(content, {
+        position: "alpha",
+        daysUsed: 8,
+        stamps: [{ id: "alpha", day: 2 }],
+      });
+      expect(previewFrozen(state, "home", "bus", content)).toMatchObject({
+        ok: true,
+        stampsAfter: 1,
+        outcome: "goalNotReached",
+        failReason: null,
+      });
+    });
+
+    it.each([
+      {
+        name: "too little money",
+        patch: { position: "home", money: 0 },
+        to: "alpha",
+        reason: "NOT_ENOUGH_MONEY",
+      },
+      {
+        name: "too few days",
+        patch: { position: "home", daysUsed: 30 },
+        to: "alpha",
+        reason: "NOT_ENOUGH_DAYS",
+      },
+      {
+        name: "no route",
+        patch: { position: "home" },
+        to: "home",
+        reason: "NO_ROUTE",
+      },
+      {
+        name: "an ended journey",
+        patch: { position: "alpha", outcome: "goalNotReached" as const },
+        to: "home",
+        reason: "JOURNEY_ENDED",
+      },
+    ])(
+      "rejects a trip with $name: $reason, values unchanged, no outcome",
+      ({ patch, to, reason }) => {
+        const content = smallContent();
+        const state = stateWith(content, {
+          ...patch,
+          stamps: [{ id: "alpha", day: 1 }],
+        });
+        expect(previewFrozen(state, to, "bus", content)).toEqual({
+          ok: false,
+          reason,
+          moneyAfter: state.money,
+          daysUsedAfter: state.daysUsed,
+          stampsAfter: 1,
+          outcome: null,
+          failReason: null,
+        });
+      },
+    );
+
+    it("agrees with apply on every trip, including every outcome and fail reason", () => {
+      const small = smallContent();
+      const real = deepFreeze(loadContent());
+      const seen = new Set<string>();
+      let checked = 0;
+      for (const content of [small, real]) {
+        const goal = content.config.goalStamps;
+        const stampSets = [0, goal - 1, goal].map((n) =>
+          content.destinations
+            .slice(0, n)
+            .map((d, i) => ({ id: d.id, day: i })),
+        );
+        const places = [
+          content.home.id,
+          ...content.destinations.map((d) => d.id),
+        ];
+        for (const position of places)
+          for (const money of [0, 40, 99, 100, 250, 1500])
+            for (const daysUsed of [0, 8, 9, 10, 27, 28, 29, 30])
+              for (const stamps of stampSets)
+                for (const outcome of [null, "goalNotReached" as const]) {
+                  const state = stateWith(content, {
+                    position,
+                    money,
+                    daysUsed,
+                    stamps,
+                    outcome,
+                  });
+                  for (const { between, modes } of content.routes)
+                    for (const to of between)
+                      for (const { mode } of modes) {
+                        const preview = travelPreview(state, to, mode, content);
+                        const result = apply(
+                          state,
+                          travel({ to, mode }),
+                          content,
+                        );
+                        const after = result.ok ? result.state : state;
+                        expect(preview).toEqual({
+                          ok: result.ok,
+                          reason: result.ok ? null : result.reason,
+                          moneyAfter: after.money,
+                          daysUsedAfter: after.daysUsed,
+                          stampsAfter: after.stamps.length,
+                          outcome: result.ok ? after.outcome : null,
+                          failReason: result.ok ? after.failReason : null,
+                        });
+                        // Independent of the mapping above: travel never
+                        // changes stamps, and only an accepted trip can end.
+                        expect(preview.stampsAfter).toBe(stamps.length);
+                        if (!preview.ok) expect(preview.outcome).toBeNull();
+                        // The query agrees with the route view too.
+                        const viewed = routesFrom(state, content)
+                          .find((v) => v.to === to)
+                          ?.options.find((o) => o.mode === mode);
+                        if (viewed !== undefined) {
+                          expect(preview.ok).toBe(viewed.available);
+                          if (preview.ok) {
+                            expect(preview.daysUsedAfter).toBe(
+                              viewed.arrivalDay,
+                            );
+                            expect(preview.moneyAfter).toBe(
+                              money - viewed.price,
+                            );
+                          }
+                        }
+                        seen.add(
+                          preview.ok
+                            ? `${preview.outcome}/${preview.failReason}`
+                            : `rejected/${preview.reason}`,
+                        );
+                        checked++;
+                      }
+                }
+      }
+      expect(checked).toBeGreaterThan(10_000);
+      // The cases reach every outcome a trip can give, so the agreement above
+      // is not only tested on journeys that go on.
+      expect([...seen].sort()).toEqual(
+        [
+          "failed/outOfDays",
+          "failed/stranded",
+          "goalNotReached/null",
+          "goalReached/null",
+          "null/null",
+          "rejected/JOURNEY_ENDED",
+          "rejected/NOT_ENOUGH_DAYS",
+          "rejected/NOT_ENOUGH_MONEY",
+          "rejected/NO_ROUTE",
+        ].sort(),
+      );
     });
   });
 
