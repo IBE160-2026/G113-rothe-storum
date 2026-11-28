@@ -16,3 +16,18 @@ Rette #85: specen for Polaroid sa `aria-labelledby`, mens koden bruker `aria-lab
 
 ### Åpne punkter
 Ingen nye. #85 lukkes når PR #87 merges.
+
+## 2026-11-28 kl. 12:58 — Albion812
+
+### Oppgave
+Vise status; Story 3.2 utsatt til #73 er merget (brukerens valg).
+
+### Plan
+- Sjekket åpne PR-er og CI. Pushet loggcommiten og kommenterte på #84 etter godkjenning.
+
+### Resultat
+- **Retting av en KI-antakelse:** CI på #87 (bare en spec-endring) feilet på den samme travelPreview-testen (run 46142075142, 427/428). Antakelsen i [945](945-2026-11-28-12-39-58-merge-godkjente-pr-er.md) og i PR #84 om at flere testfiler i #80 var årsaken er feil: testen er nær 5 s på CI også på `main`. Kommentar om dette på #84.
+- #84 blokkerer nå #80, #81 og #87. Story 3.2: ingen filer skrevet; `epic-3-context.md` må regenereres når arbeidet starter (planleggingsdokumenter er endret etter 2026-11-25).
+
+### Åpne punkter
+Ingen nye.
