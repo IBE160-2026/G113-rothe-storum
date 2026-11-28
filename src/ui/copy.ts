@@ -127,6 +127,34 @@ export const copy = {
     options: "How to travel",
     close: "Close",
   },
+  // Story 2.3 (EXPERIENCE → Copy templates: arrival, arrival.repeat,
+  // arrival.unavailable = map.card.unavailable; DESIGN → Fact card caption).
+  arrival: {
+    eyebrow: (day: number, total: number, money: number) =>
+      `You've arrived · Day ${day} of ${total} · ${euros(money)}`,
+    welcome: (city: string) => `Welcome to ${city}`,
+    backIn: (city: string) => `Back in ${city}`,
+    trip: (
+      mode: "plane" | "train" | "bus",
+      from: string,
+      days: number,
+      price: number,
+    ) =>
+      `${{ plane: "Plane", train: "Train", bus: "Bus" }[mode]} from ${from} · ${dayCount(days)} · ${euros(price)}`,
+    about: (city: string) => `About ${city}`,
+    planDay: "Plan the day",
+    costFirst: (price: number, city: string) =>
+      `A city day here costs ${euros(price)} and 1 day, and earns your ${city} stamp.`,
+    costRepeat: (price: number) =>
+      `A city day here costs ${euros(price)} and 1 day. No new stamp this time.`,
+    passThrough: "Just passing through",
+    noStampYet: "No stamp unless you spend a day here",
+    stamped: (city: string) => `You already have your ${city} stamp.`,
+    notEnoughMoney: (money: number) =>
+      `Not enough for a night here (you have ${euros(money)})`,
+    noDays: "No days left for a city day",
+    close: "Close",
+  },
   error: {
     title: "Travel interrupted",
     // #37: a reload cannot fix invalid content (it is bundled at build time),
