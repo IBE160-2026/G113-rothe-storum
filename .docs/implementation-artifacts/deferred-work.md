@@ -19,6 +19,9 @@
 - source_spec: `.docs/implementation-artifacts/spec-gh-50-begin-journey-rejection.md`
   summary: When Story 3.3 adds "New journey" from the summary, test that a rejected `startJourney` with a previous journey in the store keeps the player off the Map.
   evidence: App's check uses `rejection === null && game !== null`; today every test starts with `game === null`, because the UI has no path back to Start once a journey exists (#50 review, finding 1).
+- source_spec: `.docs/implementation-artifacts/spec-stamp-and-stamp-slot.md`
+  summary: Before Story 2.5 uses `StampSlot` at 72 px on the Stamps page, settle the numeral style: DESIGN gives one 11 px serif `slot-numeral`, but the mockup's 72 px empty slot uses a 15 px sans numeral at weight 700 with a 2 px dash.
+  evidence: `mockups/screens-core.html:249` against DESIGN → Typography `slot-numeral` (Blind Hunter pass 2, finding 2). At 50 px (Story 3.3) the 11 px numeral matches the summary mockup, so only 2.5 is affected.
 - source_spec: `.docs/implementation-artifacts/spec-polaroid-and-polaroid-sheet.md`
   summary: Move `MenuSheet` and `RouteSheet` to the shared `src/ui/sheets/sheet.module.css` shell, once PR #73 is merged.
   evidence: The Polaroid sheet spec adds the shared shell but leaves the two other sheets alone, because PR #73 changes them. Without the move, `.layer`, `.scrim` and `.sheet` exist in three copies, and Story 4.3 and 3.2 would have to change each one (elicitation 2026-11-27, Second-Order Thinking). The shell's `.sheet` follows RouteSheet (flex column, gap, 90dvh with scroll), so MenuSheet must override `gap: 0` to keep its rows tight.
