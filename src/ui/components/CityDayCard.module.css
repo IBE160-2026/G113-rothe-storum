@@ -1,0 +1,77 @@
+/* DESIGN.md → City-day card: surface, rounded.xl, lifted shadow; eyebrow,
+   card-title, hint with an ochre icon, button-small and a text-link. */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: 0 8px 20px -12px rgba(60, 40, 10, 0.5);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-family: var(--font-label-caps-family);
+  font-size: var(--font-label-caps-size);
+  letter-spacing: var(--font-label-caps-letter-spacing);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-card-title-family);
+  font-size: var(--font-card-title-size);
+  font-weight: var(--font-card-title-weight);
+  line-height: var(--font-card-title-line-height);
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-ink-body);
+  font-size: var(--font-meta-size);
+}
+
+.hintIcon {
+  flex: none;
+  color: var(--color-ochre);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.small {
+  composes: focusRing from "../styles/controls.module.css";
+  min-height: var(--space-button-height-sm);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-button-sm-family);
+  font-size: var(--font-button-sm-size);
+  font-weight: var(--font-button-sm-weight);
+  cursor: pointer;
+}
+
+.small[aria-disabled="true"] {
+  background: var(--color-unavailable);
+  color: var(--color-on-unavailable);
+  cursor: default;
+}
+
+.reason {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--font-meta-size);
+}

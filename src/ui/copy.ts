@@ -80,6 +80,18 @@ export const copy = {
     // Decision (Thomas, 2026-11-24, spec-1-6): the short chip names the reason
     // reported by routesFrom() instead of an amount the UI would compute.
     chipShort: "Not enough money",
+    // Story 2.3: the city-day card (EXPERIENCE → Copy → map.card,
+    // map.card.repeat; the unavailable reasons are copy.arrival's, which
+    // EXPERIENCE defines as the same strings).
+    card: {
+      eyebrow: (city: string) => `You're in ${city}`,
+      title: (city: string, price: number) =>
+        `City day in ${city} — ${euros(price)}`,
+      hintFirst: (city: string) => `Finish the day to earn your ${city} stamp`,
+      hintRepeat: (city: string) => `You already have your ${city} stamp.`,
+      planDay: "Plan the day",
+      about: (city: string) => `About ${city}`,
+    },
     key: {
       here: "You're here",
       home: "Home",
@@ -125,6 +137,34 @@ export const copy = {
     noneFits: (city: string, money: number) =>
       `No route from ${city} fits your ${euros(money)}.`,
     options: "How to travel",
+    close: "Close",
+  },
+  // Story 2.3 (EXPERIENCE → Copy templates: arrival, arrival.repeat,
+  // arrival.unavailable = map.card.unavailable; DESIGN → Fact card caption).
+  arrival: {
+    eyebrow: (day: number, total: number, money: number) =>
+      `You've arrived · Day ${day} of ${total} · ${euros(money)}`,
+    welcome: (city: string) => `Welcome to ${city}`,
+    backIn: (city: string) => `Back in ${city}`,
+    trip: (
+      mode: "plane" | "train" | "bus",
+      from: string,
+      days: number,
+      price: number,
+    ) =>
+      `${{ plane: "Plane", train: "Train", bus: "Bus" }[mode]} from ${from} · ${dayCount(days)} · ${euros(price)}`,
+    about: (city: string) => `About ${city}`,
+    planDay: "Plan the day",
+    costFirst: (price: number, city: string) =>
+      `A city day here costs ${euros(price)} and 1 day, and earns your ${city} stamp.`,
+    costRepeat: (price: number) =>
+      `A city day here costs ${euros(price)} and 1 day. No new stamp this time.`,
+    passThrough: "Just passing through",
+    noStampYet: "No stamp unless you spend a day here",
+    stamped: (city: string) => `You already have your ${city} stamp.`,
+    notEnoughMoney: (money: number) =>
+      `Not enough for a night here (you have ${euros(money)})`,
+    noDays: "No days left for a city day",
     close: "Close",
   },
   error: {
