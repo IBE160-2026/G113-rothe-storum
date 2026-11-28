@@ -80,6 +80,18 @@ export const copy = {
     // Decision (Thomas, 2026-11-24, spec-1-6): the short chip names the reason
     // reported by routesFrom() instead of an amount the UI would compute.
     chipShort: "Not enough money",
+    // Story 2.3: the city-day card (EXPERIENCE → Copy → map.card,
+    // map.card.repeat; the unavailable reasons are copy.arrival's, which
+    // EXPERIENCE defines as the same strings).
+    card: {
+      eyebrow: (city: string) => `You're in ${city}`,
+      title: (city: string, price: number) =>
+        `City day in ${city} — ${euros(price)}`,
+      hintFirst: (city: string) => `Finish the day to earn your ${city} stamp`,
+      hintRepeat: (city: string) => `You already have your ${city} stamp.`,
+      planDay: "Plan the day",
+      about: (city: string) => `About ${city}`,
+    },
     key: {
       here: "You're here",
       home: "Home",

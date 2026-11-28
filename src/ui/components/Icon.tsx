@@ -13,6 +13,8 @@ const PATHS = {
   calendar: "M4 6h16v14H4zM4 10h16M8 3v5m8-5v5",
   coin: "M12 3a9 9 0 110 18 9 9 0 010-18zM9 9h5a2 2 0 010 4h-4a2 2 0 000 4h5M12 6v2m0 9v1",
   close: "M6 6l12 12M18 6L6 18",
+  stamp:
+    "M12 3a9 9 0 110 18 9 9 0 010-18zM12 6.5a5.5 5.5 0 110 11 5.5 5.5 0 010-11zM9.5 12l1.8 1.8 3.2-3.6",
 } as const;
 
 export type IconName = keyof typeof PATHS | TransportMode;
