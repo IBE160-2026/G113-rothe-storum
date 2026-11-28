@@ -704,7 +704,11 @@ describe("FR-4 FR-6 FR-7 FR-9 travel", () => {
           "rejected/NO_ROUTE",
         ].sort(),
       );
-    });
+      // Over 10,000 combinations against the real content: about 1.5 s
+      // locally, but close to the default 5 s on a loaded CI runner, where
+      // it timed out on PR #80. The extra time only lifts the limit; the
+      // test checks the same cases.
+    }, 30_000);
   });
 
   describe("action creator", () => {
