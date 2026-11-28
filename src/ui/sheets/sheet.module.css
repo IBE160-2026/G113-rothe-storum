@@ -1,0 +1,48 @@
+/* The shared modal sheet shell (DESIGN.md → Components → Modal sheet). Only
+   PolaroidSheet uses it so far; MenuSheet and RouteSheet move over after
+   PR #73 (deferred-work.md). `.sheet` follows RouteSheet (flex column, gap,
+   90dvh with scroll); `.header` follows MenuSheet (title left, × right). */
+
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--color-scrim);
+}
+
+.sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--space-column-max);
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-gutter) var(--space-6);
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background: var(--color-surface);
+}
+
+/* DESIGN.md → Elevation: in dark mode, sheets get a 1 px rule top edge. */
+@media (prefers-color-scheme: dark) {
+  .sheet {
+    border-top: 1px solid var(--color-rule);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
