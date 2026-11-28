@@ -22,3 +22,12 @@
 - source_spec: `.docs/implementation-artifacts/spec-stamp-and-stamp-slot.md`
   summary: Before Story 2.5 uses `StampSlot` at 72 px on the Stamps page, settle the numeral style: DESIGN gives one 11 px serif `slot-numeral`, but the mockup's 72 px empty slot uses a 15 px sans numeral at weight 700 with a 2 px dash.
   evidence: `mockups/screens-core.html:249` against DESIGN → Typography `slot-numeral` (Blind Hunter pass 2, finding 2). At 50 px (Story 3.3) the 11 px numeral matches the summary mockup, so only 2.5 is affected.
+- source_spec: `.docs/implementation-artifacts/spec-polaroid-and-polaroid-sheet.md`
+  summary: Move `MenuSheet` and `RouteSheet` to the shared `src/ui/sheets/sheet.module.css` shell, once PR #73 is merged.
+  evidence: The Polaroid sheet spec adds the shared shell but leaves the two other sheets alone, because PR #73 changes them. Without the move, `.layer`, `.scrim` and `.sheet` exist in three copies, and Story 4.3 and 3.2 would have to change each one (elicitation 2026-11-27, Second-Order Thinking). The shell's `.sheet` follows RouteSheet (flex column, gap, 90dvh with scroll), so MenuSheet must override `gap: 0` to keep its rows tight.
+- source_spec: `.docs/implementation-artifacts/spec-polaroid-and-polaroid-sheet.md`
+  summary: Give MenuSheet and RouteSheet the dark-mode 1 px rule top edge and `tabIndex={-1}` on the dialog, as PolaroidSheet now has.
+  evidence: DESIGN.md → Elevation ("Sheets … get a 1 px rule top edge" in dark), and the review finding EC5: without a focusable dialog, a click on sheet text moves focus to the page, and Esc no longer closes the sheet. Both existed before this change and are not fixed here, because PR #73 changes those sheets. The move to `sheet.module.css` above fixes the edge.
+- source_spec: `.docs/implementation-artifacts/spec-polaroid-and-polaroid-sheet.md`
+  summary: Settle whether DESIGN.md's "album strip of 118 px polaroids" (Journey summary) is the photo height or the whole print, before Story 3.3 uses `Polaroid size="large"`.
+  evidence: Unverified, medium if wrong. DESIGN → Polaroid gives a "photo area 62–86 px tall", and `large` reads 118 px as the photo height, which makes a print about 171 px wide (two across 375 px). Review finding BH9; settle it with the design files for screen S8/J1 or by a decision of the Story 3.3 owner.

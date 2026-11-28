@@ -9,6 +9,17 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 - Thomas Rothe (GitHub: ThomasRothe88)
 - Christian Storum (GitHub: Albion812)
 
+## Arbeidsdeling
+
+| Område                                                                                                                    | Ansvarlig |
+| ------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Planlegging, regler (`src/rules/`), innhold (`content/`), prosjektoppsett, CI og regeltester                              | Christian |
+| UX-spesifikasjon for kjerneskjermer og UI (`src/ui/`): Story 1.5–1.7, 2.3, 2.4, e2e-tester (4.2) og tilgjengelighet (4.3) | Thomas    |
+| UI: Polaroid-komponentene og Story 2.5, 3.2 og 3.3                                                                        | Christian |
+| Playtest og testrapport (4.4), README og repo-sjekk (4.5)                                                                 | Begge     |
+
+Hver PR reviewes av det andre medlemmet før merge, og hvert medlem logger sine KI-økter i sin egen mappe under [`.logs/`](.logs/). Fordelingen ble bestemt i [#5](https://github.com/IBE160-2026/G113-rothe-storum/issues/5) og justert 2026-11-27 i [#11](https://github.com/IBE160-2026/G113-rothe-storum/issues/11). Den fullstendige tabellen med reviewer per område står i [sprintplanen](.docs/implementation-artifacts/sprint-plan.md#team-split-agreed-in-review-of-pr-4).
+
 ## Getting started
 
 WORLDBOUND: NOMAD is a mobile-first browser travel game built with Vite, React and TypeScript. It runs locally; no `.env` file, API keys or accounts are needed.
@@ -25,6 +36,8 @@ WORLDBOUND: NOMAD is a mobile-first browser travel game built with Vite, React a
 npm install
 npx playwright install chromium   # one-time browser download for the end-to-end tests
 ```
+
+On macOS 13, Playwright has no Chromium build, so `npx playwright install chromium` fails. Install Google Chrome instead and run the end-to-end tests with `PW_CHANNEL=chrome npm run test:e2e`.
 
 ### Scripts
 

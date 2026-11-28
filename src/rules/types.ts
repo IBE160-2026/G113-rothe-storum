@@ -198,6 +198,32 @@ export interface TravelOption {
   homeUnreachable: boolean;
 }
 
+/**
+ * One trip as it would turn out, before the player confirms it (FR-6, FR-7;
+ * #71). Exactly what `apply(travel({ to, mode }))` decides (AD-3). When the
+ * trip is rejected, the "after" fields are the current values, unchanged, and
+ * `outcome` and `failReason` are `null`, since the trip does not happen.
+ */
+export interface TravelPreview {
+  /** Exactly what `apply(travel({ to, mode }))` accepts. */
+  ok: boolean;
+  /** Why the trip is rejected; `null` when `ok`. */
+  reason: ReasonCode | null;
+  /** Whole euros after the trip. */
+  moneyAfter: number;
+  /** Days used after the trip (the `arrivalDay` of the option). */
+  daysUsedAfter: number;
+  /** Stamps after the trip. Travel never changes stamps, so today's count. */
+  stampsAfter: number;
+  /**
+   * The outcome the trip ends the journey with, e.g. `goalReached` home with
+   * enough stamps; `null` when the journey goes on or the trip is rejected.
+   */
+  outcome: Outcome | null;
+  /** Why a `failed` outcome failed; `null` otherwise. */
+  failReason: FailReason | null;
+}
+
 /** All modes from the current position to one neighbour. */
 export interface RouteView {
   to: PlaceId;

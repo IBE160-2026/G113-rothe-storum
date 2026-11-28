@@ -91,6 +91,9 @@
   --radius-cover-mini: 3px 8px 8px 3px;
   --radius-full: 9999px;
 
+  /* DESIGN.md → Elevation → Object: polaroids. */
+  --shadow-object: 0 8px 16px -10px rgba(60, 40, 10, 0.55);
+
   --font-wordmark-family:
     "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-wordmark-size: 19px;
@@ -284,6 +287,8 @@
     --color-background: #0f1b26;
     --color-background-wash: #0f1b26;
     --color-surface: #172634;
+    /* DESIGN.md → Elevation: dark mode drops shadows. */
+    --shadow-object: none;
     --color-surface-row: #172634;
     --color-surface-selected: #1c2e3e;
     --color-surface-inset: #0f1b26;

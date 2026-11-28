@@ -1,0 +1,82 @@
+/* DESIGN.md → Polaroid sheet: a modal sheet with a large Polaroid (photo at
+   full sheet width, 4:3; title, place and day; fact in typography.fact). The
+   shell comes from the shared sheet.module.css. */
+
+.layer {
+  composes: layer from "./sheet.module.css";
+}
+
+.scrim {
+  composes: scrim from "./sheet.module.css";
+}
+
+.sheet {
+  composes: sheet from "./sheet.module.css";
+}
+
+.header {
+  composes: header from "./sheet.module.css";
+  /* Only × in the header: keep it right. */
+  justify-content: flex-end;
+}
+
+.print {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 8px 8px 14px;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-row);
+  box-shadow: var(--shadow-object);
+  transform: rotate(-1deg);
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: var(--space-2);
+  overflow: hidden;
+  background: var(--color-surface-inset);
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-serif-md-family);
+  font-size: var(--font-serif-md-size);
+  font-weight: var(--font-serif-md-weight);
+  line-height: var(--font-serif-md-line-height);
+  overflow-wrap: anywhere;
+}
+
+.title:focus {
+  outline: none;
+}
+
+.meta {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-family: var(--font-label-caps-family);
+  font-size: var(--font-label-caps-size);
+  letter-spacing: var(--font-label-caps-letter-spacing);
+  line-height: var(--font-label-caps-line-height);
+  text-transform: uppercase;
+}
+
+.fact {
+  margin: var(--space-2) 0 0;
+  color: var(--color-ink-body);
+  font-family: var(--font-fact-family);
+  font-size: var(--font-fact-size);
+  font-weight: var(--font-fact-weight);
+  line-height: var(--font-fact-line-height);
+}
